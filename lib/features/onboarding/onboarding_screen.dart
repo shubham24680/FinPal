@@ -127,7 +127,7 @@ class OnboardingScreen extends ConsumerWidget {
                 onboardingNotifier.next();
               } else {
                 context.go("/");
-                ref.read(profileNotifier.notifier).save(isFistTimeVisit: false);
+                ref.read(profileNotifier.notifier).save(isFirstTimeVisit: false);
               }
             },
             borderRadius: BorderRadius.circular(22.r),

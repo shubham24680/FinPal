@@ -21,7 +21,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       gender: fields[1] as String?,
       dateOfBirth: fields[2] as String?,
       profileImageIndex: fields[3] as int,
-      isFistTimeVisit: fields[4] as bool,
+      isFirstTimeVisit: fields[4] as bool?,
     );
   }
 
@@ -38,7 +38,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(3)
       ..write(obj.profileImageIndex)
       ..writeByte(4)
-      ..write(obj.isFistTimeVisit);
+      ..write(obj.isFirstTimeVisit);
   }
 
   @override
