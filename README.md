@@ -2,7 +2,22 @@
 
 FinPal is a modern, intuitive personal finance companion app built with Flutter. It helps you take control of your financial life by tracking expenses, analyzing spending patterns, and managing your budget with a premium, user-friendly interface.
 
-![FinPal Banner](https://raw.githubusercontent.com/shubham24680/FinPal/main/assets/images/onboarding_1.png) *(Note: Replace with actual banner if available)*
+[![FinPal Banner](https://raw.githubusercontent.com/shubham24680/FinPal/main/assets/images/onboarding_1.png)](https://github.com/shubham24680/FinPal/releases/latest)
+
+## 📲 Download
+
+You can download the latest version of the FinPal APK from the releases page:
+
+[![Download APK](https://img.shields.io/badge/Download-APK-success?style=for-the-badge&logo=android)](https://github.com/shubham24680/FinPal/releases/latest)
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="assets/images/screenshots/onboarding.png" width="200" alt="Onboarding" />
+  <img src="assets/images/screenshots/dashboard.png" width="200" alt="Dashboard" />
+  <img src="assets/images/screenshots/transactions.png" width="200" alt="Transactions" />
+  <img src="assets/images/screenshots/profile.png" width="200" alt="Profile" />
+</p>
 
 ## 🚀 Features
 

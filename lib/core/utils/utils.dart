@@ -33,6 +33,14 @@ class AppSvgs {
   static const String rent = 'assets/svgs/rent.svg';
   static const String entertainment = 'assets/svgs/entertainment.svg';
   static const String bills = 'assets/svgs/bills.svg';
+  static const String upi = 'assets/svgs/upi.svg';
+  static const String netBanking = 'assets/svgs/net_banking.svg';
+  static const String card = 'assets/svgs/card.svg';
+  static const String cash = 'assets/svgs/cash.svg';
+  static const String salary = 'assets/svgs/salary.svg';
+  static const String wallet = 'assets/svgs/wallet.svg';
+  static const String wadOfMoney = 'assets/svgs/wad_of_money.svg';
+  static const String gift = 'assets/svgs/gift.svg';
 }
 
 class AppFonts {
