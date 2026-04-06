@@ -13,6 +13,7 @@ class CustomContainer extends StatefulWidget {
     this.scaleDownFactor = 0.95,
     this.animationDuration = const Duration(milliseconds: 100),
     this.showShadow = false,
+    this.shadow,
     this.height,
     this.width,
     this.alignment,
@@ -28,6 +29,7 @@ class CustomContainer extends StatefulWidget {
   final double scaleDownFactor;
   final Duration animationDuration;
   final bool showShadow;
+  final List<BoxShadow>? shadow;
   final double? height;
   final double? width;
   final AlignmentGeometry? alignment;
@@ -60,19 +62,14 @@ class _CustomContainerState extends State<CustomContainer>
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) {
-    if (widget.onTap != null) _controller.forward();
-  }
-
-  void _onTapUp(TapUpDetails details) {
+  void _handleTap() async {
     if (widget.onTap != null) {
-      _controller.reverse();
       widget.onTap!();
+      await _controller.forward();
+      if (mounted) {
+        _controller.reverse();
+      }
     }
-  }
-
-  void _onTapCancel() {
-    if (widget.onTap != null) _controller.reverse();
   }
 
   @override
@@ -93,15 +90,14 @@ class _CustomContainerState extends State<CustomContainer>
         border: widget.border,
         boxShadow:
             widget.showShadow
-                ? [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(
-                      10,
-                    ), // Used withAlpha instead of withOpacity
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
+                ? widget.shadow ??
+                    [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(10),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
                 : null,
       ),
       child: widget.child,
@@ -112,9 +108,7 @@ class _CustomContainerState extends State<CustomContainer>
     }
 
     return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
+      onTap: _handleTap,
       behavior: HitTestBehavior.opaque,
       child: ScaleTransition(scale: _scaleAnimation, child: container),
     );

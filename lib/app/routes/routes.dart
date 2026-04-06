@@ -5,30 +5,40 @@ class AppRoutes {
     RouteModel(path: "/onboarding", child: const OnboardingScreen()),
     RouteModel(path: "/", child: const HomeScreen()),
     RouteModel(path: "/add_amount", child: const AddAmountScreen()),
+    RouteModel(path: "/edit_profile", child: const EditProfileScreen()),
+    RouteModel(
+      path: "/transaction_overview",
+      child: const TransactionOverviewScreen(),
+    ),
   ];
 
-  static final GoRouter routes = GoRouter(
-    initialLocation: "/onboarding",
-    // redirect: (context, state) async {
-    //   // final prefs = await SPD.getInstance();
-    //   // final isFirstTimeVisit = prefs.get<bool>(StorageKey.FIRST_VISIT) ?? true;
-    //   final isFirstTimeVisit = true;
+  static final routesProvider = Provider<GoRouter>((ref) {
+    final profileAsync = ref.watch(profileNotifier);
+    return GoRouter(
+      initialLocation: "/",
+      redirect: (context, state) {
+        final profile = profileAsync.value;
+        final isFirstVisit = profile?.isFistTimeVisit ?? true;
+        final isOnboarding = state.matchedLocation == '/onboarding';
+        if (isFirstVisit && !isOnboarding) {
+          return '/onboarding';
+        }
 
-    //   if (isFirstTimeVisit) return "/onboarding";
-    //   // return null;
-    // },
-    routes: [
-      ...List.generate(
-        paths.length,
-        (index) => GoRoute(
-          path: paths[index].path,
-          pageBuilder:
-              (context, state) =>
-                  FadeTransistionPage(child: paths[index].child),
+        return null;
+      },
+      routes: [
+        ...List.generate(
+          paths.length,
+          (index) => GoRoute(
+            path: paths[index].path,
+            pageBuilder:
+                (context, state) =>
+                    FadeTransistionPage(child: paths[index].child),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  });
 }
 
 class FadeTransistionPage<T> extends CustomTransitionPage<T> {

@@ -1,13 +1,13 @@
 import 'package:finpal/app/app.dart';
 
-class ExpenseModel {
+class AnalysisModel {
   final String? icon;
   final String title;
   final double amount;
   final Color color;
   final String? notes;
 
-  ExpenseModel({
+  AnalysisModel({
     this.icon,
     required this.title,
     required this.amount,

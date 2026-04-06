@@ -1,114 +1,97 @@
 import 'package:finpal/app/app.dart';
 
-class ExpenseScreen extends StatelessWidget {
+class ExpenseScreen extends ConsumerWidget {
   const ExpenseScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppConstants.sidePadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RichText(
-              maxLines: 1,
-              overflow: TextOverflow.clip,
-              text: TextSpan(
-                style:
-                    CustomTypography(fontType: FontType.h1Bold).getTextStyle(),
-                children: [
-                  TextSpan(
-                    text: "Hello ",
-                    style:
-                        CustomTypography(
-                          fontType: FontType.h1Semibold,
-                        ).getTextStyle(),
-                  ),
-                  TextSpan(text: "Shubham!"),
-                ],
-              ),
-            ),
-            CustomTypography(
-              text: "Let's save your money.",
-              fontType: FontType.body2Light,
-            ),
-            SizedBox(height: 16.w),
-            _buildBalanceCard(),
-          ],
-        ),
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactions = ref.watch(transactionProvider);
+    final topPadding =
+        AppConstants.sidePadding + MediaQuery.of(context).padding.top;
+    final bottomPadding =
+        60.w + AppConstants.sidePadding + MediaQuery.of(context).padding.bottom;
+    final padding = EdgeInsets.only(
+      left: AppConstants.sidePadding,
+      right: AppConstants.sidePadding,
+      top: topPadding,
+      bottom: bottomPadding,
     );
-  }
 
-  Widget _buildBalanceCard() {
-    return CustomContainer(
-      backgroundColor: CardColors.shade1000,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTypography(
-            text: "Analytics",
-            fontType: FontType.body2Semibold,
-            color: Colors.white,
-          ),
-          SizedBox(height: 16.w),
-          Row(
+    return transactions.when(
+      data: (data) {
+        return SingleChildScrollView(
+          padding: padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: CustomImage(imageUrl: "assets/images/Group.png")),
-              SizedBox(width: 24.w),
-              Expanded(
-                flex: 2,
-                child: GridView.builder(
-                  itemCount: ExpenseConstants.expenses.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.8,
-                    crossAxisSpacing: 8.w,
-                  ),
-                  itemBuilder: (context, index) {
-                    final expense = ExpenseConstants.expenses[index];
-                    return _buildTile(expense);
-                  },
-                ),
-              ),
+              _buildSalution(ref),
+
+              SizedBox(height: 16.w),
+              balanceCard(data.getAnalysis()),
+              SizedBox(height: 16.w),
+              categoriesTiles(data.getTransactionsByCategories()),
+              SizedBox(height: 16.w),
+              manageExpenses(ref, data.expense.reversed.toList()),
             ],
           ),
-        ],
-      ),
+        );
+      },
+      loading:
+          () => const Center(
+            child: CircularProgressIndicator(color: CardColors.shade1000),
+          ),
+      error: (error, stackTrace) => _buildError(ref).padding(padding: padding),
     );
   }
 
-  Widget _buildTile(ExpenseModel expense) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 8.w,
+  Widget _buildError(WidgetRef ref) {
+    return Column(
       children: [
-        CustomContainer(
-          height: 8.w,
-          width: 8.w,
-          backgroundColor: expense.color,
-          borderRadius: BorderRadius.circular(1000.r),
+        Align(alignment: Alignment.centerLeft, child: _buildSalution(ref)),
+        const Spacer(),
+        CustomTypography(
+          text: "Something went wrong",
+          fontType: FontType.body1Medium,
         ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 4.w,
-          children: [
-            CustomTypography(
-              text: expense.title,
-              fontType: FontType.body2Medium,
-              color: Colors.white,
-            ),
-            CustomTypography(
-              text: "\$${expense.amount.toStringAsFixed(2)}",
-              fontType: FontType.labelRegular,
-              color: Colors.white,
-            ),
-          ],
+        SizedBox(height: 8.w),
+        CustomButton(
+          label: "Retry",
+          isFull: false,
+          onTap: () => ref.invalidate(transactionProvider),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+
+  Widget _buildSalution(WidgetRef ref) {
+    final profile = ref.watch(profileNotifier).value;
+    final name = profile?.name?.split(" ").first;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          maxLines: 1,
+          overflow: TextOverflow.clip,
+          text: TextSpan(
+            style: CustomTypography(fontType: FontType.h1Bold).getTextStyle(),
+            children: [
+              TextSpan(
+                text: "Hello ",
+                style:
+                    CustomTypography(
+                      fontType: FontType.h1Semibold,
+                    ).getTextStyle(),
+              ),
+              if (name != null) TextSpan(text: "$name!"),
+            ],
+          ),
+        ),
+        CustomTypography(
+          text: "Let's save your money.",
+          fontType: FontType.body2Light,
         ),
       ],
     );

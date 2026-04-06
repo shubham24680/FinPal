@@ -3,6 +3,7 @@ import 'package:finpal/app/app.dart';
 enum FontType {
   h1Bold,
   h1Semibold,
+  h2Semibold,
   h2Medium,
   body1Semibold,
   body1Medium,
@@ -11,8 +12,11 @@ enum FontType {
   body2Medium,
   body2Regular,
   body2Light,
-  labelRegular,
-  labelLight,
+  label1SemiBold,
+  label1Regular,
+  label1Light,
+  label2Regular,
+  label2Light,
 }
 
 class CustomTypography extends StatelessWidget {
@@ -65,6 +69,11 @@ class CustomTypography extends StatelessWidget {
       widgetWeight: FontWeight.w600,
       widgetHeight: 1.2,
     ),
+    FontType.h2Semibold => _getTextStyle(
+      widgetSize: 28.w,
+      widgetWeight: FontWeight.w600,
+      widgetHeight: 1.2,
+    ),
     FontType.h2Medium => _getTextStyle(
       widgetSize: 28.w,
       widgetWeight: FontWeight.w500,
@@ -105,13 +114,28 @@ class CustomTypography extends StatelessWidget {
       widgetWeight: FontWeight.w300,
       widgetHeight: 1.2,
     ),
-    FontType.labelRegular => _getTextStyle(
+    FontType.label1SemiBold => _getTextStyle(
+      widgetSize: 10.w,
+      widgetWeight: FontWeight.w600,
+      widgetHeight: 1.2,
+    ),
+    FontType.label1Regular => _getTextStyle(
       widgetSize: 10.w,
       widgetWeight: FontWeight.w400,
       widgetHeight: 1.2,
     ),
-    FontType.labelLight => _getTextStyle(
+    FontType.label1Light => _getTextStyle(
       widgetSize: 10.w,
+      widgetWeight: FontWeight.w300,
+      widgetHeight: 1.2,
+    ),
+    FontType.label2Regular => _getTextStyle(
+      widgetSize: 8.w,
+      widgetWeight: FontWeight.w400,
+      widgetHeight: 1.2,
+    ),
+    FontType.label2Light => _getTextStyle(
+      widgetSize: 8.w,
       widgetWeight: FontWeight.w300,
       widgetHeight: 1.2,
     ),

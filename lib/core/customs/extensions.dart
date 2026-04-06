@@ -9,6 +9,7 @@ extension PaddingExtension on Widget {
     double? top,
     double? right,
     double? bottom,
+    EdgeInsetsGeometry? padding,
   }) {
     final leftPadding = all ?? horizontal ?? left ?? 0;
     final rightPadding = all ?? horizontal ?? right ?? 0;
@@ -16,20 +17,31 @@ extension PaddingExtension on Widget {
     final bottomPadding = all ?? vertical ?? bottom ?? 0;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        leftPadding,
-        topPadding,
-        rightPadding,
-        bottomPadding,
-      ),
+      padding:
+          padding ??
+          EdgeInsets.fromLTRB(
+            leftPadding,
+            topPadding,
+            rightPadding,
+            bottomPadding,
+          ),
       child: this,
     );
   }
 }
 
 extension ClickExtension on Widget {
-  Widget _gestureDetector({void Function()? onTap}) =>
-      GestureDetector(onTap: onTap ?? () {}, child: this);
+  Widget _gestureDetector({
+    void Function()? onTap,
+    void Function()? onLongTap,
+  }) => GestureDetector(
+    onTap: onTap ?? () {},
+    onLongPress: onLongTap ?? () {},
+    child: this,
+  );
 
   Widget onTap({void Function()? event}) => _gestureDetector(onTap: event);
+
+  Widget onLongTap({void Function()? event}) =>
+      _gestureDetector(onLongTap: event);
 }

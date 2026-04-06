@@ -7,6 +7,13 @@ class BottomNavBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final navIndex = ref.watch(navProvider);
     final navNotifier = ref.read(navProvider.notifier);
+    final shadow = [
+      BoxShadow(
+        color: Colors.black.withAlpha(50),
+        blurRadius: 10,
+        offset: const Offset(0, 4),
+      ),
+    ];
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -19,6 +26,8 @@ class BottomNavBar extends ConsumerWidget {
           CustomContainer(
             backgroundColor: BGColors.shade500,
             padding: EdgeInsets.zero,
+            showShadow: true,
+            shadow: shadow,
             child: Row(
               children: List.generate(HomeConstants.navs.length, (index) {
                 final nav = HomeConstants.navs[index];
@@ -30,10 +39,15 @@ class BottomNavBar extends ConsumerWidget {
               }),
             ),
           ),
-          _buildNavButton(
-            HomeConstants.addAmount,
-            onTap: () => context.push('/add_amount'),
-            color: PrimaryColors.shade100,
+          CustomContainer(
+            padding: EdgeInsets.zero,
+            showShadow: true,
+            shadow: shadow,
+            child: _buildNavButton(
+              HomeConstants.addAmount,
+              onTap: () => context.push('/add_amount'),
+              color: PrimaryColors.shade100,
+            ),
           ),
         ],
       ),

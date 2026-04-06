@@ -2,7 +2,7 @@ import 'package:finpal/app/app.dart';
 
 class HomeConstants {
   static final NavModel addAmount = NavModel(
-    icon: AppSvgs.add,
+    icon: AppSvgs.addPayment,
     screenPath: const SizedBox.shrink(),
   );
   static final List<NavModel> navs = [

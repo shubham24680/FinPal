@@ -11,6 +11,7 @@ AppBar customAppBar(
   BuildContext context,
   String title, {
   bool enableBack = true,
+  VoidCallback? onBack,
   List<AppBarModel> actions = const [],
   PreferredSizeWidget? bottom,
 }) {
@@ -22,7 +23,7 @@ AppBar customAppBar(
             ? CustomImage(
               imageType: ImageType.svgLocal,
               imageUrl: AppSvgs.arrowLeft,
-            ).onTap(event: () => context.pop()).padding(all: 8.w)
+            ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.w)
             : null,
     title: CustomTypography(text: title, fontType: FontType.body1Medium),
     actions:

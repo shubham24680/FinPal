@@ -7,10 +7,11 @@ class AddAmountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
+      initialIndex: 1,
       child: Scaffold(
         appBar: customAppBar(
           context,
-          "Payments",
+          "Add Payment",
           bottom: TabBar(
             indicatorColor: BGColors.shade900,
             dividerColor: BGColors.shade500,
@@ -27,6 +28,6 @@ class AddAmountScreen extends StatelessWidget {
         ),
         body: TabBarView(children: [AddIncomeScreen(), AddExpenseScreen()]),
       ),
-    );
+    ).onTap(event: () => FocusScope.of(context).unfocus());
   }
 }

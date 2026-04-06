@@ -24,7 +24,7 @@ class OnboardingScreen extends ConsumerWidget {
                 },
               ),
             ),
-            _buildFooter(context, onboardingState, onboardingNotifier),
+            _buildFooter(context, ref),
           ],
         ),
       ),
@@ -81,11 +81,10 @@ class OnboardingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFooter(
-    BuildContext context,
-    OnboardingState state,
-    OnboardingNotifer onboardingNotifier,
-  ) {
+  Widget _buildFooter(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(onboardingProvider);
+    final onboardingNotifier = ref.read(onboardingProvider.notifier);
+
     final padding = OnboardingConstants.onboardingPadding;
     return Padding(
       padding: EdgeInsets.only(left: padding, right: padding, bottom: padding),
@@ -128,6 +127,7 @@ class OnboardingScreen extends ConsumerWidget {
                 onboardingNotifier.next();
               } else {
                 context.go("/");
+                ref.read(profileNotifier.notifier).save(isFistTimeVisit: false);
               }
             },
             borderRadius: BorderRadius.circular(22.r),

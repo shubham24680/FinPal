@@ -1,15 +1,17 @@
 import 'package:finpal/app/app.dart';
 import 'package:flutter/services.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  final init = await AppInitializer.init();
+  runApp(ProviderScope(overrides: init, child: const MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final routes = ref.watch(AppRoutes.routesProvider);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -18,13 +20,11 @@ class MainApp extends StatelessWidget {
       ),
     );
 
-    return ProviderScope(
-      child: ScreenUtilInit(
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          routerConfig: AppRoutes.routes,
-        ),
+    return ScreenUtilInit(
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        routerConfig: routes,
       ),
     );
   }
