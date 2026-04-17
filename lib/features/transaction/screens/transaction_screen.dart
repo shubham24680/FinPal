@@ -6,6 +6,7 @@ class TransactionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionProvider);
+    // final optionsById = ref.watch(optionByIdProvider);
 
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
@@ -51,7 +52,11 @@ class TransactionScreen extends ConsumerWidget {
             children: [
               title,
               ...montlyTransactions.map(
-                (transactions) => buildDayTransaction(context, transactions),
+                (transactions) => buildDayTransaction(
+                  context,
+                  transactions,
+                  // optionsById,
+                ),
               ),
             ],
           ),
@@ -87,6 +92,7 @@ class TransactionScreen extends ConsumerWidget {
   Widget buildDayTransaction(
     BuildContext context,
     List<PaymentModel> transactions,
+    // Map<String, OptionModel> optionsById,
   ) {
     if (transactions.isEmpty) return const SizedBox.shrink();
 
@@ -98,21 +104,21 @@ class TransactionScreen extends ConsumerWidget {
     } else if (date == formatDate(DateTime(now.year, now.month, now.day - 1))) {
       transactionsDate = "Yesterday";
     } else {
-      transactionsDate = date;
+      // transactionsDate = date;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8.w,
       children: [
-        CustomTypography(
-          text: transactionsDate,
-          fontType: FontType.body2Semibold,
-        ),
-        CustomContainer(
-          backgroundColor: BGColors.shade500,
-          child: buildExpenses(context, transactions),
-        ),
+        // CustomTypography(
+        //   text: transactionsDate,
+        //   fontType: FontType.body2Semibold,
+        // ),
+        // CustomContainer(
+        //   backgroundColor: BGColors.shade500,
+        //   child: buildExpenses(context, transactions, optionsById),
+        // ),
       ],
     );
   }

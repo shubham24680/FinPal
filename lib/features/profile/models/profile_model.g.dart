@@ -18,26 +18,20 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
     };
     return ProfileModel(
       name: fields[0] as String?,
-      gender: fields[1] as String?,
-      dateOfBirth: fields[2] as String?,
-      profileImageIndex: fields[3] as int,
-      isFistTimeVisit: fields[4] as bool,
+      profileImageIndex: fields[1] as int,
+      isFistTimeVisit: fields[2] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProfileModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.gender)
-      ..writeByte(2)
-      ..write(obj.dateOfBirth)
-      ..writeByte(3)
       ..write(obj.profileImageIndex)
-      ..writeByte(4)
+      ..writeByte(2)
       ..write(obj.isFistTimeVisit);
   }
 

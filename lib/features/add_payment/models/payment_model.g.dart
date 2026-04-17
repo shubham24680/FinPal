@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'add_payment_model.dart';
+part of 'payment_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -8,7 +8,7 @@ part of 'add_payment_model.dart';
 
 class PaymentModelAdapter extends TypeAdapter<PaymentModel> {
   @override
-  final int typeId = 3;
+  final int typeId = 1;
 
   @override
   PaymentModel read(BinaryReader reader) {
@@ -17,30 +17,33 @@ class PaymentModelAdapter extends TypeAdapter<PaymentModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PaymentModel(
-      paymentType: fields[0] as String,
-      amount: fields[1] as double,
-      date: fields[2] as String,
-      category: fields[3] as OptionModel,
-      paymentMethod: fields[4] as OptionModel,
-      notes: fields[5] as String?,
+      id: fields[0] as String?,
+      date: fields[3] as String?,
+      paymentType: fields[1] as String,
+      amount: fields[2] as double,
+      categoryId: fields[4] as String,
+      paymentMethodId: fields[5] as String,
+      notes: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PaymentModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.paymentType)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.amount)
+      ..write(obj.paymentType)
       ..writeByte(2)
-      ..write(obj.date)
+      ..write(obj.amount)
       ..writeByte(3)
-      ..write(obj.category)
+      ..write(obj.date)
       ..writeByte(4)
-      ..write(obj.paymentMethod)
+      ..write(obj.categoryId)
       ..writeByte(5)
+      ..write(obj.paymentMethodId)
+      ..writeByte(6)
       ..write(obj.notes);
   }
 

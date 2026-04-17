@@ -6,24 +6,21 @@ class AppInitializer {
 
     await Hive.initFlutter();
 
-    // Register all Hive adapters
     Hive
       ..registerAdapter(ProfileModelAdapter())
-      ..registerAdapter(TransactionModelAdapter())
       ..registerAdapter(PaymentModelAdapter())
       ..registerAdapter(OptionModelAdapter());
 
-    // Open all boxes in parallel
     final results = await Future.wait([
       Hive.openBox<ProfileModel>('profile_box'),
-      Hive.openBox<TransactionModel>('transaction_box'),
+      Hive.openBox<PaymentModel>('payment_box'),
+      Hive.openBox<OptionModel>('option_box'),
     ]);
 
     return [
       profileBoxProvider.overrideWithValue(results[0] as Box<ProfileModel>),
-      transactionBoxProvider.overrideWithValue(
-        results[1] as Box<TransactionModel>,
-      ),
+      paymentBoxProvider.overrideWithValue(results[1] as Box<PaymentModel>),
+      optionBoxProvider.overrideWithValue(results[2] as Box<OptionModel>),
     ];
   }
 }

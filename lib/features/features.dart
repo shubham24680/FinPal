@@ -28,16 +28,18 @@ export 'transaction/models/transaction_model.dart';
 // Profile
 export 'profile/screens/profile_screen.dart';
 export 'profile/screens/edit_profile_screen.dart';
-export 'profile/profile_provider.dart';
 export 'profile/profile_constants.dart';
 export 'profile/models/profile_model.dart';
+export 'profile/providers/profile_provider.dart';
+export 'profile/screens/options_screen.dart';
 
 // Add Amount
 export 'add_payment/screens/add_amount_screen.dart';
 export 'add_payment/screens/add_expense_screen.dart';
 export 'add_payment/screens/add_income_screen.dart';
-export 'add_payment/add_payment_constants.dart';
 export 'add_payment/add_payment_widgets.dart';
-export 'add_payment/models/add_payment_model.dart';
-export 'add_payment/add_payment_provider.dart';
-export 'add_payment/models/option_model.dart';
+export 'add_payment/models/payment_model.dart';
+export 'add_payment/providers/payment_provider.dart';
+export 'profile/providers/options_provider.dart';
+export 'profile/services/option_services.dart';
+export 'profile/models/option_model.dart';

@@ -19,9 +19,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
 
   Future<void> save({
     int? profileImageIndex,
-    String? gender,
     String? name,
-    String? dateOfBirth,
     bool? isFistTimeVisit,
   }) async {
     state = const AsyncLoading();
@@ -29,9 +27,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
       final profile = state.value ?? ProfileModel();
       final profileModel = profile.copyWith(
         profileImageIndex: profileImageIndex,
-        gender: gender,
         name: name,
-        dateOfBirth: dateOfBirth,
         isFistTimeVisit: isFistTimeVisit,
       );
       await _hiveService.saveData(_key, profileModel);
@@ -46,19 +42,15 @@ final profileNotifier = AsyncNotifierProvider<ProfileNotifier, ProfileModel>(
 
 class ProfileState {
   final int profilePicIndex;
-  final OptionModel? gender;
   final bool tryEditing;
-  final String? name, dateOfBirth;
-  final TextEditingController nameController, dateOfBirthController;
+  final String? name;
+  final TextEditingController nameController;
 
   ProfileState({
     required this.profilePicIndex,
     required this.tryEditing,
     this.name,
-    this.gender,
-    this.dateOfBirth,
     required this.nameController,
-    required this.dateOfBirthController,
   });
 
   factory ProfileState.initial() {
@@ -66,7 +58,6 @@ class ProfileState {
       profilePicIndex: 0,
       tryEditing: false,
       nameController: TextEditingController(),
-      dateOfBirthController: TextEditingController(),
     );
   }
 
@@ -74,17 +65,12 @@ class ProfileState {
     int? profilePicIndex,
     bool? tryEditing,
     String? name,
-    OptionModel? gender,
-    String? dateOfBirth,
   }) {
     return ProfileState(
       profilePicIndex: profilePicIndex ?? this.profilePicIndex,
       tryEditing: tryEditing ?? this.tryEditing,
       name: name ?? this.name,
-      gender: gender ?? this.gender,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       nameController: nameController,
-      dateOfBirthController: dateOfBirthController,
     );
   }
 }
@@ -96,36 +82,19 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   }
 
   Future<void> loadData() async {
-    final profile = ref.watch(profileNotifier);
+    final profile = ref.watch(profileNotifier).value;
     state = state.copyWith(
-      profilePicIndex: profile.value?.profileImageIndex,
-      name: profile.value?.name,
-      gender: getGender(profile.value?.gender),
-      dateOfBirth: profile.value?.dateOfBirth,
-    );
-  }
-
-  OptionModel? getGender(String? gender) {
-    if (gender == null) return null;
-    return ProfileConstants.gender.firstWhere(
-      (e) => e.name.toLowerCase() == gender.toLowerCase(),
+      profilePicIndex: profile?.profileImageIndex,
+      name: profile?.name,
     );
   }
 
   Future<void> saveData() async {
-    state = state.copyWith(
-      name: state.nameController.text,
-      dateOfBirth: state.dateOfBirthController.text,
-    );
+    state = state.copyWith(name: state.nameController.text);
 
     await ref
         .read(profileNotifier.notifier)
-        .save(
-          profileImageIndex: state.profilePicIndex,
-          gender: state.gender?.name,
-          name: state.name,
-          dateOfBirth: state.dateOfBirth,
-        );
+        .save(profileImageIndex: state.profilePicIndex, name: state.name);
 
     log("Saved succesfully at index ${state.profilePicIndex}");
   }
@@ -140,14 +109,8 @@ class ProfileProvider extends StateNotifier<ProfileState> {
     log("set index to ${state.profilePicIndex}");
   }
 
-  void setGender(OptionModel gender) {
-    state = state.copyWith(gender: gender);
-    log("set index to ${state.gender}");
-  }
-
   void loadField() {
     state.nameController.text = state.name ?? "";
-    state.dateOfBirthController.text = state.dateOfBirth ?? "";
   }
 }
 

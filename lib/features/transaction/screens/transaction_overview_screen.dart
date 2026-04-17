@@ -5,6 +5,8 @@ class TransactionOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: customAppBar(context, "Transaction Overview"));
+    return Scaffold(
+      appBar: customAppBar(context, title: "Transaction Overview"),
+    );
   }
 }

@@ -32,7 +32,7 @@ Future<T?> customBottomSheet<T>(
       (options != null && options.isNotEmpty)
           ? GridView.builder(
             shrinkWrap: true,
-            itemCount: options?.length ?? 0,
+            itemCount: options.length,
             padding: EdgeInsets.symmetric(vertical: 8.w),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
@@ -198,4 +198,8 @@ Future<String> chooseDate(BuildContext context, String date) async {
         widget: child,
       ) ??
       date;
+}
+
+Future<void> hitUrl(String url) async {
+  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 }

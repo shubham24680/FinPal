@@ -8,8 +8,8 @@ class AppBarModel {
 }
 
 AppBar customAppBar(
-  BuildContext context,
-  String title, {
+  BuildContext context, {
+  String? title,
   bool enableBack = true,
   VoidCallback? onBack,
   List<AppBarModel> actions = const [],
@@ -25,7 +25,10 @@ AppBar customAppBar(
               imageUrl: AppSvgs.arrowLeft,
             ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.w)
             : null,
-    title: CustomTypography(text: title, fontType: FontType.body1Medium),
+    title:
+        title != null
+            ? CustomTypography(text: title, fontType: FontType.body1Medium)
+            : null,
     actions:
         actions
             .map(

@@ -24,6 +24,7 @@ class MainApp extends ConsumerWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
         routerConfig: routes,
       ),
     );

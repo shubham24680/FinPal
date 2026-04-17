@@ -1,35 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction_model.dart';
+part of 'option_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
+class OptionModelAdapter extends TypeAdapter<OptionModel> {
   @override
   final int typeId = 2;
 
   @override
-  TransactionModel read(BinaryReader reader) {
+  OptionModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TransactionModel(
-      income: (fields[0] as List).cast<PaymentModel>(),
-      expense: (fields[1] as List).cast<PaymentModel>(),
+    return OptionModel(
+      id: fields[0] as String?,
+      type: fields[1] as String,
+      name: fields[2] as String,
+      icon: fields[3] as String?,
+      color: fields[4] as Color?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TransactionModel obj) {
+  void write(BinaryWriter writer, OptionModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.income)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.expense);
+      ..write(obj.type)
+      ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.icon)
+      ..writeByte(4)
+      ..write(obj.color);
   }
 
   @override
@@ -38,7 +47,7 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TransactionModelAdapter &&
+      other is OptionModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

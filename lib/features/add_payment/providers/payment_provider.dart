@@ -92,27 +92,33 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     state = state.copyWith(isSaving: true, isSaved: false);
 
     final notes = state.notesController.text.trim();
-    final model = PaymentModel(
-      paymentType: _type,
-      amount: amount,
-      date: state.date,
-      category:
-          state.category ?? const OptionModel(name: "Other", icon: AppSvgs.add),
-      paymentMethod:
-          state.paymentMethod ??
-          const OptionModel(name: "Other", icon: AppSvgs.add),
-      notes: notes.isEmpty ? null : notes,
-    );
+    // final categoryId =
+    //     state.category?.id ??
+    //     (_type == PaymentConstants.income
+    //         ? PaymentConstants.otherIncomeCategoryId
+    //         : PaymentConstants.otherExpenseCategoryId);
+    // final paymentMethodId =
+    //     state.paymentMethod?.id ?? PaymentConstants.otherPaymentMethodId;
+    // final model = PaymentModel(
+    //   id: DateTime.now().microsecondsSinceEpoch.toString(),
+    //   paymentType: _type,
+    //   amount: amount,
+    //   date: state.date,
+    //   categoryId: categoryId,
+    //   paymentMethodId: paymentMethodId,
+    //   notes: notes.isEmpty ? null : notes,
+    // );
 
-    await _ref.read(transactionProvider.notifier).addPayment(_type, model);
-    log(
-      'Saved $_type: ${model.amount} | ${model.category.name} | ${model.paymentMethod.name}',
-      name: 'PaymentProvider',
-    );
+    // await _ref.read(transactionProvider.notifier).addPayment(model);
+    // log(
+    //   'Saved $_type: ${model.amount} | $categoryId | $paymentMethodId',
+    //   name: 'PaymentProvider',
+    // );
 
     state.amountController.clear();
     state.notesController.clear();
     if (!mounted) return;
+    state = state.copyWith(isSaving: false, isSaved: true);
     state = PaymentState.initial();
   }
 }

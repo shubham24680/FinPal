@@ -6,13 +6,15 @@ class AddIncomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final totalIncome = ref.watch(transactionProvider).value?.totalIncome ?? 0;
-    final incomeState = ref.watch(paymentProvider(PaymentConstants.income));
+    final incomeState = ref.watch(paymentProvider(OnboardingConstants.income));
+    // final incomeCategories = ref.watch(incomeCategoryOptionsProvider);
+    // final paymentMethods = ref.watch(paymentMethodOptionsProvider);
     final incomeNotifier = ref.read(
-      paymentProvider(PaymentConstants.income).notifier,
+      paymentProvider(OnboardingConstants.income).notifier,
     );
     final bottomPadding = 8.w + MediaQuery.of(context).viewPadding.bottom;
 
-    ref.listen(paymentProvider(PaymentConstants.income), (prev, next) {
+    ref.listen(paymentProvider(OnboardingConstants.income), (prev, next) {
       if (next.isSaved && !(prev?.isSaved ?? false)) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -45,24 +47,24 @@ class AddIncomeScreen extends ConsumerWidget {
                   onChanged: (value) => incomeNotifier.checkCondition(value),
                 ),
                 SizedBox(height: 16.w),
-                buildCategoryTile(
-                  context,
-                  "Category",
-                  PaymentConstants.incomeCategories,
-                  category: incomeState.category,
-                  onSelected:
-                      (category) => incomeNotifier.setCategory(category),
-                ),
-                SizedBox(height: 8.w),
-                buildCategoryTile(
-                  context,
-                  "Payment Method",
-                  PaymentConstants.paymentMethods,
-                  category: incomeState.paymentMethod,
-                  onSelected:
-                      (paymentMethod) =>
-                          incomeNotifier.setPaymentMethod(paymentMethod),
-                ),
+                // buildCategoryTile(
+                //   context,
+                //   "Category",
+                //   incomeCategories,
+                //   category: incomeState.category,
+                //   onSelected:
+                //       (category) => incomeNotifier.setCategory(category),
+                // ),
+                // SizedBox(height: 8.w),
+                // buildCategoryTile(
+                //   context,
+                //   "Payment Method",
+                //   paymentMethods,
+                //   category: incomeState.paymentMethod,
+                //   onSelected:
+                //       (paymentMethod) =>
+                //           incomeNotifier.setPaymentMethod(paymentMethod),
+                // ),
                 SizedBox(height: 16.w),
                 addNotes(incomeState.notesController),
               ],

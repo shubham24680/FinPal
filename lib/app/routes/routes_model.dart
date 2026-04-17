@@ -1,8 +1,11 @@
-import 'package:finpal/app/app.dart';
+class ExtraModel {
+  final String type;
+  final String? title;
 
-class RouteModel {
-  final String path;
-  final Widget child;
+  ExtraModel({required this.type, this.title});
 
-  RouteModel({required this.path, required this.child});
+  factory ExtraModel.fromJson(Map<String, dynamic> json) =>
+      ExtraModel(type: json["type"], title: json["title"]);
+
+  Map<String, dynamic> toJson() => {"type": type, "title": title};
 }

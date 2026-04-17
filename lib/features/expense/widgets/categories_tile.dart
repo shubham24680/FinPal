@@ -13,7 +13,7 @@ Widget categoriesTiles(List<List<PaymentModel>> categories) {
       mainAxisSpacing: 12.w,
     ),
     itemBuilder: (context, index) {
-      final category = PaymentConstants.expenseCategories[index];
+      final category = OnboardingConstants.expenseCategories[index];
       final categoryTrans = categories[index];
       return buildCategoryCard(category, categoryTrans);
     },

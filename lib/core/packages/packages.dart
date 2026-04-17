@@ -7,3 +7,5 @@ export 'package:flutter_svg/flutter_svg.dart';
 export 'package:hive/hive.dart';
 export 'package:hive_flutter/hive_flutter.dart';
 export 'package:fl_chart/fl_chart.dart';
+export 'package:uuid/uuid.dart';
+export 'package:url_launcher/url_launcher.dart';

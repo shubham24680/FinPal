@@ -19,7 +19,8 @@ class OnboardingState {
 }
 
 class OnboardingNotifer extends StateNotifier<OnboardingState> {
-  OnboardingNotifer() : super(OnboardingState.initial());
+  final Ref _ref;
+  OnboardingNotifer(this._ref) : super(OnboardingState.initial());
 
   void moveTo(int index) {
     state = state.copyWith(currentIndex: index);
@@ -32,15 +33,23 @@ class OnboardingNotifer extends StateNotifier<OnboardingState> {
     );
   }
 
-  void previousPage() {
+  void previous() {
     state.pageController.previousPage(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
   }
+
+  Future<void> setupDefaultData() async {
+    await _ref.read(profileNotifier.notifier).save(isFistTimeVisit: false);
+    await _ref.read(optionProvider.future);
+    await _ref
+        .read(optionProvider.notifier)
+        .saveAllOptions(OnboardingConstants.allOptions);
+  }
 }
 
 final onboardingProvider =
     StateNotifierProvider.autoDispose<OnboardingNotifer, OnboardingState>(
-      (ref) => OnboardingNotifer(),
+      (ref) => OnboardingNotifer(ref),
     );

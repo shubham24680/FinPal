@@ -21,4 +21,25 @@ class AppTheme {
     ),
     textTheme: TextTheme(),
   );
+
+  static ThemeData dark = ThemeData(
+    scaffoldBackgroundColor: BGColors.shade900,
+    canvasColor: Colors.transparent,
+    appBarTheme: AppBarTheme(
+      backgroundColor: BGColors.shade700,
+      surfaceTintColor: BGColors.shade700,
+      centerTitle: true,
+    ),
+    colorScheme: ColorScheme.dark(
+      primary: PrimaryColors.shade500,
+      secondary: SecondaryColors.shade900,
+      tertiary: TextColors.shade50,
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: PrimaryColors.shade500.withAlpha(70),
+      selectionHandleColor: PrimaryColors.shade500,
+      cursorColor: PrimaryColors.shade500,
+    ),
+    textTheme: TextTheme(),
+  );
 }

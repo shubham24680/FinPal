@@ -7,13 +7,17 @@ class AddExpenseScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final totalExpense =
         ref.watch(transactionProvider).value?.totalExpense ?? 0;
-    final expenseState = ref.watch(paymentProvider(PaymentConstants.expense));
+    final expenseState = ref.watch(
+      paymentProvider(OnboardingConstants.expense),
+    );
+    // final expenseCategories = ref.watch(expenseCategoryOptionsProvider);
+    // final paymentMethods = ref.watch(paymentMethodOptionsProvider);
     final expenseNotifier = ref.read(
-      paymentProvider(PaymentConstants.expense).notifier,
+      paymentProvider(OnboardingConstants.expense).notifier,
     );
     final bottomPadding = 8.w + MediaQuery.of(context).viewPadding.bottom;
 
-    ref.listen(paymentProvider(PaymentConstants.expense), (prev, next) {
+    ref.listen(paymentProvider(OnboardingConstants.expense), (prev, next) {
       if (next.isSaved && !(prev?.isSaved ?? false)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -51,24 +55,24 @@ class AddExpenseScreen extends ConsumerWidget {
                   },
                 ),
                 SizedBox(height: 16.w),
-                buildCategoryTile(
-                  context,
-                  "Category",
-                  PaymentConstants.expenseCategories,
-                  category: expenseState.category,
-                  onSelected:
-                      (category) => expenseNotifier.setCategory(category),
-                ),
-                SizedBox(height: 8.w),
-                buildCategoryTile(
-                  context,
-                  "Payment Method",
-                  PaymentConstants.paymentMethods,
-                  category: expenseState.paymentMethod,
-                  onSelected:
-                      (paymentMethod) =>
-                          expenseNotifier.setPaymentMethod(paymentMethod),
-                ),
+                // buildCategoryTile(
+                //   context,
+                //   "Category",
+                //   expenseCategories,
+                //   category: expenseState.category,
+                //   onSelected:
+                //       (category) => expenseNotifier.setCategory(category),
+                // ),
+                // SizedBox(height: 8.w),
+                // buildCategoryTile(
+                //   context,
+                //   "Payment Method",
+                //   paymentMethods,
+                //   category: expenseState.paymentMethod,
+                //   onSelected:
+                //       (paymentMethod) =>
+                //           expenseNotifier.setPaymentMethod(paymentMethod),
+                // ),
                 SizedBox(height: 16.w),
                 addNotes(expenseState.notesController),
               ],

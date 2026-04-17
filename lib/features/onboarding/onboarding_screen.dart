@@ -97,7 +97,7 @@ class OnboardingScreen extends ConsumerWidget {
                 width: 56.w,
                 height: 56.w,
                 showShadow: true,
-                onTap: () => onboardingNotifier.previousPage(),
+                onTap: () => onboardingNotifier.previous(),
                 borderRadius: BorderRadius.circular(22.r),
                 child: CustomImage(
                   imageType: ImageType.svgLocal,
@@ -127,7 +127,7 @@ class OnboardingScreen extends ConsumerWidget {
                 onboardingNotifier.next();
               } else {
                 context.go("/");
-                ref.read(profileNotifier.notifier).save(isFistTimeVisit: false);
+                onboardingNotifier.setupDefaultData();
               }
             },
             borderRadius: BorderRadius.circular(22.r),

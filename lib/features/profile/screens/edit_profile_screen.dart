@@ -3,100 +3,15 @@ import 'package:finpal/app/app.dart';
 class EditProfileScreen extends ConsumerWidget {
   const EditProfileScreen({super.key});
 
-  static final _padding = AppConstants.sidePadding;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileProvider);
-    final profileController = ref.read(profileProvider.notifier);
-    final bottomPadding = _padding + MediaQuery.of(context).viewInsets.bottom;
-
-    void chooseAvatar() {
-      final child = GridView.builder(
-        itemCount: AppImages.avatar.length,
-        shrinkWrap: true,
-        padding: EdgeInsets.symmetric(vertical: AppConstants.sidePadding),
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 0.03.sh,
-          crossAxisSpacing: 0.05.sw,
-        ),
-        itemBuilder: (context, index) {
-          return CustomContainer(
-            onTap: () {
-              profileController.setProfileIndexTo(index);
-              context.pop();
-            },
-            backgroundColor:
-                profileState.profilePicIndex == index
-                    ? BGColors.shade700
-                    : CardColors.shade1000,
-            padding: EdgeInsets.all(2.w),
-            borderRadius: BorderRadius.circular(1000.r),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(1000.r),
-              child: CustomImage(
-                imageType: ImageType.local,
-                imageUrl: AppImages.avatar[index],
-              ),
-            ),
-          );
-        },
-      );
-
-      customBottomSheet(context, "Choose your avatar", widget: child);
-    }
-
-    Widget editData() {
-      return CustomTextField(
-        controller: profileState.nameController,
-        hintText: "Name",
-      );
-    }
-
-    Widget showData() {
-      final name = profileState.name;
-      return (profileState.tryEditing)
-          ? editData()
-          : Column(
-            children: [
-              if (name != null && name.isNotEmpty) buildData("Name", name),
-            ],
-          );
-    }
-
-    Widget bottomButton() => SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (profileState.tryEditing) ...[
-            CustomButton(
-              onTap: chooseAvatar,
-              label: "Choose your avatar",
-              bgColor: BGColors.shade600,
-              labelColor: TextColors.shade900,
-            ),
-            SizedBox(height: 8.w),
-          ],
-          CustomButton(
-            onTap: () {
-              if (profileState.tryEditing) {
-                profileController.saveData();
-              } else {
-                profileController.loadField();
-              }
-              profileController.toggle();
-            },
-            label: profileState.tryEditing ? "Save" : "Edit",
-          ),
-        ],
-      ).padding(horizontal: _padding, bottom: bottomPadding),
-    );
-
     final imageUrl = AppImages.avatar[profileState.profilePicIndex];
+    final bottomPadding =
+        AppConstants.sidePadding + MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
-      appBar: customAppBar(context, "Edit Profile"),
+      appBar: customAppBar(context, title: "Edit Profile"),
       body: Center(
         child: Column(
           children: [
@@ -114,13 +29,112 @@ class EditProfileScreen extends ConsumerWidget {
               ),
             ),
             const Spacer(),
-            showData(),
+            profileState.tryEditing
+                ? editData(profileState)
+                : showData(profileState),
             const Spacer(flex: 4),
           ],
         ),
-      ).padding(horizontal: _padding, vertical: 2 * _padding),
-      bottomNavigationBar: bottomButton(),
+      ).padding(
+        horizontal: AppConstants.sidePadding,
+        vertical: 2 * AppConstants.sidePadding,
+      ),
+      bottomNavigationBar: buildButtons(
+        context,
+        ref,
+        profileState,
+      ).padding(bottom: bottomPadding, horizontal: AppConstants.sidePadding),
     ).onTap(event: () => FocusScope.of(context).unfocus());
+  }
+
+  Widget editData(ProfileState profileState) {
+    return CustomTextField(
+      controller: profileState.nameController,
+      hintText: "Name",
+    );
+  }
+
+  Widget showData(ProfileState profileState) {
+    final name = profileState.name;
+    return Column(
+      children: [if (name != null && name.isNotEmpty) buildData("Name", name)],
+    );
+  }
+
+  Widget buildButtons(
+    BuildContext context,
+    WidgetRef ref,
+    ProfileState profileState,
+  ) {
+    final tryEditing = profileState.tryEditing;
+    final profileController = ref.read(profileProvider.notifier);
+
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (tryEditing) ...[
+            CustomButton(
+              onTap: () => chooseAvatar(context, ref, profileState),
+              label: "Choose your avatar",
+              bgColor: BGColors.shade600,
+              labelColor: TextColors.shade900,
+            ),
+            SizedBox(height: 8.w),
+          ],
+          CustomButton(
+            onTap: () async {
+              if (tryEditing) {
+                await profileController.saveData();
+              }
+              profileController.toggle();
+            },
+            label: tryEditing ? "Save" : "Edit",
+          ),
+        ],
+      ),
+    );
+  }
+
+  void chooseAvatar(
+    BuildContext context,
+    WidgetRef ref,
+    ProfileState profileState,
+  ) {
+    final child = GridView.builder(
+      itemCount: AppImages.avatar.length,
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(vertical: AppConstants.sidePadding),
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 0.03.sh,
+        crossAxisSpacing: 0.05.sw,
+      ),
+      itemBuilder: (context, index) {
+        return CustomContainer(
+          onTap: () {
+            ref.read(profileProvider.notifier).setProfileIndexTo(index);
+            context.pop();
+          },
+          backgroundColor:
+              profileState.profilePicIndex == index
+                  ? BGColors.shade700
+                  : CardColors.shade1000,
+          padding: EdgeInsets.all(2.w),
+          borderRadius: BorderRadius.circular(1000.r),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(1000.r),
+            child: CustomImage(
+              imageType: ImageType.local,
+              imageUrl: AppImages.avatar[index],
+            ),
+          ),
+        );
+      },
+    );
+
+    customBottomSheet(context, "Choose your avatar", widget: child);
   }
 
   Widget buildData(String key, String value) {

@@ -7,6 +7,7 @@ export 'customs/text_field.dart';
 export 'customs/button.dart';
 
 export 'local_storage/hive_service.dart';
+export 'local_storage/network.dart';
 
 export 'packages/packages.dart';
 

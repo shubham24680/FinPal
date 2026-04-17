@@ -11,7 +11,7 @@ class AddAmountScreen extends StatelessWidget {
       child: Scaffold(
         appBar: customAppBar(
           context,
-          "Add Payment",
+          title: "Add Payment",
           bottom: TabBar(
             indicatorColor: BGColors.shade900,
             dividerColor: BGColors.shade500,

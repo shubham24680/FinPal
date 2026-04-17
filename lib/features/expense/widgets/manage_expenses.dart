@@ -6,6 +6,7 @@ Widget manageExpenses(WidgetRef ref, List<PaymentModel> expense) {
   if (expense.isEmpty) {
     return const SizedBox.shrink();
   }
+  // final optionsById = ref.watch(optionByIdProvider);
 
   return CustomContainer(
     backgroundColor: BGColors.shade500,
@@ -32,7 +33,11 @@ Widget manageExpenses(WidgetRef ref, List<PaymentModel> expense) {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder:
-              (context, index) => buildExpenseTile(context, expense[index]),
+              (context, index) => buildExpenseTile(
+                context,
+                expense[index],
+                //  optionsById
+              ),
           separatorBuilder: (context, index) => SizedBox(height: 12.w),
         ),
       ],

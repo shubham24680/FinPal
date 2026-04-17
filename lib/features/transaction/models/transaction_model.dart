@@ -1,12 +1,7 @@
 import 'package:finpal/app/app.dart';
 
-part 'transaction_model.g.dart';
-
-@HiveType(typeId: 2)
-class TransactionModel extends HiveObject {
-  @HiveField(0)
+class TransactionModel {
   final List<PaymentModel> income;
-  @HiveField(1)
   final List<PaymentModel> expense;
 
   TransactionModel({required this.income, required this.expense});
@@ -57,16 +52,18 @@ class TransactionModel extends HiveObject {
   }
 
   List<PaymentModel> getTransactionsByDate(DateTime date) {
-    return [...income, ...expense]
-        .where((payment) => parseDate(payment.date) == date)
-        .toList()
-        .reversed
-        .toList();
+    return [...income, ...expense];
+    // .where((payment) => parseDate(payment.date) == date)
+    // .toList()
+    // .reversed
+    // .toList();
   }
 
   List<List<PaymentModel>> getTransactionsByCategories() {
-    return PaymentConstants.expenseCategories.map((category) {
-      return expense.where((spent) => spent.category == category).toList();
+    return OnboardingConstants.expenseCategories.map((category) {
+      return expense
+          .where((spent) => spent.categoryId == category.id)
+          .toList(growable: false);
     }).toList();
   }
 }
