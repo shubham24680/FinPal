@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:finpal/app/app.dart';
 
 class PaymentState {
@@ -73,14 +71,14 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       state = state.copyWith(isFilled: value?.isNotEmpty ?? false);
 
   void checkOverspent(String? value) {
-    final totalIncome = _ref.read(transactionProvider).value?.totalIncome ?? 0;
-    final totalExpense =
-        _ref.read(transactionProvider).value?.totalExpense ?? 0;
+    final transactionProv = _ref.read(transactionProvider);
+    final available = transactionProv.value?.available ?? 0;
     final amount = double.tryParse(value?.trim() ?? "") ?? 0;
-    final totalAmount = (amount + totalExpense) - totalIncome;
-    final isTrue = totalAmount > 0;
+    final totalAmount = available - amount;
+    final isOverspent = totalAmount < 0;
     state = state.copyWith(
-      overspent: isTrue ? "Overspent by ${formatCurrency(totalAmount)} " : null,
+      overspent:
+          isOverspent ? "Overspent by ${formatCurrency(totalAmount)} " : null,
     );
   }
 
@@ -92,29 +90,16 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     state = state.copyWith(isSaving: true, isSaved: false);
 
     final notes = state.notesController.text.trim();
-    // final categoryId =
-    //     state.category?.id ??
-    //     (_type == PaymentConstants.income
-    //         ? PaymentConstants.otherIncomeCategoryId
-    //         : PaymentConstants.otherExpenseCategoryId);
-    // final paymentMethodId =
-    //     state.paymentMethod?.id ?? PaymentConstants.otherPaymentMethodId;
-    // final model = PaymentModel(
-    //   id: DateTime.now().microsecondsSinceEpoch.toString(),
-    //   paymentType: _type,
-    //   amount: amount,
-    //   date: state.date,
-    //   categoryId: categoryId,
-    //   paymentMethodId: paymentMethodId,
-    //   notes: notes.isEmpty ? null : notes,
-    // );
+    final payment = PaymentModel(
+      paymentType: _type,
+      amount: amount,
+      date: state.date,
+      categoryId: state.category?.id,
+      paymentMethodId: state.paymentMethod?.id,
+      notes: notes,
+    );
 
-    // await _ref.read(transactionProvider.notifier).addPayment(model);
-    // log(
-    //   'Saved $_type: ${model.amount} | $categoryId | $paymentMethodId',
-    //   name: 'PaymentProvider',
-    // );
-
+    await _ref.read(transactionProvider.notifier).save(payment);
     state.amountController.clear();
     state.notesController.clear();
     if (!mounted) return;

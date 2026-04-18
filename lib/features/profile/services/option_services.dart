@@ -38,6 +38,5 @@ class OptionServices {
   List<OptionModel> get paymentMethods =>
       byType(OnboardingConstants.paymentMethod);
 
-  OptionModel? findById(String id) =>
-      options.where((o) => o.id == id).firstOrNull;
+  OptionModel findById(String id) => options.firstWhere((o) => o.id == id);
 }

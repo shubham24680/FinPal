@@ -101,6 +101,9 @@ class ProfileProvider extends StateNotifier<ProfileState> {
 
   void toggle() {
     state = state.copyWith(tryEditing: !state.tryEditing);
+    if (state.tryEditing) {
+      loadField();
+    }
     log("set editing to ${state.tryEditing}");
   }
 

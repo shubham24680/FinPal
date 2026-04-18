@@ -6,6 +6,7 @@ class ExpenseScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionProvider);
+    final options = ref.watch(optionProvider).value?.expenseCategories ?? [];
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding =
@@ -29,9 +30,9 @@ class ExpenseScreen extends ConsumerWidget {
               SizedBox(height: 16.w),
               balanceCard(data.getAnalysis()),
               SizedBox(height: 16.w),
-              categoriesTiles(data.getTransactionsByCategories()),
+              categoriesTiles(data.transactionByCategories(options)),
               SizedBox(height: 16.w),
-              manageExpenses(ref, data.expense.reversed.toList()),
+              manageExpenses(ref, data.expenseTransactions.reversed.toList()),
             ],
           ),
         );
@@ -79,13 +80,13 @@ class ExpenseScreen extends ConsumerWidget {
             style: CustomTypography(fontType: FontType.h1Bold).getTextStyle(),
             children: [
               TextSpan(
-                text: "Hello ",
+                text: "Hello",
                 style:
                     CustomTypography(
                       fontType: FontType.h1Semibold,
                     ).getTextStyle(),
               ),
-              if (name != null) TextSpan(text: "$name!"),
+              if (name != null && name.isNotEmpty) TextSpan(text: " $name!"),
             ],
           ),
         ),

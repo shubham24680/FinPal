@@ -6,8 +6,7 @@ class TransactionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionProvider);
-    // final optionsById = ref.watch(optionByIdProvider);
-
+    final options = ref.watch(optionProvider).value;
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding = 80.w + MediaQuery.of(context).padding.bottom;
@@ -52,11 +51,8 @@ class TransactionScreen extends ConsumerWidget {
             children: [
               title,
               ...montlyTransactions.map(
-                (transactions) => buildDayTransaction(
-                  context,
-                  transactions,
-                  // optionsById,
-                ),
+                (transactions) =>
+                    buildDayTransaction(context, transactions, options),
               ),
             ],
           ),
@@ -92,7 +88,7 @@ class TransactionScreen extends ConsumerWidget {
   Widget buildDayTransaction(
     BuildContext context,
     List<PaymentModel> transactions,
-    // Map<String, OptionModel> optionsById,
+    OptionServices? options,
   ) {
     if (transactions.isEmpty) return const SizedBox.shrink();
 
@@ -104,21 +100,21 @@ class TransactionScreen extends ConsumerWidget {
     } else if (date == formatDate(DateTime(now.year, now.month, now.day - 1))) {
       transactionsDate = "Yesterday";
     } else {
-      // transactionsDate = date;
+      transactionsDate = date;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8.w,
       children: [
-        // CustomTypography(
-        //   text: transactionsDate,
-        //   fontType: FontType.body2Semibold,
-        // ),
-        // CustomContainer(
-        //   backgroundColor: BGColors.shade500,
-        //   child: buildExpenses(context, transactions, optionsById),
-        // ),
+        CustomTypography(
+          text: transactionsDate,
+          fontType: FontType.body2Semibold,
+        ),
+        CustomContainer(
+          backgroundColor: BGColors.shade500,
+          child: buildExpenses(context, transactions, options),
+        ),
       ],
     );
   }

@@ -1,24 +1,32 @@
-import 'dart:developer';
-
 import 'package:finpal/app/app.dart';
 
 final paymentBoxProvider = Provider<Box<PaymentModel>>(
   (ref) => throw UnimplementedError(),
 );
 
-class TransactionNotifier extends AsyncNotifier<TransactionModel> {
-  late HiveService<PaymentModel> _hiveService;
-  late Box<PaymentModel> _box;
-
+class TransactionNotifier extends AsyncNotifier<TransactionService> {
   @override
-  Future<TransactionModel> build() async {
-    _box = ref.watch(paymentBoxProvider);
-    _hiveService = HiveService<PaymentModel>(_box);
-    return TransactionModel(income: [], expense: []);
+  Future<TransactionService> build() async {
+    final box = ref.watch(paymentBoxProvider);
+    return TransactionService(box);
+  }
+
+  Future<void> save(PaymentModel payment) async {
+    final updatedData = state.value;
+    if (updatedData == null) return;
+    await updatedData.save(payment);
+    state = AsyncData(updatedData);
+  }
+
+  Future<void> saveAll(List<PaymentModel> payments) async {
+    final updatedData = state.value;
+    if (updatedData == null) return;
+    await updatedData.saveAll(payments);
+    state = AsyncData(updatedData);
   }
 }
 
 final transactionProvider =
-    AsyncNotifierProvider<TransactionNotifier, TransactionModel>(
+    AsyncNotifierProvider<TransactionNotifier, TransactionService>(
       () => TransactionNotifier(),
     );

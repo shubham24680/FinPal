@@ -23,6 +23,7 @@ export 'transaction/screens/transaction_screen.dart';
 export 'transaction/screens/transaction_overview_screen.dart';
 export 'transaction/transaction_widgets.dart';
 export 'transaction/transaction_provider.dart';
+export 'transaction/transaction_service.dart';
 export 'transaction/models/transaction_model.dart';
 
 // Profile

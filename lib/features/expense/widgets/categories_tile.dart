@@ -1,8 +1,11 @@
 import 'package:finpal/app/app.dart';
 
-Widget categoriesTiles(List<List<PaymentModel>> categories) {
+Widget categoriesTiles(
+  List<({OptionModel category, List<PaymentModel> payments})> rows,
+) {
+  final itemCount = rows.length < 4 ? rows.length : 4;
   return GridView.builder(
-    itemCount: 4,
+    itemCount: itemCount,
     shrinkWrap: true,
     padding: EdgeInsets.zero,
     physics: const NeverScrollableScrollPhysics(),
@@ -13,9 +16,8 @@ Widget categoriesTiles(List<List<PaymentModel>> categories) {
       mainAxisSpacing: 12.w,
     ),
     itemBuilder: (context, index) {
-      final category = OnboardingConstants.expenseCategories[index];
-      final categoryTrans = categories[index];
-      return buildCategoryCard(category, categoryTrans);
+      final row = rows[index];
+      return buildCategoryCard(row.category, row.payments);
     },
   );
 }
@@ -25,6 +27,7 @@ Widget buildCategoryCard(
   List<PaymentModel> categoryTrans,
 ) {
   final totalAmount = categoryTrans.fold<double>(0, (a, b) => a + b.amount);
+
   return CustomContainer(
     backgroundColor: PrimaryColors.shade100,
     child: Column(

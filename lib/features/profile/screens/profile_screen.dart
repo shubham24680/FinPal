@@ -11,41 +11,45 @@ class ProfileScreen extends ConsumerWidget {
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding =
-        AppConstants.sidePadding + MediaQuery.of(context).padding.bottom;
+        50.w + AppConstants.sidePadding + MediaQuery.of(context).padding.bottom;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 16.w,
-      children: [
-        CustomTypography(text: "Profile", fontType: FontType.h1Bold),
-        Column(
-          spacing: 8.w,
-          children: [
-            CustomContainer(
-              padding: EdgeInsets.all(2.w),
-              borderRadius: BorderRadius.circular(1000.r),
-              backgroundColor: CardColors.shade1000,
-              height: 120.w,
-              width: 120.w,
-              child: ClipOval(
-                child: CustomImage(
-                  imageType: ImageType.local,
-                  imageUrl: imageUrl,
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        left: AppConstants.sidePadding,
+        right: AppConstants.sidePadding,
+        top: topPadding,
+        bottom: bottomPadding,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 16.w,
+        children: [
+          CustomTypography(text: "Profile", fontType: FontType.h1Bold),
+          Column(
+            spacing: 8.w,
+            children: [
+              CustomContainer(
+                padding: EdgeInsets.all(2.w),
+                borderRadius: BorderRadius.circular(1000.r),
+                backgroundColor: CardColors.shade1000,
+                height: 120.w,
+                width: 120.w,
+                child: ClipOval(
+                  child: CustomImage(
+                    imageType: ImageType.local,
+                    imageUrl: imageUrl,
+                  ),
                 ),
               ),
-            ),
-            if (name != null && name.isNotEmpty)
-              CustomTypography(text: name, fontType: FontType.body1Semibold),
-          ],
-        ),
-        _buildButtons(context, false),
-        _contents(context),
-      ],
-    ).padding(
-      horizontal: AppConstants.sidePadding,
-      top: topPadding,
-      bottom: bottomPadding,
+              if (name != null && name.isNotEmpty)
+                CustomTypography(text: name, fontType: FontType.body1Semibold),
+            ],
+          ),
+          _buildButtons(context, false),
+          _contents(context),
+        ],
+      ),
     );
   }
 
@@ -77,7 +81,7 @@ class ProfileScreen extends ConsumerWidget {
       itemCount: ProfileConstants.contentList.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(top: 32.w),
+      padding: EdgeInsets.only(top: 16.w),
       itemBuilder: (_, index) {
         final content = ProfileConstants.contentList[index];
         final screenPath = content.screenPath;

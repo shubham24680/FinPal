@@ -11,7 +11,7 @@ class PaymentModel extends HiveObject {
   @HiveField(2)
   final double amount;
   @HiveField(3)
-  final String? date;
+  final String date;
   @HiveField(4)
   final String categoryId;
   @HiveField(5)
@@ -20,15 +20,17 @@ class PaymentModel extends HiveObject {
   final String? notes;
 
   PaymentModel({
-    String? id,
-    String? date,
     required this.paymentType,
     required this.amount,
-    required this.categoryId,
-    required this.paymentMethodId,
+    String? id,
+    String? date,
+    String? categoryId,
+    String? paymentMethodId,
     this.notes,
   }) : id = id ?? Uuid().v7(),
-       date = date ?? formatDate(DateTime.now());
+       date = date ?? formatDate(DateTime.now()),
+       categoryId = categoryId ?? _defaultCategoryId(paymentType),
+       paymentMethodId = paymentMethodId ?? OnboardingConstants.paymentMethod;
 
   PaymentModel copyWith({
     String? id,
@@ -47,4 +49,10 @@ class PaymentModel extends HiveObject {
     paymentMethodId: paymentMethodId ?? this.paymentMethodId,
     notes: notes ?? this.notes,
   );
+}
+
+String _defaultCategoryId(String paymentType) {
+  return (paymentType == OnboardingConstants.income)
+      ? OnboardingConstants.incomeCategory
+      : OnboardingConstants.expenseCategory;
 }

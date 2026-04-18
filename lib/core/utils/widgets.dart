@@ -77,7 +77,7 @@ Future<T?> customBottomSheet<T>(
     backgroundColor: Colors.transparent,
     barrierColor: Colors.black.withAlpha(100),
     isScrollControlled: true,
-    useSafeArea: false,
+    useSafeArea: true,
     isDismissible: false,
     builder:
         (context) => Column(
@@ -97,26 +97,23 @@ Future<T?> customBottomSheet<T>(
                 width: 24.w,
               ),
             ),
-            CustomContainer(
-              backgroundColor: backgroundColor ?? BGColors.shade200,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-              padding: EdgeInsets.only(
-                top: 16.w,
-                left: 16.w,
-                right: 16.w,
-                bottom: 16.w + ScreenUtil().bottomBarHeight,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomTypography(
-                    text: title,
-                    fontType: FontType.body1Medium,
-                    color: TextColors.shade900,
-                  ),
-                  Divider(color: BGColors.shade600),
-                  child,
-                ],
+            Flexible(
+              child: CustomContainer(
+                backgroundColor: backgroundColor ?? BGColors.shade200,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTypography(
+                      text: title,
+                      fontType: FontType.body1Medium,
+                      color: TextColors.shade900,
+                    ),
+                    Divider(color: BGColors.shade600),
+                    Flexible(child: child),
+                  ],
+                ),
               ),
             ),
           ],

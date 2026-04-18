@@ -5,6 +5,7 @@ export 'customs/container.dart';
 export 'customs/app_bar.dart';
 export 'customs/text_field.dart';
 export 'customs/button.dart';
+export 'customs/chip.dart';
 
 export 'local_storage/hive_service.dart';
 export 'local_storage/network.dart';
