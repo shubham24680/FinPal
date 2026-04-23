@@ -10,7 +10,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       body: IndexedStack(
         index: navIndex,
-        children: HomeConstants.navs.map((e) => e.screenPath).toList(),
+        children: HomeConstants.nav1.map((e) => e.defaultPath).toList(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: BottomNavBar(),

@@ -1,13 +1,20 @@
 import 'package:finpal/app/app.dart';
 
+enum PathType { screenPath, urlPath, defaultPath }
+
 class NavModel {
   String icon;
-  Widget screenPath;
+  PathType pathType;
+  String? screenPath;
+  Widget defaultPath;
 
-  NavModel({required this.icon, required this.screenPath});
+  NavModel({
+    required this.icon,
+    required this.defaultPath,
+    this.screenPath,
+    this.pathType = PathType.defaultPath,
+  });
 }
-
-enum PathType { screenPath, urlPath }
 
 class HelperModel {
   PathType pathType;

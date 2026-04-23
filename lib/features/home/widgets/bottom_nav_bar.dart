@@ -29,8 +29,8 @@ class BottomNavBar extends ConsumerWidget {
             showShadow: true,
             shadow: shadow,
             child: Row(
-              children: List.generate(HomeConstants.navs.length, (index) {
-                final nav = HomeConstants.navs[index];
+              children: List.generate(HomeConstants.nav1.length, (index) {
+                final nav = HomeConstants.nav1[index];
                 return _buildNavButton(
                   nav,
                   onTap: () => navNotifier.state = index,
@@ -44,8 +44,13 @@ class BottomNavBar extends ConsumerWidget {
             showShadow: true,
             shadow: shadow,
             child: _buildNavButton(
-              HomeConstants.addAmount,
-              onTap: () => context.push('/add_amount'),
+              HomeConstants.nav2[navIndex],
+              onTap: () {
+                final screenPath = HomeConstants.nav2[navIndex].screenPath;
+                if (screenPath != null) {
+                  context.push(screenPath);
+                }
+              },
               color: PrimaryColors.shade100,
             ),
           ),
