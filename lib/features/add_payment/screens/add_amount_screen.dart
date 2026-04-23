@@ -1,7 +1,8 @@
 import 'package:finpal/app/app.dart';
 
 class AddAmountScreen extends StatelessWidget {
-  const AddAmountScreen({super.key});
+  const AddAmountScreen({super.key, this.extra});
+  final ExtraModel? extra;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,12 @@ class AddAmountScreen extends StatelessWidget {
             tabs: [Tab(text: "Income"), Tab(text: "Expense")],
           ),
         ),
-        body: TabBarView(children: [AddIncomeScreen(), AddExpenseScreen()]),
+        body: TabBarView(
+          children: [
+            AddIncomeScreen(extra: extra),
+            AddExpenseScreen(extra: extra),
+          ],
+        ),
       ),
     ).onTap(event: () => FocusScope.of(context).unfocus());
   }

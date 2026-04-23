@@ -9,21 +9,21 @@ class ProfileModel extends HiveObject {
   @HiveField(1)
   final int profileImageIndex;
   @HiveField(2)
-  final bool isFistTimeVisit;
+  final bool isFirstTimeVisit;
 
   ProfileModel({
     this.name,
     this.profileImageIndex = 0,
-    this.isFistTimeVisit = true,
+    this.isFirstTimeVisit = true,
   });
 
   ProfileModel copyWith({
     String? name,
     int? profileImageIndex,
-    bool? isFistTimeVisit,
+    bool? isFirstTimeVisit,
   }) => ProfileModel(
     name: name ?? this.name,
     profileImageIndex: profileImageIndex ?? this.profileImageIndex,
-    isFistTimeVisit: isFistTimeVisit ?? this.isFistTimeVisit,
+    isFirstTimeVisit: isFirstTimeVisit ?? this.isFirstTimeVisit,
   );
 }

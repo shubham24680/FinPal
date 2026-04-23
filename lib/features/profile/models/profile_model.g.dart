@@ -19,7 +19,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
     return ProfileModel(
       name: fields[0] as String?,
       profileImageIndex: fields[1] as int,
-      isFistTimeVisit: fields[2] as bool,
+      isFirstTimeVisit: fields[2] as bool,
     );
   }
 
@@ -32,7 +32,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(1)
       ..write(obj.profileImageIndex)
       ..writeByte(2)
-      ..write(obj.isFistTimeVisit);
+      ..write(obj.isFirstTimeVisit);
   }
 
   @override

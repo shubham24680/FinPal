@@ -2,11 +2,11 @@ import 'package:finpal/app/app.dart';
 
 class ProfileConstants {
   static List<HelperModel> contentList = [
-    HelperModel(
-      icon: AppSvgs.addPayment,
-      title: "Add Income/Expense",
-      screenPath: "/add_amount",
-    ),
+    // HelperModel(
+    //   icon: AppSvgs.addPayment,
+    //   title: "Add Income/Expense",
+    //   screenPath: "/add_amount",
+    // ),
     HelperModel(
       icon: AppSvgs.income,
       title: "Income Categories",
@@ -14,6 +14,7 @@ class ProfileConstants {
       extra: ExtraModel(
         type: OnboardingConstants.incomeCategory,
         title: "Income Categories",
+        icon: AppSvgs.income,
       ),
     ),
     HelperModel(
@@ -23,6 +24,7 @@ class ProfileConstants {
       extra: ExtraModel(
         type: OnboardingConstants.expenseCategory,
         title: "Expense Categories",
+        icon: AppSvgs.expense,
       ),
     ),
     HelperModel(
@@ -32,6 +34,7 @@ class ProfileConstants {
       extra: ExtraModel(
         type: OnboardingConstants.paymentMethod,
         title: "Payment Methods",
+        icon: AppSvgs.upi,
       ),
     ),
     HelperModel(

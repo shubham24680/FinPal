@@ -1,14 +1,18 @@
 import 'package:finpal/app/app.dart';
 
 class AddIncomeScreen extends ConsumerWidget {
-  const AddIncomeScreen({super.key});
+  const AddIncomeScreen({super.key, this.extra});
+  final ExtraModel? extra;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionProv = ref.watch(transactionProvider);
     final totalIncome = transactionProv.value?.totalIncome ?? 0;
-    final optionsProv = ref.watch(optionProvider);
-    final paymentProv = paymentProvider(OnboardingConstants.income);
+    final optionsProv = ref.watch(optionNotifer);
+    final paymentProv = paymentProvider((
+      OnboardingConstants.income,
+      extra?.id,
+    ));
     final incomeState = ref.watch(paymentProv);
     final incomeNotifier = ref.read(paymentProv.notifier);
     final bottomPadding = 8.w + MediaQuery.of(context).viewPadding.bottom;

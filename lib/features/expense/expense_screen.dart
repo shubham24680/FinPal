@@ -6,7 +6,7 @@ class ExpenseScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionProvider);
-    final options = ref.watch(optionProvider).value?.expenseCategories ?? [];
+    final options = ref.watch(optionNotifer).value?.expenseCategories ?? [];
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding =

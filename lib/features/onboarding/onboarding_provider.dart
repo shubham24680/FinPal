@@ -41,10 +41,10 @@ class OnboardingNotifer extends StateNotifier<OnboardingState> {
   }
 
   Future<void> setupDefaultData() async {
-    await _ref.read(profileNotifier.notifier).save(isFistTimeVisit: false);
-    await _ref.read(optionProvider.future);
+    await _ref.read(profileNotifier.notifier).save(isFirstTimeVisit: false);
+    await _ref.read(optionNotifer.future);
     await _ref
-        .read(optionProvider.notifier)
+        .read(optionNotifer.notifier)
         .saveAllOptions(OnboardingConstants.allOptions);
   }
 }

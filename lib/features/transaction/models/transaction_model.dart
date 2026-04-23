@@ -36,7 +36,7 @@ class TransactionModel {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
     final lastOfMonth = (now.compareTo(endOfMonth) > 0) ? endOfMonth : now;
-    List<List<PaymentModel>> montlyTransactions = [];
+    final monthlyTransactions = <List<PaymentModel>>[];
 
     for (int i = lastOfMonth.day; i >= startOfMonth.day; i--) {
       final currentDateTransaction = getTransactionsByDate(
@@ -44,11 +44,11 @@ class TransactionModel {
       );
 
       if (currentDateTransaction.isNotEmpty) {
-        montlyTransactions.add(currentDateTransaction);
+        monthlyTransactions.add(currentDateTransaction);
       }
     }
 
-    return montlyTransactions;
+    return monthlyTransactions;
   }
 
   List<PaymentModel> getTransactionsByDate(DateTime date) {

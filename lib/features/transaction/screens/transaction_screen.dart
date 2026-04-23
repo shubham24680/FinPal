@@ -6,7 +6,7 @@ class TransactionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionProvider);
-    final options = ref.watch(optionProvider).value;
+    final options = ref.watch(optionNotifer).value;
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding = 80.w + MediaQuery.of(context).padding.bottom;
@@ -23,8 +23,8 @@ class TransactionScreen extends ConsumerWidget {
 
     return transactions.when(
       data: (data) {
-        final montlyTransactions = data.getMonthlyTransactions();
-        if (montlyTransactions.isEmpty) {
+        final monthlyTransactions = data.getMonthlyTransactions();
+        if (monthlyTransactions.isEmpty) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16.w,
@@ -50,9 +50,8 @@ class TransactionScreen extends ConsumerWidget {
             spacing: 16.w,
             children: [
               title,
-              ...montlyTransactions.map(
-                (transactions) =>
-                    buildDayTransaction(context, transactions, options),
+              ...monthlyTransactions.map(
+                (dayTx) => buildDayTransaction(context, ref, dayTx, options),
               ),
             ],
           ),
@@ -87,6 +86,7 @@ class TransactionScreen extends ConsumerWidget {
 
   Widget buildDayTransaction(
     BuildContext context,
+    WidgetRef ref,
     List<PaymentModel> transactions,
     OptionServices? options,
   ) {
@@ -113,7 +113,14 @@ class TransactionScreen extends ConsumerWidget {
         ),
         CustomContainer(
           backgroundColor: BGColors.shade500,
-          child: buildExpenses(context, transactions, options),
+          padding: EdgeInsets.zero,
+          child: buildExpenses(
+            context,
+            ref,
+            transactions,
+            options,
+            enableSwipe: true,
+          ),
         ),
       ],
     );

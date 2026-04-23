@@ -54,10 +54,31 @@ class PaymentState {
 }
 
 class PaymentProvider extends StateNotifier<PaymentState> {
+  final String? _id;
   final Ref _ref;
   final String _type;
 
-  PaymentProvider(this._ref, this._type) : super(PaymentState.initial());
+  PaymentProvider(this._ref, this._type, this._id)
+    : super(PaymentState.initial()) {
+    if (_id != null) {
+      final payment = _ref.read(transactionProvider).value?.getPayment(_id);
+      if (payment != null) {
+        state.amountController.text = payment.amount.toString();
+        state.notesController.text = payment.notes ?? "";
+        state.copyWith(
+          date: payment.date,
+          category: _ref
+              .read(optionNotifer)
+              .value
+              ?.findById(payment.categoryId),
+          paymentMethod: _ref
+              .read(optionNotifer)
+              .value
+              ?.findById(payment.paymentMethodId),
+        );
+      }
+    }
+  }
 
   void setDate(String date) => state = state.copyWith(date: date);
 
@@ -91,6 +112,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
 
     final notes = state.notesController.text.trim();
     final payment = PaymentModel(
+      id: _id,
       paymentType: _type,
       amount: amount,
       date: state.date,
@@ -100,15 +122,24 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     );
 
     await _ref.read(transactionProvider.notifier).save(payment);
+    if (!mounted) return;
     state.amountController.clear();
     state.notesController.clear();
-    if (!mounted) return;
-    state = state.copyWith(isSaving: false, isSaved: true);
-    state = PaymentState.initial();
+    state = PaymentState(
+      amountController: state.amountController,
+      notesController: state.notesController,
+      date: formatDate(DateTime.now()),
+      category: null,
+      paymentMethod: null,
+      isFilled: false,
+      isSaving: false,
+      isSaved: true,
+      overspent: null,
+    );
   }
 }
 
 final paymentProvider = StateNotifierProvider.family
-    .autoDispose<PaymentProvider, PaymentState, String>(
-      (ref, type) => PaymentProvider(ref, type),
+    .autoDispose<PaymentProvider, PaymentState, (String, String?)>(
+      (ref, args) => PaymentProvider(ref, args.$1, args.$2),
     );

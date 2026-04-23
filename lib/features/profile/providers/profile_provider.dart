@@ -20,7 +20,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
   Future<void> save({
     int? profileImageIndex,
     String? name,
-    bool? isFistTimeVisit,
+    bool? isFirstTimeVisit,
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
@@ -28,7 +28,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
       final profileModel = profile.copyWith(
         profileImageIndex: profileImageIndex,
         name: name,
-        isFistTimeVisit: isFistTimeVisit,
+        isFirstTimeVisit: isFirstTimeVisit,
       );
       await _hiveService.saveData(_key, profileModel);
       return profileModel;

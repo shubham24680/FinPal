@@ -4,25 +4,24 @@ import 'package:finpal/app/app.dart';
 
 class TransactionService {
   final Box<PaymentModel> box;
-  late HiveService<PaymentModel> _hiveService;
-  List<PaymentModel> payments = [];
+  late final HiveService<PaymentModel> _hiveService;
 
   TransactionService(this.box) {
     _hiveService = HiveService<PaymentModel>(box);
-    payments = _hiveService.getAllData();
   }
+
+  List<PaymentModel> get payments => _hiveService.getAllData();
+  PaymentModel? getPayment(String id) => payments.firstWhere((p) => p.id == id);
 
   Future<void> save(PaymentModel payment) async {
     await _hiveService.saveData(payment.id, payment);
-    payments = [...payments, payment];
     log("Payment saved: ${payment.id}", name: "TransactionService");
   }
 
   Future<void> saveAll(List<PaymentModel> newPayments) async {
-    for (var payment in newPayments) {
+    for (final payment in newPayments) {
       await _hiveService.saveData(payment.id, payment);
     }
-    payments = [...payments, ...newPayments];
     log("Payments saved: ${newPayments.length}", name: "TransactionService");
   }
 
@@ -68,7 +67,7 @@ class TransactionService {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
     final lastOfMonth = (now.compareTo(endOfMonth) > 0) ? endOfMonth : now;
-    List<List<PaymentModel>> montlyTransactions = [];
+    final monthlyTransactions = <List<PaymentModel>>[];
 
     for (int i = lastOfMonth.day; i >= startOfMonth.day; i--) {
       final currentDateTransaction = getTransactionsByDate(
@@ -76,11 +75,11 @@ class TransactionService {
       );
 
       if (currentDateTransaction.isNotEmpty) {
-        montlyTransactions.add(currentDateTransaction);
+        monthlyTransactions.add(currentDateTransaction);
       }
     }
 
-    return montlyTransactions;
+    return monthlyTransactions;
   }
 
   List<PaymentModel> getTransactionsByDate(DateTime date) {
@@ -110,5 +109,10 @@ class TransactionService {
     return payments
         .where((payment) => payment.categoryId == options.id)
         .toList();
+  }
+
+  Future<void> delete(String id) async {
+    await _hiveService.clearData(id);
+    log("Payment deleted: $id", name: "TransactionService");
   }
 }

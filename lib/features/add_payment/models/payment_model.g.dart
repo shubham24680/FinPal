@@ -17,12 +17,12 @@ class PaymentModelAdapter extends TypeAdapter<PaymentModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PaymentModel(
-      id: fields[0] as String?,
-      date: fields[3] as String?,
       paymentType: fields[1] as String,
       amount: fields[2] as double,
-      categoryId: fields[4] as String,
-      paymentMethodId: fields[5] as String,
+      id: fields[0] as String?,
+      date: fields[3] as String?,
+      categoryId: fields[4] as String?,
+      paymentMethodId: fields[5] as String?,
       notes: fields[6] as String?,
     );
   }

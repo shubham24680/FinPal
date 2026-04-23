@@ -18,12 +18,22 @@ enum AppRoutesPath {
 
 class AppRoutes {
   static final routesProvider = Provider<GoRouter>((ref) {
-    final profileAsync = ref.watch(profileNotifier);
+    final refresh = ValueNotifier<int>(0);
+    ref.listen<AsyncValue<ProfileModel>>(profileNotifier, (_, __) {
+      refresh.value++;
+    });
+    ref.onDispose(refresh.dispose);
+
     return GoRouter(
+      refreshListenable: refresh,
       initialLocation: AppRoutesPath.home.path,
       redirect: (context, state) {
-        final profile = profileAsync.value;
-        final isFirstVisit = profile?.isFistTimeVisit ?? true;
+        final profileAsync = ref.read(profileNotifier);
+        if (!profileAsync.hasValue) {
+          return null;
+        }
+        final profile = profileAsync.requireValue;
+        final isFirstVisit = profile.isFirstTimeVisit;
         final isOnboarding =
             state.matchedLocation == AppRoutesPath.onboarding.path;
         if (isFirstVisit && !isOnboarding) {
@@ -41,10 +51,11 @@ class AppRoutes {
               final extra = state.extra as ExtraModel?;
               final widget = switch (AppRoutesPath.values[index]) {
                 AppRoutesPath.options => OptionsScreen(extra: extra),
+                AppRoutesPath.addAmount => AddAmountScreen(extra: extra),
                 _ => AppRoutesPath.values[index].child,
               };
 
-              return FadeTransistionPage(child: widget);
+              return FadeTransitionPage(child: widget);
             },
           ),
         ),
@@ -53,8 +64,8 @@ class AppRoutes {
   });
 }
 
-class FadeTransistionPage<T> extends CustomTransitionPage<T> {
-  FadeTransistionPage({required super.child})
+class FadeTransitionPage<T> extends CustomTransitionPage<T> {
+  FadeTransitionPage({required super.child})
     : super(
         transitionsBuilder:
             (context, animation, secondaryAnimation, child) =>
