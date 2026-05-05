@@ -5,7 +5,7 @@ class HomeConstants {
     NavModel(
       icon: AppSvgs.bot,
       pathType: PathType.screenPath,
-      screenPath: '/add_amount',
+      screenPath: '/ai',
       defaultPath: const SizedBox.shrink(),
     ),
     NavModel(

@@ -13,6 +13,9 @@ dependencies:
   # State Management
   flutter_riverpod: ^2.6.1
 
+  # Services
+  dio: ^5.9.2
+
   # Local storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0

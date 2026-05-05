@@ -44,3 +44,8 @@ export 'add_payment/providers/payment_provider.dart';
 export 'profile/providers/options_provider.dart';
 export 'profile/services/option_services.dart';
 export 'profile/models/option_model.dart';
+
+// Bot
+export 'ai/ai_screen.dart';
+export 'ai/ai_provider.dart';
+export 'ai/ai_model.dart';

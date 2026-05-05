@@ -8,6 +8,8 @@ export 'customs/button.dart';
 export 'customs/chip.dart';
 export 'customs/swipe_action_row.dart';
 
+export 'services/ai_services.dart';
+
 export 'local_storage/hive_service.dart';
 export 'local_storage/network.dart';
 
