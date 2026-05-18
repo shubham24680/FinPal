@@ -50,7 +50,7 @@ class Message extends ConsumerWidget {
             height: 16.w,
           ).onTap(
             event: () {
-              ref.read(aiProvider.notifier).setTempId(message.id);
+              ref.read(aiProvider.notifier).retry(message);
             },
           ),
         ],

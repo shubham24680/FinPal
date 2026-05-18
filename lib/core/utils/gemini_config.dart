@@ -11,7 +11,7 @@ enum GeminiModel {
 }
 
 class GeminiConfig {
-  static const String apiKey = "AIzaSyD7WCT9S7KSM0UL1ppnYUGKwb9_2oWMUV4";
+  static const String apiKey = "AIzaSyABmIwYzWrAyejKpGVzK4CZ5yoZCCKOgeo";
   static const String financeSystemPrompt = '''
 You are FinPal AI, a trusted personal finance assistant built into the FinPal app.
 Your purpose is to help users take control of their money — understand spending habits,

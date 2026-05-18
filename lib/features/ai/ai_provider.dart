@@ -59,6 +59,13 @@ class AiNotifier extends StateNotifier<AiState> {
     state.inputController.text = message.text;
   }
 
+  void retry(ChatMessage message) {
+    state = state.copyWith(tempId: message.id);
+    final history = _historyForNextSend();
+    state = state.copyWith(messages: history);
+    _sendAssistantMessage(message.text);
+  }
+
   Future<void> send() async {
     final text = state.inputText.trim();
     if (text.isEmpty || state.mode == AiMode.waiting) return;
@@ -70,7 +77,10 @@ class AiNotifier extends StateNotifier<AiState> {
       messages: [ChatMessage(role: ChatRole.user, text: text), ...history],
     );
     _clearInput();
+    _sendAssistantMessage(text);
+  }
 
+  Future<void> _sendAssistantMessage(String text) async {
     try {
       final response = await GeminiServices.instance.generateText(
         state.messages,
