@@ -1,79 +1,118 @@
+import 'dart:developer';
 import 'package:finpal/app/app.dart';
+
+enum AiMode { normal, waiting, editing }
 
 class AiState {
   final TextEditingController inputController;
-  final ScrollController scrollController;
   final String inputText;
-  final bool waiting;
-  final List<AiModel> messages;
+  final AiMode mode;
+  final List<ChatMessage> messages;
+  final String tempId;
 
   AiState({
     required this.inputController,
-    required this.scrollController,
     required this.inputText,
-    required this.waiting,
+    required this.mode,
     required this.messages,
+    required this.tempId,
   });
 
   factory AiState.initial() => AiState(
     inputController: TextEditingController(),
-    scrollController: ScrollController(),
     inputText: '',
-    waiting: false,
-    messages: [],
+    mode: AiMode.normal,
+    messages: const [],
+    tempId: '',
   );
 
   AiState copyWith({
     String? inputText,
-    bool? waiting,
-    List<AiModel>? messages,
+    AiMode? mode,
+    List<ChatMessage>? messages,
+    String? tempId,
   }) => AiState(
     inputController: inputController,
-    scrollController: scrollController,
     inputText: inputText ?? this.inputText,
-    waiting: waiting ?? this.waiting,
+    mode: mode ?? this.mode,
     messages: messages ?? this.messages,
+    tempId: tempId ?? this.tempId,
   );
 }
 
 class AiNotifier extends StateNotifier<AiState> {
   AiNotifier() : super(AiState.initial());
 
-  void setWaiting(bool waiting) => state = state.copyWith(waiting: waiting);
-
-  void setInputText(String? inputText) =>
-      state = state.copyWith(inputText: inputText);
-
-  void send() {
-    final text = state.inputText.trim();
-    if (text.isEmpty || state.waiting) return;
-    state = state.copyWith(
-      waiting: true,
-      messages: [...state.messages, AiModel(isUser: true, text: text)],
-    );
-    resetInputText();
-
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      state = state.copyWith(
-        waiting: false,
-        messages: [
-          ...state.messages,
-          AiModel(isUser: false, text: 'I received: “$text”'),
-        ],
-      );
-    });
+  void setInputText(String inputText) {
+    if (state.inputText == inputText) return;
+    state = state.copyWith(inputText: inputText);
   }
 
-  void resetInputText() {
+  void setTempId(String tempId) => state = state.copyWith(tempId: tempId);
+
+  void update(ChatMessage message) {
+    state = state.copyWith(
+      tempId: message.id,
+      inputText: message.text,
+      mode: AiMode.editing,
+    );
+    state.inputController.text = message.text;
+  }
+
+  Future<void> send() async {
+    final text = state.inputText.trim();
+    if (text.isEmpty || state.mode == AiMode.waiting) return;
+
+    final history = _historyForNextSend();
+    state = state.copyWith(
+      mode: AiMode.waiting,
+      tempId: '',
+      messages: [ChatMessage(role: ChatRole.user, text: text), ...history],
+    );
+    _clearInput();
+
+    try {
+      final response = await GeminiServices.instance.generateText(
+        state.messages,
+      );
+      state = state.copyWith(
+        mode: AiMode.normal,
+        messages: [
+          ChatMessage(role: ChatRole.assistant, text: response),
+          ...state.messages,
+        ],
+      );
+    } catch (e, st) {
+      state.inputController.text = text;
+      state = state.copyWith(
+        mode: AiMode.normal,
+        inputText: text,
+        messages: [
+          ChatMessage(
+            role: ChatRole.assistant,
+            status: ChatMessageStatus.error,
+            text: "Something went wrong. Please try again.",
+          ),
+          ...state.messages,
+        ],
+      );
+      log('Gemini send failed', error: e, stackTrace: st);
+    }
+  }
+
+  List<ChatMessage> _historyForNextSend() {
+    if (state.tempId.isNotEmpty) {
+      final editIndex = state.messages.indexWhere((e) => e.id == state.tempId);
+      if (editIndex < 0) return state.messages;
+      return state.messages.sublist(editIndex + 1);
+    }
+
+    return state.messages;
+  }
+
+  void _clearInput() {
     state = state.copyWith(inputText: '');
     state.inputController.clear();
-    if (!state.scrollController.hasClients) return;
-    state.scrollController.animateTo(
-      state.scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOutCubic,
-    );
   }
 }
 

@@ -42,6 +42,8 @@ class AppSvgs {
   static const String wadOfMoney = 'assets/svgs/wad_of_money.svg';
   static const String gift = 'assets/svgs/gift.svg';
   static const String bot = "assets/svgs/bot.svg";
+  static const String copy = "assets/svgs/copy.svg";
+  static const String retry = "assets/svgs/retry.svg";
 }
 
 class AppFonts {

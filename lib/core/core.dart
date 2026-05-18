@@ -8,7 +8,7 @@ export 'customs/button.dart';
 export 'customs/chip.dart';
 export 'customs/swipe_action_row.dart';
 
-export 'services/ai_services.dart';
+export 'services/gemini_services.dart';
 
 export 'local_storage/hive_service.dart';
 export 'local_storage/network.dart';
@@ -18,3 +18,4 @@ export 'packages/packages.dart';
 export 'utils/colors.dart';
 export 'utils/utils.dart';
 export 'utils/widgets.dart';
+export 'utils/gemini_config.dart';

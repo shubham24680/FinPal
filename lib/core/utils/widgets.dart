@@ -10,8 +10,18 @@ String formatCurrency(double? amount) {
   ).format(amount);
 }
 
-String formatDate(DateTime date) {
-  return DateFormat("EE, MMM d, yyyy").format(date);
+enum DateFormatType { fullDate, shortDateWithTime }
+
+String formatDate(
+  DateTime date, {
+  DateFormatType type = DateFormatType.fullDate,
+}) {
+  switch (type) {
+    case DateFormatType.shortDateWithTime:
+      return DateFormat("MMM d, hh:mm a").format(date);
+    default:
+      return DateFormat("EE, MMM d, yyyy").format(date);
+  }
 }
 
 DateTime parseDate(String date) {
@@ -199,4 +209,20 @@ Future<String> chooseDate(BuildContext context, String date) async {
 
 Future<void> hitUrl(String url) async {
   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+}
+
+Future<void> showToast(BuildContext context, String message) async {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: CardColors.shade1000,
+      margin: EdgeInsets.all(16.w),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      content: CustomTypography(
+        text: message,
+        fontType: FontType.body2Regular,
+        color: Colors.white,
+      ),
+    ),
+  );
 }

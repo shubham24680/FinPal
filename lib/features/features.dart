@@ -49,3 +49,4 @@ export 'profile/models/option_model.dart';
 export 'ai/ai_screen.dart';
 export 'ai/ai_provider.dart';
 export 'ai/ai_model.dart';
+export 'ai/ai_helper.dart';

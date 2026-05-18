@@ -10,3 +10,4 @@ export 'package:fl_chart/fl_chart.dart';
 export 'package:uuid/uuid.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:dio/dio.dart';
+export 'package:flutter_markdown_plus/flutter_markdown_plus.dart';

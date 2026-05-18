@@ -32,6 +32,9 @@ class CustomTypography extends StatelessWidget {
     this.size,
     this.weight,
     this.height,
+    this.fontStyle,
+    this.decoration,
+    this.letterSpacing,
   });
 
   final String? text;
@@ -44,6 +47,9 @@ class CustomTypography extends StatelessWidget {
   final double? size;
   final FontWeight? weight;
   final double? height;
+  final FontStyle? fontStyle;
+  final TextDecoration? decoration;
+  final double? letterSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -151,5 +157,8 @@ class CustomTypography extends StatelessWidget {
     fontSize: size ?? widgetSize,
     fontWeight: weight ?? widgetWeight,
     height: height ?? widgetHeight,
+    fontStyle: fontStyle ?? FontStyle.normal,
+    decoration: decoration ?? TextDecoration.none,
+    letterSpacing: letterSpacing,
   );
 }
