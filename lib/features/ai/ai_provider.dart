@@ -62,7 +62,7 @@ class AiNotifier extends StateNotifier<AiState> {
   void retry(ChatMessage message) {
     state = state.copyWith(tempId: message.id);
     final history = _historyForNextSend();
-    state = state.copyWith(messages: history);
+    state = state.copyWith(mode: AiMode.waiting, messages: history);
     _sendAssistantMessage(message.text);
   }
 
