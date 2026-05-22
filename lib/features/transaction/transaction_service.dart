@@ -62,14 +62,13 @@ class TransactionService {
     ];
   }
 
-  List<List<PaymentModel>> getMonthlyTransactions() {
-    final now = DateTime.now();
+  List<List<PaymentModel>> getMonthlyTransactions(DateTime now) {
+    log("Month - $now");
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
-    final lastOfMonth = (now.compareTo(endOfMonth) > 0) ? endOfMonth : now;
     final monthlyTransactions = <List<PaymentModel>>[];
 
-    for (int i = lastOfMonth.day; i >= startOfMonth.day; i--) {
+    for (int i = endOfMonth.day; i >= startOfMonth.day; i--) {
       final currentDateTransaction = getTransactionsByDate(
         DateTime(now.year, now.month, i),
       );

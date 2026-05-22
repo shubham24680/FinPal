@@ -37,3 +37,5 @@ final transactionProvider =
     AsyncNotifierProvider<TransactionNotifier, TransactionService>(
       () => TransactionNotifier(),
     );
+
+final selectedDateProvider = StateProvider<DateTime>((ref) => DateTime.now());

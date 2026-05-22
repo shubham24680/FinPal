@@ -1,21 +1,81 @@
 import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
-enum AiMode { normal, waiting, editing }
+final aiBoxProvider = Provider<Box<ChatMessage>>(
+  (ref) => throw UnimplementedError(),
+);
+
+class AiNotifier extends AsyncNotifier<AiService> {
+  @override
+  Future<AiService> build() async {
+    final box = ref.watch(aiBoxProvider);
+    return AiService(box);
+  }
+
+  Future<void> sendMessage(String message) async {
+    final service = state.value;
+    if (service == null) return;
+
+    await service.save(ChatMessage(role: ChatRole.user, text: message));
+    state = AsyncData(service);
+    await sendAssistantMessage();
+  }
+
+  Future<void> sendAssistantMessage() async {
+    final service = state.value;
+    if (service == null) return;
+
+    state = const AsyncLoading<AiService>().copyWithPrevious(state);
+
+    state = await AsyncValue.guard(() async {
+      await service.generateText();
+      return service;
+    });
+  }
+
+  Future<void> editMessage(String id, String text) async {
+    final service = state.value;
+    if (service == null) return;
+
+    await service.deleteAll(id);
+    state = AsyncData(service);
+    await sendMessage(text);
+  }
+
+  Future<void> retryMessage(ChatMessage message) async {
+    final service = state.value;
+    if (service == null) return;
+
+    await service.deleteAll(message.id);
+    state = AsyncData(service);
+    await sendAssistantMessage();
+  }
+
+  Future<void> clearAll() async {
+    await state.value?.clearAll();
+  }
+}
+
+final aiNotifer = AsyncNotifierProvider<AiNotifier, AiService>(
+  () => AiNotifier(),
+);
+
+enum AiMode { normal, editing }
 
 class AiState {
   final TextEditingController inputController;
   final String inputText;
   final AiMode mode;
   final List<ChatMessage> messages;
-  final String tempId;
+  final String replaceId;
 
   AiState({
     required this.inputController,
     required this.inputText,
     required this.mode,
     required this.messages,
-    required this.tempId,
+    required this.replaceId,
   });
 
   factory AiState.initial() => AiState(
@@ -23,101 +83,67 @@ class AiState {
     inputText: '',
     mode: AiMode.normal,
     messages: const [],
-    tempId: '',
+    replaceId: "",
   );
 
   AiState copyWith({
     String? inputText,
     AiMode? mode,
     List<ChatMessage>? messages,
-    String? tempId,
+    String? replaceId,
   }) => AiState(
     inputController: inputController,
     inputText: inputText ?? this.inputText,
     mode: mode ?? this.mode,
     messages: messages ?? this.messages,
-    tempId: tempId ?? this.tempId,
+    replaceId: replaceId ?? this.replaceId,
   );
 }
 
-class AiNotifier extends StateNotifier<AiState> {
-  AiNotifier() : super(AiState.initial());
+class AiProvider extends StateNotifier<AiState> {
+  final Ref ref;
+  AiProvider(this.ref) : super(AiState.initial());
 
   void setInputText(String inputText) {
     if (state.inputText == inputText) return;
     state = state.copyWith(inputText: inputText);
   }
 
-  void setTempId(String tempId) => state = state.copyWith(tempId: tempId);
-
   void update(ChatMessage message) {
     state = state.copyWith(
-      tempId: message.id,
+      replaceId: message.id,
       inputText: message.text,
       mode: AiMode.editing,
     );
     state.inputController.text = message.text;
+    log(
+      "Message updated: ${message.text}, id: ${message.id}",
+      name: "AiProvider",
+    );
   }
 
-  void retry(ChatMessage message) {
-    state = state.copyWith(tempId: message.id);
-    final history = _historyForNextSend();
-    state = state.copyWith(mode: AiMode.waiting, messages: history);
-    _sendAssistantMessage(message.text);
+  void clearEditing() {
+    state = state.copyWith(replaceId: "", mode: AiMode.normal);
+    _clearInput();
+  }
+
+  Future<void> retryMessage(ChatMessage message) async {
+    await ref.read(aiNotifer.notifier).retryMessage(message);
   }
 
   Future<void> send() async {
     final text = state.inputText.trim();
-    if (text.isEmpty || state.mode == AiMode.waiting) return;
-
-    final history = _historyForNextSend();
-    state = state.copyWith(
-      mode: AiMode.waiting,
-      tempId: '',
-      messages: [ChatMessage(role: ChatRole.user, text: text), ...history],
-    );
+    if (text.isEmpty) return;
     _clearInput();
-    _sendAssistantMessage(text);
-  }
 
-  Future<void> _sendAssistantMessage(String text) async {
-    try {
-      final response = await GeminiServices.instance.generateText(
-        state.messages,
-      );
-      state = state.copyWith(
-        mode: AiMode.normal,
-        messages: [
-          ChatMessage(role: ChatRole.assistant, text: response),
-          ...state.messages,
-        ],
-      );
-    } catch (e, st) {
-      state.inputController.text = text;
-      state = state.copyWith(
-        mode: AiMode.normal,
-        inputText: text,
-        messages: [
-          ChatMessage(
-            role: ChatRole.assistant,
-            status: ChatMessageStatus.error,
-            text: "Something went wrong. Please try again.",
-          ),
-          ...state.messages,
-        ],
-      );
-      log('Gemini send failed', error: e, stackTrace: st);
+    if (state.replaceId.isNotEmpty) {
+      log("Editing message: ${state.replaceId}", name: "AiProvider");
+      await ref.read(aiNotifer.notifier).editMessage(state.replaceId, text);
+      clearEditing();
+    } else {
+      log("Sending message: $text", name: "AiProvider");
+      await ref.read(aiNotifer.notifier).sendMessage(text);
     }
-  }
-
-  List<ChatMessage> _historyForNextSend() {
-    if (state.tempId.isNotEmpty) {
-      final editIndex = state.messages.indexWhere((e) => e.id == state.tempId);
-      if (editIndex < 0) return state.messages;
-      return state.messages.sublist(editIndex + 1);
-    }
-
-    return state.messages;
   }
 
   void _clearInput() {
@@ -126,6 +152,6 @@ class AiNotifier extends StateNotifier<AiState> {
   }
 }
 
-final aiProvider = StateNotifierProvider.autoDispose<AiNotifier, AiState>(
-  (ref) => AiNotifier(),
+final aiProvider = StateNotifierProvider.autoDispose<AiProvider, AiState>(
+  (ref) => AiProvider(ref),
 );

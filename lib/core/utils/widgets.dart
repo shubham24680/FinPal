@@ -10,7 +10,7 @@ String formatCurrency(double? amount) {
   ).format(amount);
 }
 
-enum DateFormatType { fullDate, shortDateWithTime }
+enum DateFormatType { fullDate, shortDateWithTime, monthYear }
 
 String formatDate(
   DateTime date, {
@@ -19,6 +19,8 @@ String formatDate(
   switch (type) {
     case DateFormatType.shortDateWithTime:
       return DateFormat("MMM d, hh:mm a").format(date);
+    case DateFormatType.monthYear:
+      return DateFormat("MMM yy").format(date);
     default:
       return DateFormat("EE, MMM d, yyyy").format(date);
   }
@@ -211,17 +213,22 @@ Future<void> hitUrl(String url) async {
   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 }
 
-Future<void> showToast(BuildContext context, String message) async {
+Future<void> showToast(
+  BuildContext context,
+  String message, {
+  Color? backgroundColor,
+  Color? textColor,
+}) async {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: CardColors.shade1000,
+      backgroundColor: backgroundColor ?? CardColors.shade1000,
       margin: EdgeInsets.all(16.w),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       content: CustomTypography(
         text: message,
         fontType: FontType.body2Regular,
-        color: Colors.white,
+        color: textColor ?? Colors.white,
       ),
     ),
   );

@@ -28,7 +28,7 @@ class Message extends ConsumerWidget {
       final content = _buildContent(
         message.text,
         textColor: NegativeColors.shade900,
-        iconUrl: AppSvgs.bot,
+        iconUrl: AppSvgs.info,
       );
       child = wrapContainer(
         content,
@@ -50,7 +50,7 @@ class Message extends ConsumerWidget {
             height: 16.w,
           ).onTap(
             event: () {
-              ref.read(aiProvider.notifier).retry(message);
+              ref.read(aiProvider.notifier).retryMessage(message);
             },
           ),
         ],
