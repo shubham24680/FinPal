@@ -2,11 +2,16 @@ import 'package:finpal/app/app.dart';
 
 class ProfileConstants {
   static List<HelperModel> contentList = [
-    // HelperModel(
-    //   icon: AppSvgs.addPayment,
-    //   title: "Add Income/Expense",
-    //   screenPath: "/add_amount",
-    // ),
+    HelperModel(
+      icon: AppSvgs.fingerprint,
+      title: "Fingerprint Authentication",
+      screenPath: "/fingerprint_auth",
+    ),
+    HelperModel(
+      icon: AppSvgs.privacy,
+      title: "Create a PIN",
+      screenPath: "/pin_auth",
+    ),
     HelperModel(
       icon: AppSvgs.income,
       title: "Income Categories",
@@ -41,13 +46,15 @@ class ProfileConstants {
       icon: AppSvgs.toc,
       title: "Term and Conditions",
       pathType: PathType.urlPath,
-      screenPath: "https://www.google.com/terms",
+      screenPath:
+          "https://shubham24680.github.io/policy/finpal-terms-and-conditions.html",
     ),
     HelperModel(
-      icon: AppSvgs.privacy,
+      icon: AppSvgs.policy,
       title: "Privacy Policy",
       pathType: PathType.urlPath,
-      screenPath: "https://www.google.com/privacy",
+      screenPath:
+          "https://shubham24680.github.io/policy/finpal-privacy-policy.html",
     ),
   ];
 }
