@@ -38,13 +38,13 @@ class ProfileConstants {
       ),
     ),
     HelperModel(
-      icon: AppSvgs.upi,
+      icon: AppSvgs.toc,
       title: "Term and Conditions",
       pathType: PathType.urlPath,
       screenPath: "https://www.google.com/terms",
     ),
     HelperModel(
-      icon: AppSvgs.upi,
+      icon: AppSvgs.privacy,
       title: "Privacy Policy",
       pathType: PathType.urlPath,
       screenPath: "https://www.google.com/privacy",

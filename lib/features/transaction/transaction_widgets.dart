@@ -109,6 +109,7 @@ Widget buildExpenseTile(
   OptionServices? options, {
   bool enableSwipe = false,
 }) {
+  final notes = payment.notes ?? "";
   final category = options?.findById(payment.categoryId);
   final isIncome = payment.paymentType == OnboardingConstants.income;
   final amount = isIncome ? payment.amount : -payment.amount;
@@ -133,8 +134,13 @@ Widget buildExpenseTile(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTypography(
-                text: category?.name ?? "Other",
+                text:
+                    notes.isNotEmpty
+                        ? payment.notes
+                        : category?.name ?? "Other",
                 fontType: FontType.body2Medium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
               SizedBox(height: 4.w),
               CustomTypography(

@@ -125,8 +125,6 @@ Widget addNotes(TextEditingController controller) {
         controller: controller,
         inputBorderType: InputBorderType.outline,
         hintText: "Add Notes",
-
-        maxLines: 3,
       ),
     ],
   );

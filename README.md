@@ -1,88 +1,250 @@
 # FinPal 💰
 
-FinPal is a modern, intuitive personal finance companion app built with Flutter. It helps you take control of your financial life by tracking expenses, analyzing spending patterns, and managing your budget with a premium, user-friendly interface.
+FinPal is a modern, intuitive personal finance companion built with Flutter. Track income and expenses, visualize spending, review transaction history, and get AI-powered financial guidance — all with a clean, premium interface.
+
+<p align="center">
+  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter"></a>
+  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.7+-0175C2?style=flat-square&logo=dart&logoColor=white" alt="Dart"></a>
+  <a href="https://riverpod.dev"><img src="https://img.shields.io/badge/Riverpod-2.x-00A4A6?style=flat-square" alt="Riverpod"></a>
+  <a href="https://github.com/shubham24680/FinPal/releases/latest"><img src="https://img.shields.io/github/v/release/shubham24680/FinPal?style=flat-square&label=Release" alt="Release"></a>
+</p>
+
+---
+
+## Table of Contents
+
+- [Download](#-download)
+- [Screenshots](#-screenshots)
+- [Features](#-features)
+- [Privacy & Data](#-privacy--data)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [AI Assistant Setup](#-ai-assistant-setup)
+- [Legal](#-legal)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+
+---
 
 ## 📲 Download
 
-You can download the latest version of the FinPal APK from the releases page:
+Download the latest Android APK from the releases page:
 
 [![Download APK](https://img.shields.io/badge/Download-APK-success?style=for-the-badge&logo=android)](https://github.com/shubham24680/FinPal/releases/latest)
+
+> FinPal currently targets **Android**. iOS, macOS, and web project folders are included for future support.
+
+---
 
 ## 📸 Screenshots
 
 <p align="center">
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/onboarding.png" width="200" alt="Onboarding" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/expense.png" width="200" alt="home" />
+  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/expense.png" width="200" alt="Dashboard" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/transaction.png" width="200" alt="Transactions" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/profile.png" width="200" alt="Profile" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/add_payment.png" width="200" alt="add_payment" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/ai_screen.png" width="200" alt="ai_screen" />
+  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/add_payment.png" width="200" alt="Add Payment" />
+  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/ai_screen.png" width="200" alt="FinPal AI" />
 </p>
+
+---
 
 ## 🚀 Features
 
-- **Smart Expense Tracking**: Quickly log income and expenses with categories and payment methods.
-- **Visual Analytics**: Interactive pie charts and financial analysis to understand where your money goes.
-- **Transaction History**: Detailed logs grouped by month and day for easy review.
-- **Overspent Alerts**: Real-time validation that warns you when your spending exceeds your income.
-- **Customizable Profiles**: Personalize your experience with custom avatars and profile details.
-- **Smooth Onboarding**: A beautiful guided introduction to help you get started.
+### Core Finance
+- **Income & Expense Tracking** — Log transactions with amount, date, category, payment method, and optional notes.
+- **Visual Analytics** — Interactive pie charts and balance cards to understand spending at a glance.
+- **Transaction History** — Browse records grouped by month and day with date filtering.
+- **Overspent Alerts** — Real-time validation warns you when expenses exceed income.
+- **Swipe Actions** — Swipe transactions to edit or delete them quickly.
+
+### Personalization
+- **Custom Categories** — Manage your own income and expense categories.
+- **Payment Methods** — Add and organize payment methods (UPI, cash, cards, etc.).
+- **Profile** — Set a display name and choose from built-in avatars.
+- **Smooth Onboarding** — Guided first-run experience for new users.
+
+### FinPal AI
+- **AI Finance Assistant** — Chat with FinPal AI powered by Google Gemini for budgeting tips, spending insights, and financial literacy.
+- **Markdown Responses** — Rich, readable AI replies with copy and retry actions.
+- **Message Editing** — Edit a previous message to restart the conversation from that point.
+- **Local Chat History** — Conversations are stored on-device for quick access.
+
+---
+
+## 🔒 Privacy & Data
+
+FinPal is designed with a **local-first** approach:
+
+| Data | Storage |
+|------|---------|
+| Profile, transactions, categories | On-device (Hive) |
+| AI chat history | On-device (Hive) |
+| AI responses | Sent to Google Gemini only when you use the assistant |
+
+- No account or sign-up required
+- No bank login or credential collection
+- Uninstalling the app removes locally stored data from your device
+
+See [Privacy Policy](docs/privacy-policy.html) and [Terms & Conditions](docs/terms-and-conditions.html) for full details.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Flutter](https://flutter.dev) - UI toolkit for building natively compiled applications.
-- **State Management**: [Riverpod](https://riverpod.dev) - A reactive caching and state management framework.
-- **Local Database**: [Hive](https://docs.hivedb.dev/) - Lightweight and blazing fast key-value database.
-- **Navigation**: [GoRouter](https://pub.dev/packages/go_router) - Declarative routing for Flutter.
-- **UI Enhancements**: 
-  - `flutter_screenutil` for responsive design.
-  - `fl_chart` for beautiful data visualization.
-  - `flutter_svg` for crisp vector graphics.
+| Layer | Tools |
+|-------|-------|
+| **Framework** | [Flutter](https://flutter.dev) |
+| **State Management** | [Riverpod](https://riverpod.dev) |
+| **Local Database** | [Hive](https://docs.hivedb.dev/) |
+| **Routing** | [GoRouter](https://pub.dev/packages/go_router) |
+| **AI** | [Google Generative AI (Gemini)](https://ai.google.dev/) |
+| **Charts** | [fl_chart](https://pub.dev/packages/fl_chart) |
+| **UI** | `flutter_screenutil`, `flutter_svg`, `flutter_markdown_plus` |
+| **Other** | `dio`, `shared_preferences`, `url_launcher`, `uuid`, `intl` |
+
+---
 
 ## 📂 Project Structure
 
 ```text
 lib/
-├── app/               # Core app config, routing (GoRouter), and initialization
-├── core/              # Global components, themes, extensions, and utils
-└── features/          # Feature-based modules
-    ├── onboarding/    # Introduction flow
-    ├── home/          # Main dashboard
-    ├── add_payment/   # Income & Expense logging
-    ├── profile/       # User profile management
-    └── transaction/   # History and detailed logs
+├── app/                    # App bootstrap, theme, routing (GoRouter)
+├── core/
+│   ├── customs/            # Reusable UI components (buttons, typography, etc.)
+│   ├── local_storage/      # Hive service & network helpers
+│   ├── services/           # Gemini AI integration
+│   └── utils/              # Colors, widgets, constants, gemini_config (local)
+└── features/               # Feature-first modules
+    ├── onboarding/         # First-run introduction flow
+    ├── home/               # Shell, bottom navigation
+    ├── expense/            # Dashboard, balance card, category charts
+    ├── add_payment/        # Add / edit income & expense
+    ├── transaction/        # History, swipe actions, overview
+    ├── profile/            # Profile, categories, payment methods, legal links
+    └── ai/                 # FinPal AI chat screen & providers
+
+docs/
+├── privacy-policy.html
+└── terms-and-conditions.html
 ```
+
+---
 
 ## 🏗️ Getting Started
 
-1. **Clone the repository**:
+### Prerequisites
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (3.x)
+- Dart `^3.7.2`
+- Android Studio / VS Code with Flutter extensions
+
+### Setup
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/shubham24680/FinPal.git
+   cd FinPal
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies**
    ```bash
    flutter pub get
    ```
 
-3. **Run code generation** (for Hive adapters):
+3. **Generate Hive adapters**
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
 
-4. **Launch the app**:
+4. **Configure Gemini API** (required for AI features) — see [AI Assistant Setup](#-ai-assistant-setup)
+
+5. **Run the app**
    ```bash
    flutter run
    ```
 
-## 📋 Future Roadmap (Planning)
+### Build APK
 
-- [ ] **Multi-currency Support**: Handle transactions in different currencies with live conversion.
-- [ ] **Data Export**: Export your financial data to CSV or PDF reports.
-- [ ] **Subscriptions Tracking**: Manage recurring payments and get notified before they are due.
-- [ ] **Budget Goals**: Set monthly savings targets and track progress.
-- [ ] **Dark Mode**: Add support for sleek dark mode themes.
-- [ ] **Cloud Sync**: Optional cloud backup and multi-device synchronization.
+```bash
+flutter build apk --release
+```
+
+The output APK will be at `build/app/outputs/flutter-apk/app-release.apk`.
+
+---
+
+## 🤖 AI Assistant Setup
+
+The AI feature requires a Google Gemini API key. The config file is **gitignored** and must be created locally.
+
+1. Get an API key from [Google AI Studio](https://aistudio.google.com/apikey).
+2. Create `lib/core/utils/gemini_config.dart`:
+
+```dart
+import 'package:google_generative_ai/google_generative_ai.dart';
+
+class GeminiConfig {
+  static const String apiKey = 'YOUR_GEMINI_API_KEY';
+
+  static const String financeSystemPrompt = '''
+You are FinPal AI, a personal finance assistant...
+''';
+
+  static const double temperature = 0.2;
+  static const int maxTokens = 2048;
+
+  static final GenerativeModel model = GenerativeModel(
+    model: 'gemini-2.5-flash',
+    apiKey: apiKey,
+    generationConfig: GenerationConfig(
+      temperature: temperature,
+      maxOutputTokens: maxTokens,
+    ),
+  );
+}
+```
+
+3. Replace `YOUR_GEMINI_API_KEY` with your key.
+
+> **Important:** Never commit your API key. `gemini_config.dart` is listed in `.gitignore` for this reason.
+
+---
+
+## 📄 Legal
+
+Legal pages are available in the `docs/` folder and can be hosted via GitHub Pages or any static site host:
+
+- [Privacy Policy](docs/privacy-policy.html)
+- [Terms & Conditions](docs/terms-and-conditions.html)
+
+Update the URLs in `lib/features/profile/profile_constants.dart` once hosted.
+
+---
+
+## 📋 Roadmap
+
+- [ ] **Multi-currency Support** — Handle transactions in different currencies with live conversion.
+- [ ] **Data Export** — Export financial data to CSV or PDF reports.
+- [ ] **Subscriptions Tracking** — Manage recurring payments and get notified before they are due.
+- [ ] **Budget Goals** — Set monthly savings targets and track progress.
+- [ ] **Dark Mode** — Full dark theme support across the app.
+- [ ] **Cloud Sync** — Optional cloud backup and multi-device synchronization.
+- [ ] **iOS Release** — App Store build and distribution.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To get started:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Open a pull request against `main`
+
+Please keep changes focused and follow the existing feature-based folder structure.
 
 ---
 

@@ -19,15 +19,7 @@ class AddExpenseScreen extends ConsumerWidget {
 
     ref.listen(paymentProv, (prev, next) {
       if (next.isSaved && !(prev?.isSaved ?? false)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: CustomTypography(
-              text: 'Expense saved!',
-              color: Colors.white,
-              fontType: FontType.body2Regular,
-            ),
-          ),
-        );
+        showToast(context, 'Expense saved!');
       }
     });
 
@@ -55,6 +47,8 @@ class AddExpenseScreen extends ConsumerWidget {
                   },
                 ),
                 SizedBox(height: 16.w),
+                addNotes(expenseState.notesController),
+                SizedBox(height: 16.w),
                 buildCategoryTile(
                   context,
                   "Category",
@@ -73,8 +67,6 @@ class AddExpenseScreen extends ConsumerWidget {
                       (paymentMethod) =>
                           expenseNotifier.setPaymentMethod(paymentMethod),
                 ),
-                SizedBox(height: 16.w),
-                addNotes(expenseState.notesController),
               ],
             ),
           ),

@@ -19,15 +19,7 @@ class AddIncomeScreen extends ConsumerWidget {
 
     ref.listen(paymentProv, (prev, next) {
       if (next.isSaved && !(prev?.isSaved ?? false)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: CustomTypography(
-              text: 'Income saved!',
-              color: Colors.white,
-              fontType: FontType.body2Regular,
-            ),
-          ),
-        );
+        showToast(context, 'Income saved!');
       }
     });
 
@@ -50,6 +42,8 @@ class AddIncomeScreen extends ConsumerWidget {
                   onChanged: (value) => incomeNotifier.checkCondition(value),
                 ),
                 SizedBox(height: 16.w),
+                addNotes(incomeState.notesController),
+                SizedBox(height: 16.w),
                 buildCategoryTile(
                   context,
                   "Category",
@@ -68,8 +62,6 @@ class AddIncomeScreen extends ConsumerWidget {
                       (paymentMethod) =>
                           incomeNotifier.setPaymentMethod(paymentMethod),
                 ),
-                SizedBox(height: 16.w),
-                addNotes(incomeState.notesController),
               ],
             ),
           ),
