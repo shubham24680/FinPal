@@ -5,6 +5,7 @@ class TransactionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedDate = ref.watch(selectedDateProvider);
     final transactions = ref.watch(transactionProvider);
     final options = ref.watch(optionNotifer).value;
     final topPadding =
@@ -16,14 +17,37 @@ class TransactionScreen extends ConsumerWidget {
       top: topPadding,
       bottom: bottomPadding,
     );
-    final title = CustomTypography(
-      text: "Transactions",
-      fontType: FontType.h1Bold,
+    final title = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomTypography(text: "Transactions", fontType: FontType.h1Bold),
+        CustomContainer(
+          onTap: () async {
+            final date = await chooseDate(context, formatDate(selectedDate));
+            ref.read(selectedDateProvider.notifier).state = parseDate(date);
+          },
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 4.w,
+            children: [
+              CustomTypography(
+                text: formatDate(selectedDate, type: DateFormatType.monthYear),
+                fontType: FontType.label1SemiBold,
+              ),
+              CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: AppSvgs.arrowDown,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
 
     return transactions.when(
       data: (data) {
-        final monthlyTransactions = data.getMonthlyTransactions();
+        final monthlyTransactions = data.getMonthlyTransactions(selectedDate);
         if (monthlyTransactions.isEmpty) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -51,6 +51,7 @@ class TextColors {
   static const Color shade700 = Color(0xFF1A1D17);
   static const Color shade800 = Color(0xFF11130F);
   static const Color shade900 = Color(0xFF090907);
+  static const Color shade1000 = Color(0xFF000000);
 }
 
 class SecondaryColors {

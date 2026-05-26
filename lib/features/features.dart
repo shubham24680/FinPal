@@ -24,7 +24,6 @@ export 'transaction/screens/transaction_overview_screen.dart';
 export 'transaction/transaction_widgets.dart';
 export 'transaction/transaction_provider.dart';
 export 'transaction/transaction_service.dart';
-export 'transaction/models/transaction_model.dart';
 
 // Profile
 export 'profile/screens/profile_screen.dart';
@@ -44,3 +43,10 @@ export 'add_payment/providers/payment_provider.dart';
 export 'profile/providers/options_provider.dart';
 export 'profile/services/option_services.dart';
 export 'profile/models/option_model.dart';
+
+// Bot
+export 'ai/ai_screen.dart';
+export 'ai/ai_provider.dart';
+export 'ai/ai_model.dart';
+export 'ai/ai_service.dart';
+export 'ai/ai_helper.dart';
