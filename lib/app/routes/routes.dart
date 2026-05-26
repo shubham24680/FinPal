@@ -10,7 +10,9 @@ enum AppRoutesPath {
     child: TransactionOverviewScreen(),
   ),
   options(path: "/options", child: OptionsScreen()),
-  ai(path: "/ai", child: AIScreen());
+  ai(path: "/ai", child: AIScreen()),
+  fingerprintAuth(path: "/fingerprint_auth", child: AIScreen()),
+  pinAuth(path: "/pin_auth", child: AIScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;

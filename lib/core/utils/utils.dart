@@ -47,6 +47,8 @@ class AppSvgs {
   static const String info = "assets/svgs/info.svg";
   static const String toc = "assets/svgs/toc.svg";
   static const String privacy = "assets/svgs/privacy.svg";
+  static const String policy = "assets/svgs/policy.svg";
+  static const String fingerprint = "assets/svgs/fingerprint.svg";
 }
 
 class AppFonts {
