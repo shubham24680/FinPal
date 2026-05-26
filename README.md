@@ -16,6 +16,7 @@ You can download the latest version of the FinPal APK from the releases page:
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/transaction.png" width="200" alt="Transactions" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/profile.png" width="200" alt="Profile" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/add_payment.png" width="200" alt="add_payment" />
+  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/ai_screen.png" width="200" alt="ai_screen" />
 </p>
 
 ## 🚀 Features
