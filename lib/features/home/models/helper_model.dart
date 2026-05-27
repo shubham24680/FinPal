@@ -2,6 +2,8 @@ import 'package:finpal/app/app.dart';
 
 enum PathType { screenPath, urlPath, defaultPath }
 
+enum ProfileAction { toggle, navigate }
+
 class NavModel {
   String icon;
   PathType pathType;
@@ -22,6 +24,7 @@ class HelperModel {
   String? title;
   String? screenPath;
   ExtraModel? extra;
+  ProfileAction action;
 
   HelperModel({
     this.pathType = PathType.screenPath,
@@ -29,5 +32,6 @@ class HelperModel {
     this.title,
     this.screenPath,
     this.extra,
+    this.action = ProfileAction.navigate,
   });
 }

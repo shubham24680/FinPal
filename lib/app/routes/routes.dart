@@ -1,4 +1,5 @@
 import 'package:finpal/app/app.dart';
+import 'package:flutter/services.dart';
 
 enum AppRoutesPath {
   onboarding(path: "/onboarding", child: OnboardingScreen()),
@@ -10,9 +11,7 @@ enum AppRoutesPath {
     child: TransactionOverviewScreen(),
   ),
   options(path: "/options", child: OptionsScreen()),
-  ai(path: "/ai", child: AIScreen()),
-  fingerprintAuth(path: "/fingerprint_auth", child: AIScreen()),
-  pinAuth(path: "/pin_auth", child: AIScreen());
+  ai(path: "/ai", child: AIScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;
@@ -20,6 +19,7 @@ enum AppRoutesPath {
 }
 
 class AppRoutes {
+  static bool _isAuthenticatedThisSession = false;
   static final routesProvider = Provider<GoRouter>((ref) {
     final refresh = ValueNotifier<int>(0);
     ref.listen<AsyncValue<ProfileModel>>(profileNotifier, (_, __) {
@@ -30,7 +30,7 @@ class AppRoutes {
     return GoRouter(
       refreshListenable: refresh,
       initialLocation: AppRoutesPath.home.path,
-      redirect: (context, state) {
+      redirect: (context, state) async {
         final profileAsync = ref.read(profileNotifier);
         if (!profileAsync.hasValue) {
           return null;
@@ -43,6 +43,15 @@ class AppRoutes {
           return AppRoutesPath.onboarding.path;
         }
 
+        final isFingerprintEnabled = profile.isFingerprintEnabled;
+        if (isFingerprintEnabled && !_isAuthenticatedThisSession) {
+          final result = await FingerprintServices.instance.authenticate();
+          if (result != AuthResult.success) {
+            SystemNavigator.pop();
+          }
+        }
+
+        _isAuthenticatedThisSession = true;
         return null;
       },
       routes: [

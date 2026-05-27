@@ -21,6 +21,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     int? profileImageIndex,
     String? name,
     bool? isFirstTimeVisit,
+    bool? isFingerprintEnabled,
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
@@ -29,6 +30,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
         profileImageIndex: profileImageIndex,
         name: name,
         isFirstTimeVisit: isFirstTimeVisit,
+        isFingerprintEnabled: isFingerprintEnabled,
       );
       await _hiveService.saveData(_key, profileModel);
       return profileModel;

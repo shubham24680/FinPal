@@ -1,7 +1,8 @@
 // ONBOARDING
 export 'onboarding/onboarding_constants.dart';
 export 'onboarding/onboarding_provider.dart';
-export 'onboarding/onboarding_screen.dart';
+export 'onboarding/screens/onboarding_screen.dart';
+export 'onboarding/screens/splash_screen.dart';
 export 'onboarding/onboarding_model.dart';
 
 // Home
@@ -50,3 +51,8 @@ export 'ai/ai_provider.dart';
 export 'ai/ai_model.dart';
 export 'ai/ai_service.dart';
 export 'ai/ai_helper.dart';
+
+// Authentication
+export 'profile/authentication/auth_provider.dart';
+export 'profile/authentication/pin/pin_auth_screen.dart';
+export 'profile/authentication/fingerprint/fingerprint_widget.dart';

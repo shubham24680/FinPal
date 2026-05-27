@@ -3,6 +3,7 @@ import 'package:finpal/app/app.dart';
 class AppImages {
   static const String onboarding1 = 'assets/images/onboarding1.png';
   static const String onboarding2 = 'assets/images/onboarding2.png';
+  static const String splash = 'assets/res/splash.png';
   static const String placeholderImage = 'assets/images/placeholder_image.webp';
   static final avatar = List.generate(
     10,

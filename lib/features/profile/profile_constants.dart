@@ -6,12 +6,14 @@ class ProfileConstants {
       icon: AppSvgs.fingerprint,
       title: "Fingerprint Authentication",
       screenPath: "/fingerprint_auth",
+      action: ProfileAction.toggle,
     ),
-    HelperModel(
-      icon: AppSvgs.privacy,
-      title: "Create a PIN",
-      screenPath: "/pin_auth",
-    ),
+    // HelperModel(
+    //   icon: AppSvgs.privacy,
+    //   title: "Create Passcode",
+    //   screenPath: "/pin_auth",
+    //   action: ProfileAction.toggle,
+    // ),
     HelperModel(
       icon: AppSvgs.income,
       title: "Income Categories",

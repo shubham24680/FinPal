@@ -88,47 +88,60 @@ class ProfileScreen extends ConsumerWidget {
         final icon = content.icon;
         final title = content.title;
 
-        return InkWell(
-          onTap: () {
-            if (screenPath != null) {
-              if (content.pathType == PathType.urlPath) {
-                hitUrl(screenPath);
-              } else {
-                context.push(screenPath, extra: content.extra);
-              }
-            }
-          },
-          child: SizedBox(
-            height: 0.07.sh,
-            child: Row(
-              spacing: 16.w,
-              children: [
-                if (icon != null)
-                  CustomImage(
-                    imageType: ImageType.svgLocal,
-                    imageUrl: icon,
-                    height: 24.w,
-                    color: BGColors.shade900,
-                  ),
-                if (title != null)
-                  Expanded(
-                    child: CustomTypography(
-                      text: title,
-                      fontType: FontType.body2Medium,
-                    ),
-                  ),
+        final child = SizedBox(
+          height: 0.07.sh,
+          child: Row(
+            spacing: 16.w,
+            children: [
+              if (icon != null)
                 CustomImage(
                   imageType: ImageType.svgLocal,
-                  imageUrl: AppSvgs.arrowRight,
-                  height: 16.w,
+                  imageUrl: icon,
+                  height: 24.w,
+                  color: BGColors.shade900,
                 ),
-              ],
-            ),
+              if (title != null)
+                Expanded(
+                  child: CustomTypography(
+                    text: title,
+                    fontType: FontType.body2Medium,
+                  ),
+                ),
+              _buildAction(content.action),
+            ],
           ),
         );
+
+        if (content.action == ProfileAction.navigate) {
+          return InkWell(
+            onTap: () {
+              if (screenPath != null) {
+                if (content.pathType == PathType.urlPath) {
+                  hitUrl(screenPath);
+                } else {
+                  context.push(screenPath, extra: content.extra);
+                }
+              }
+            },
+            child: child,
+          );
+        }
+
+        return child;
       },
       separatorBuilder:
           (_, index) => Divider(color: BGColors.shade700, height: 0),
     );
+  }
+
+  Widget _buildAction(ProfileAction action) {
+    return switch (action) {
+      ProfileAction.toggle => const FingerprintWidget(),
+      _ => CustomImage(
+        imageType: ImageType.svgLocal,
+        imageUrl: AppSvgs.arrowRight,
+        height: 16.w,
+      ),
+    };
   }
 }

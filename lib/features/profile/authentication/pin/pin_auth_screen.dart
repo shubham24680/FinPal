@@ -6,6 +6,7 @@ class PinAuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(context, title: "Create Passcode"),
       body: Center(
         child: CustomTypography(text: "Pin Auth", fontType: FontType.h1Bold),
       ),
