@@ -206,8 +206,11 @@ class AuthProvider extends StateNotifier<AuthState> {
       return;
     }
 
-    AppRoutes.isAppLocked = false;
-    await ref.read(profileNotifier.notifier).save(isPasscodeEnabled: true);
+    final profile = ref.read(profileNotifier).value?.isPasscodeEnabled ?? true;
+    if (!profile) {
+      await ref.read(profileNotifier.notifier).save(isPasscodeEnabled: true);
+    }
+
     state = state.copyWith(
       toastType: ToastType.success,
       message: 'Passcodes updated successfully',

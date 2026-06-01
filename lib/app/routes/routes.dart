@@ -51,6 +51,7 @@ class AppRoutes {
           return AppRoutesPath.lockScreen.path;
         }
 
+        isAppLocked = false;
         return null;
       },
       routes: [

@@ -5,8 +5,9 @@ class FingerprintWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFingerprintEnabled =
-        ref.watch(profileNotifier).value?.isFingerprintEnabled ?? false;
+    final profileState = ref.watch(profileNotifier).value;
+    final isPasscodeEnabled = profileState?.isPasscodeEnabled ?? false;
+    final isFingerprintEnabled = profileState?.isFingerprintEnabled ?? false;
     final fingerprint = ref.read(profileNotifier.notifier);
 
     return Switch(
@@ -30,8 +31,15 @@ class FingerprintWidget extends ConsumerWidget {
                   ),
                   _fingerprintTermsAndConditions(),
                   CustomButton(
-                    label: "Enable Fingerprint",
+                    label:
+                        isPasscodeEnabled
+                            ? "Enable Fingerprint"
+                            : "Set Passcode to enable fingerprint",
                     onTap: () async {
+                      if (!isPasscodeEnabled) {
+                        context.push(AppRoutesPath.pinAuth.path);
+                        return;
+                      }
                       await _handleEnableFingerprint(context, fingerprint);
                       if (!context.mounted) return;
                       context.pop();

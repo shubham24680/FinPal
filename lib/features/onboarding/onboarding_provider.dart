@@ -3,18 +3,28 @@ import 'package:finpal/app/app.dart';
 class OnboardingState {
   final PageController pageController;
   final int currentIndex;
+  final bool isLoading;
 
-  OnboardingState({required this.pageController, required this.currentIndex});
+  OnboardingState({
+    required this.pageController,
+    required this.currentIndex,
+    required this.isLoading,
+  });
 
-  factory OnboardingState.initial() =>
-      OnboardingState(pageController: PageController(), currentIndex: 0);
+  factory OnboardingState.initial() => OnboardingState(
+    pageController: PageController(),
+    currentIndex: 0,
+    isLoading: false,
+  );
 
   OnboardingState copyWith({
     PageController? pageController,
     int? currentIndex,
+    bool? isLoading,
   }) => OnboardingState(
     pageController: pageController ?? this.pageController,
     currentIndex: currentIndex ?? this.currentIndex,
+    isLoading: isLoading ?? this.isLoading,
   );
 }
 
@@ -41,11 +51,13 @@ class OnboardingNotifer extends StateNotifier<OnboardingState> {
   }
 
   Future<void> setupDefaultData() async {
+    state = state.copyWith(isLoading: true);
     await _ref.read(profileNotifier.notifier).save(isFirstTimeVisit: false);
     await _ref.read(optionNotifer.future);
     await _ref
         .read(optionNotifer.notifier)
         .saveAllOptions(OnboardingConstants.allOptions);
+    state = state.copyWith(isLoading: false);
   }
 }
 

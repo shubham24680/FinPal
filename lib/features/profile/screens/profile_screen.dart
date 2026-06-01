@@ -47,7 +47,7 @@ class ProfileScreen extends ConsumerWidget {
             ],
           ),
           _buildButtons(context, false),
-          _contents(context),
+          _contents(context, profileState),
         ],
       ),
     );
@@ -76,7 +76,7 @@ class ProfileScreen extends ConsumerWidget {
         : editButton;
   }
 
-  Widget _contents(BuildContext context) {
+  Widget _contents(BuildContext context, ProfileState profileState) {
     return ListView.separated(
       itemCount: ProfileConstants.contentList.length,
       shrinkWrap: true,

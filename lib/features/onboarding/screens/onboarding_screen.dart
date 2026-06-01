@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 class OnboardingScreen extends ConsumerWidget {
@@ -121,21 +123,33 @@ class OnboardingScreen extends ConsumerWidget {
             width: 56.w,
             height: 56.w,
             showShadow: true,
-            onTap: () {
-              if (state.currentIndex <
-                  OnboardingConstants.onboardingData.length - 1) {
-                onboardingNotifier.next();
-              } else {
-                context.go("/");
-                onboardingNotifier.setupDefaultData();
-              }
-            },
+            onTap:
+                state.isLoading
+                    ? null
+                    : () async {
+                      if (state.currentIndex <
+                          OnboardingConstants.onboardingData.length - 1) {
+                        onboardingNotifier.next();
+                      } else {
+                        await onboardingNotifier.setupDefaultData();
+                        if (context.mounted) {
+                          log("going to home");
+                          context.go(AppRoutesPath.home.path);
+                        }
+                      }
+                    },
             borderRadius: BorderRadius.circular(22.r),
-            child: CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: AppSvgs.arrowRight,
-              width: 24.w,
-            ),
+            child:
+                state.isLoading
+                    ? const CircularProgressIndicator(
+                      strokeCap: StrokeCap.round,
+                      color: TextColors.shade900,
+                    )
+                    : CustomImage(
+                      imageType: ImageType.svgLocal,
+                      imageUrl: AppSvgs.arrowRight,
+                      width: 24.w,
+                    ),
           ),
         ],
       ),
