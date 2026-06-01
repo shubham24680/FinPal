@@ -1,15 +1,66 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
-class PinAuthScreen extends ConsumerWidget {
-  const PinAuthScreen({super.key});
+class LockScreen extends ConsumerStatefulWidget {
+  const LockScreen({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LockScreen> createState() => _LockScreenState();
+}
+
+class _LockScreenState extends ConsumerState<LockScreen>
+    with WidgetsBindingObserver {
+  bool _status = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   launchBiometric();
+    // });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    setState(() {
+      if (state == AppLifecycleState.resumed && _status) {
+        launchBiometric();
+        _status = false;
+      } else if (state == AppLifecycleState.paused ||
+          state == AppLifecycleState.detached) {
+        _status = true;
+      }
+    });
+
+    log("status: $_status");
+  }
+
+  Future<void> launchBiometric() async {
+    await ref.read(authProvider.notifier).authenticateWithBiometric();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final authProv = ref.read(authProvider.notifier);
     final avatarUrl = AppImages.avatar[authState.profilePicIndex];
 
     ref.listen(authProvider, (prev, next) {
-      if ((next.toastType == ToastType.error)) {
+      if (next.isUnlocked) {
+        context.go(AppRoutesPath.home.path);
+        return;
+      }
+      if (next.toastType == ToastType.error) {
         showToast(
           context,
           next.message ?? 'Something went wrong. Please try again.',
@@ -19,20 +70,9 @@ class PinAuthScreen extends ConsumerWidget {
           authProv.onClear();
         });
       }
-      if (next.toastType == ToastType.success) {
-        showToast(
-          context,
-          next.message ?? "Something went wrong. Please try again.",
-          backgroundColor: TextColors.shade900,
-        );
-        if (context.mounted) {
-          context.pop();
-        }
-      }
     });
 
     return Scaffold(
-      appBar: customAppBar(context, title: authState.step.label),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,7 +112,6 @@ class PinAuthScreen extends ConsumerWidget {
                   length: authProv.pinLength,
                   pin: authState.confirmPin,
                   hasError: authState.toastType == ToastType.error,
-                  obscure: authState.step != PinScreen.create,
                 ),
               ],
             ),
@@ -80,7 +119,11 @@ class PinAuthScreen extends ConsumerWidget {
               child: PinKeypad(
                 onChanged: (digit) => authProv.onChanged(digit),
                 onBackspace: authProv.onBackspace,
-                onClear: authProv.onClear,
+                onClear:
+                    authState.isBiometricEnabled
+                        ? () => authProv.authenticateWithBiometric()
+                        : authProv.onClear,
+                isBiometricEnabled: authState.isBiometricEnabled,
               ).padding(horizontal: AppConstants.sidePadding),
             ),
           ],

@@ -3,6 +3,7 @@ export 'onboarding/onboarding_constants.dart';
 export 'onboarding/onboarding_provider.dart';
 export 'onboarding/screens/onboarding_screen.dart';
 export 'onboarding/screens/splash_screen.dart';
+export 'onboarding/screens/lock_screen.dart';
 export 'onboarding/onboarding_model.dart';
 
 // Home
@@ -56,3 +57,6 @@ export 'ai/ai_helper.dart';
 export 'profile/authentication/auth_provider.dart';
 export 'profile/authentication/pin/pin_auth_screen.dart';
 export 'profile/authentication/fingerprint/fingerprint_widget.dart';
+export 'profile/authentication/pin/pin_storage_service.dart';
+export 'profile/authentication/pin/widgets/pin_dots_indicator.dart';
+export 'profile/authentication/pin/widgets/pin_keypad.dart';

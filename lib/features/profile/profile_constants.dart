@@ -5,15 +5,13 @@ class ProfileConstants {
     HelperModel(
       icon: AppSvgs.fingerprint,
       title: "Fingerprint Authentication",
-      screenPath: "/fingerprint_auth",
       action: ProfileAction.toggle,
     ),
-    // HelperModel(
-    //   icon: AppSvgs.privacy,
-    //   title: "Create Passcode",
-    //   screenPath: "/pin_auth",
-    //   action: ProfileAction.toggle,
-    // ),
+    HelperModel(
+      icon: AppSvgs.privacy,
+      title: "Change Passcode",
+      screenPath: "/pin_auth",
+    ),
     HelperModel(
       icon: AppSvgs.income,
       title: "Income Categories",

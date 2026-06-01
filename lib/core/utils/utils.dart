@@ -50,6 +50,7 @@ class AppSvgs {
   static const String privacy = "assets/svgs/privacy.svg";
   static const String policy = "assets/svgs/policy.svg";
   static const String fingerprint = "assets/svgs/fingerprint.svg";
+  static const String backspace = "assets/svgs/backspace.svg";
 }
 
 class AppFonts {

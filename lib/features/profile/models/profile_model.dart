@@ -12,12 +12,15 @@ class ProfileModel extends HiveObject {
   final bool isFirstTimeVisit;
   @HiveField(3, defaultValue: false)
   final bool isFingerprintEnabled;
+  @HiveField(4, defaultValue: false)
+  final bool isPasscodeEnabled;
 
   ProfileModel({
     this.name,
     this.profileImageIndex = 0,
     this.isFirstTimeVisit = true,
     this.isFingerprintEnabled = false,
+    this.isPasscodeEnabled = false,
   });
 
   ProfileModel copyWith({
@@ -25,10 +28,12 @@ class ProfileModel extends HiveObject {
     int? profileImageIndex,
     bool? isFirstTimeVisit,
     bool? isFingerprintEnabled,
+    bool? isPasscodeEnabled,
   }) => ProfileModel(
     name: name ?? this.name,
     profileImageIndex: profileImageIndex ?? this.profileImageIndex,
     isFirstTimeVisit: isFirstTimeVisit ?? this.isFirstTimeVisit,
     isFingerprintEnabled: isFingerprintEnabled ?? this.isFingerprintEnabled,
+    isPasscodeEnabled: isPasscodeEnabled ?? this.isPasscodeEnabled,
   );
 }

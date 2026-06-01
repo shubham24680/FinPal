@@ -1,5 +1,4 @@
 import 'package:finpal/app/app.dart';
-import 'package:flutter/services.dart';
 
 enum AppRoutesPath {
   onboarding(path: "/onboarding", child: OnboardingScreen()),
@@ -11,7 +10,9 @@ enum AppRoutesPath {
     child: TransactionOverviewScreen(),
   ),
   options(path: "/options", child: OptionsScreen()),
-  ai(path: "/ai", child: AIScreen());
+  ai(path: "/ai", child: AIScreen()),
+  pinAuth(path: "/pin_auth", child: PinAuthScreen()),
+  lockScreen(path: "/lock", child: LockScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;
@@ -19,7 +20,7 @@ enum AppRoutesPath {
 }
 
 class AppRoutes {
-  static bool _isAuthenticatedThisSession = false;
+  static bool isAppLocked = true;
   static final routesProvider = Provider<GoRouter>((ref) {
     final refresh = ValueNotifier<int>(0);
     ref.listen<AsyncValue<ProfileModel>>(profileNotifier, (_, __) {
@@ -43,15 +44,13 @@ class AppRoutes {
           return AppRoutesPath.onboarding.path;
         }
 
-        final isFingerprintEnabled = profile.isFingerprintEnabled;
-        if (isFingerprintEnabled && !_isAuthenticatedThisSession) {
-          final result = await FingerprintServices.instance.authenticate();
-          if (result != AuthResult.success) {
-            SystemNavigator.pop();
-          }
+        final isPasscodeEnabled = profile.isPasscodeEnabled;
+        final isOnLockScreen =
+            state.matchedLocation == AppRoutesPath.lockScreen.path;
+        if (isPasscodeEnabled && isAppLocked && !isOnLockScreen) {
+          return AppRoutesPath.lockScreen.path;
         }
 
-        _isAuthenticatedThisSession = true;
         return null;
       },
       routes: [

@@ -21,13 +21,14 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       profileImageIndex: fields[1] == null ? 0 : fields[1] as int,
       isFirstTimeVisit: fields[2] == null ? true : fields[2] as bool,
       isFingerprintEnabled: fields[3] == null ? false : fields[3] as bool,
+      isPasscodeEnabled: fields[4] == null ? false : fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProfileModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(2)
       ..write(obj.isFirstTimeVisit)
       ..writeByte(3)
-      ..write(obj.isFingerprintEnabled);
+      ..write(obj.isFingerprintEnabled)
+      ..writeByte(4)
+      ..write(obj.isPasscodeEnabled);
   }
 
   @override

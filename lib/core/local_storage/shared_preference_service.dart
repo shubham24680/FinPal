@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum StorageKey { enableFingerprint }
+enum StorageKey { enableFingerprint } //unused right now.
 
 class SPD {
   static SPD? _instance;
