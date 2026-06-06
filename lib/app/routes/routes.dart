@@ -2,7 +2,7 @@ import 'package:finpal/app/app.dart';
 
 enum AppRoutesPath {
   onboarding(path: "/onboarding", child: OnboardingScreen()),
-  home(path: "/", child: HomeScreen()),
+  home(path: "/home", child: HomeScreen()),
   addAmount(path: "/add_amount", child: AddAmountScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
   transactionOverview(
@@ -12,7 +12,8 @@ enum AppRoutesPath {
   options(path: "/options", child: OptionsScreen()),
   ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen()),
-  lockScreen(path: "/lock", child: LockScreen());
+  lockScreen(path: "/lock", child: LockScreen()),
+  splash(path: "/", child: SplashScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;
@@ -30,12 +31,19 @@ class AppRoutes {
 
     return GoRouter(
       refreshListenable: refresh,
-      initialLocation: AppRoutesPath.home.path,
+      initialLocation: AppRoutesPath.splash.path,
       redirect: (context, state) async {
         final profileAsync = ref.read(profileNotifier);
+
+        //Splash Screen
+        if (profileAsync.isLoading) {
+          return AppRoutesPath.splash.path;
+        }
         if (!profileAsync.hasValue) {
           return null;
         }
+
+        //Onboaring
         final profile = profileAsync.requireValue;
         final isFirstVisit = profile.isFirstTimeVisit;
         final isOnboarding =
