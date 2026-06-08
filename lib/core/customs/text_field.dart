@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:finpal/app/app.dart';
 import 'package:flutter/services.dart';
 
@@ -5,16 +7,13 @@ enum TextFieldType { input, dropdown }
 
 enum InputType { text, amount }
 
-enum InputBorderType { underline, outline }
-
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
     this.inputType = InputType.text,
     this.textFieldType = TextFieldType.input,
-    this.inputBorderType = InputBorderType.underline,
+    this.header,
     this.controller,
-    this.filled,
     this.fillColor,
     this.labelText,
     this.hintText,
@@ -39,10 +38,9 @@ class CustomTextField extends StatelessWidget {
   });
 
   final InputType inputType;
-  final InputBorderType inputBorderType;
   final TextFieldType textFieldType;
+  final String? header;
   final TextEditingController? controller;
-  final bool? filled;
   final bool readOnly;
   final bool autofocus;
   final Color? fillColor;
@@ -67,29 +65,24 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultColor = Colors.transparent;
-
     final decoration = InputDecoration(
-      filled: filled,
-      fillColor: fillColor ?? defaultColor,
+      fillColor: fillColor,
       labelText: labelText,
       hintText: hintText ?? _buildHintText(),
       errorText: errorText,
-      labelStyle: buildHint(hintColor).getTextStyle(),
-      floatingLabelStyle: buildHint(floatingHintColor).getTextStyle(),
-      hintStyle: buildHint(hintColor).getTextStyle(),
-      errorStyle:
-          buildHint(
-            Colors.red.shade700,
-            fontType: FontType.label1Regular,
-          ).getTextStyle(),
+      labelStyle: buildHint(context, hintColor).getTextStyle(context),
+      floatingLabelStyle: buildHint(
+        context,
+        floatingHintColor,
+      ).getTextStyle(context),
+      hintStyle: buildHint(context, hintColor).getTextStyle(context),
+      errorStyle: buildHint(
+        context,
+        Colors.red.shade700,
+        fontType: FontType.label1Regular,
+      ).getTextStyle(context),
       prefixIcon: (perfixIcon ?? _buildPrefixIcon())?.padding(horizontal: 10.w),
       suffixIcon: suffixIcon?.padding(all: 10.w),
-      errorBorder: buildBorder(Colors.red.shade700),
-      focusedBorder: buildBorder(focusedBorderColor ?? BGColors.shade700),
-      enabledBorder: buildBorder(TextColors.shade300),
-      disabledBorder: buildBorder(TextColors.shade50),
-      contentPadding: EdgeInsets.all(12.w),
     );
 
     final dropDownMenu =
@@ -97,7 +90,7 @@ class CustomTextField extends StatelessWidget {
             .map(
               (value) => DropdownMenuItem(
                 value: value,
-                child: buildHint(PrimaryColors.shade500, text: value),
+                child: buildHint(context, PrimaryColors.shade500, text: value),
               ),
             )
             .toList();
@@ -109,8 +102,8 @@ class CustomTextField extends StatelessWidget {
         value: initialValue,
         onChanged: onChanged,
         decoration: decoration.copyWith(suffixIcon: suffixIcon),
-        style: buildHint(PrimaryColors.shade500).getTextStyle(),
-        hint: buildHint(hintColor, text: hintText),
+        style: buildHint(context, PrimaryColors.shade500).getTextStyle(context),
+        hint: buildHint(context, hintColor, text: hintText),
         dropdownColor: PrimaryColors.shade500,
         borderRadius: BorderRadius.circular(0.015.sh),
       ),
@@ -123,7 +116,7 @@ class CustomTextField extends StatelessWidget {
         autofocus: autofocus,
         textAlign: textAlign,
         keyboardType: keyboardType ?? _buildTextInputType(),
-        style: buildHint(TextColors.shade900).getTextStyle(),
+        style: buildHint(context, TextColors.shade900).getTextStyle(context),
         cursorColor: focusedBorderColor ?? BGColors.shade700,
         cursorErrorColor: Colors.red.shade700,
         maxLines: maxLines,
@@ -132,7 +125,19 @@ class CustomTextField extends StatelessWidget {
       ),
     };
 
-    return field;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (header != null)
+          CustomTypography(
+            text: header,
+            fontType: FontType.body1Medium,
+            color: Theme.of(context).colorScheme.onSurface,
+          ).padding(left: 4.r, bottom: 2.r),
+        field,
+      ],
+    );
   }
 
   String? _buildHintText() {
@@ -178,24 +183,24 @@ class CustomTextField extends StatelessWidget {
     };
   }
 
-  CustomTypography buildHint(Color? color, {String? text, FontType? fontType}) {
+  CustomTypography buildHint(
+    BuildContext context,
+    Color? color, {
+    String? text,
+    FontType? fontType,
+  }) {
     return CustomTypography(
       text: text,
-      color: color ?? TextColors.shade200,
+      color: color ?? Theme.of(context).colorScheme.outline,
       fontType: fontType ?? FontType.body1Medium,
     );
   }
 
   InputBorder buildBorder(Color color) {
-    return switch (inputBorderType) {
-      InputBorderType.underline => UnderlineInputBorder(
-        borderSide: BorderSide(color: color),
-      ),
-      InputBorderType.outline => OutlineInputBorder(
-        borderSide: BorderSide(color: color, width: 1.5),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-    };
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 1.5),
+      borderRadius: BorderRadius.circular(12.r),
+    );
   }
 }
 

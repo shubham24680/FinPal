@@ -1,4 +1,7 @@
-export 'customs/typography.dart';
+export 'constants/app_font_types.dart';
+
+export 'customs/typography/app_text_styles.dart';
+export 'customs/typography/typography.dart';
 export 'customs/image.dart';
 export 'customs/extensions.dart';
 export 'customs/container.dart';

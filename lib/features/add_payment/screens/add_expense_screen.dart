@@ -78,7 +78,7 @@ class AddExpenseScreen extends ConsumerWidget {
                       ? ButtonState.loading
                       : ButtonState.enabled)
                   : ButtonState.disabled,
-          icon: AppSvgs.money,
+          prefixIcon: AppSvgs.money,
           label: expenseState.isSaving ? "Saving..." : "Add Expense",
           margin: EdgeInsets.only(
             top: 8.w,

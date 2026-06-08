@@ -1,10 +1,5 @@
 // ONBOARDING
-export 'onboarding/onboarding_constants.dart';
-export 'onboarding/onboarding_provider.dart';
-export 'onboarding/screens/onboarding_screen.dart';
-export 'onboarding/screens/splash_screen.dart';
-export 'onboarding/screens/lock_screen.dart';
-export 'onboarding/onboarding_model.dart';
+export 'onboarding/onboarding.dart';
 
 // Home
 export 'home/screens/home_screen.dart';

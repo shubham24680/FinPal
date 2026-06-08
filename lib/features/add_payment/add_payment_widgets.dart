@@ -121,11 +121,7 @@ Widget addNotes(TextEditingController controller) {
         fontType: FontType.body2Semibold,
       ).padding(left: 8.w),
       SizedBox(height: 8.w),
-      CustomTextField(
-        controller: controller,
-        inputBorderType: InputBorderType.outline,
-        hintText: "Add Notes",
-      ),
+      CustomTextField(controller: controller, hintText: "Add Notes"),
     ],
   );
 }

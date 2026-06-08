@@ -29,6 +29,7 @@ class Message extends ConsumerWidget {
         message.text,
         textColor: NegativeColors.shade900,
         iconUrl: AppSvgs.info,
+        context: context,
       );
       child = wrapContainer(
         content,
@@ -62,6 +63,7 @@ class Message extends ConsumerWidget {
             message.text,
             isMarkdown: true,
             textColor: TextColors.shade700,
+            context: context,
           ),
           options,
         ],
@@ -100,7 +102,7 @@ class Message extends ConsumerWidget {
             break;
         }
       },
-      child: _buildContent(message.text),
+      child: _buildContent(message.text, context: context),
     );
   }
 
@@ -210,6 +212,7 @@ class Message extends ConsumerWidget {
     bool isMarkdown = false,
     Color textColor = Colors.white,
     String? iconUrl,
+    required BuildContext context,
   }) {
     final textWidget =
         isMarkdown
@@ -217,7 +220,7 @@ class Message extends ConsumerWidget {
               data: text,
               selectable: true,
               softLineBreak: true,
-              styleSheet: _markdownStyleSheetFor(textColor),
+              styleSheet: _markdownStyleSheetFor(textColor, context),
             )
             : CustomTypography(
               text: text,
@@ -249,6 +252,7 @@ class Message extends ConsumerWidget {
     FontStyle? fontStyle,
     TextDecoration? decoration,
     Color? textColor,
+    required BuildContext context,
   }) {
     return CustomTypography(
       fontType: fontType,
@@ -257,7 +261,7 @@ class Message extends ConsumerWidget {
       color: textColor,
       height: 2,
       letterSpacing: 0.5,
-    ).getTextStyle();
+    ).getTextStyle(context);
   }
 
   // Cache per textColor so every Message rebuild doesn't reallocate ~25
@@ -265,39 +269,81 @@ class Message extends ConsumerWidget {
   // distinct colors, so this stays tiny.
   static final Map<Color, MarkdownStyleSheet> _markdownStyleCache = {};
 
-  MarkdownStyleSheet _markdownStyleSheetFor(Color textColor) {
+  MarkdownStyleSheet _markdownStyleSheetFor(
+    Color textColor,
+    BuildContext context,
+  ) {
     return _markdownStyleCache.putIfAbsent(
       textColor,
       () => MarkdownStyleSheet(
-        p: _baseStyle(FontType.body2Regular, textColor: textColor),
+        p: _baseStyle(
+          FontType.body2Regular,
+          textColor: textColor,
+          context: context,
+        ),
         pPadding: EdgeInsets.zero,
-        h1: _baseStyle(FontType.h1Semibold, textColor: textColor),
+        h1: _baseStyle(
+          FontType.h1Semibold,
+          textColor: textColor,
+          context: context,
+        ),
         h1Padding: EdgeInsets.only(top: 8.w, bottom: 4.w),
-        h2: _baseStyle(FontType.h2Semibold, textColor: textColor),
+        h2: _baseStyle(
+          FontType.h2Semibold,
+          textColor: textColor,
+          context: context,
+        ),
         h2Padding: EdgeInsets.only(top: 8.w, bottom: 4.w),
-        h3: _baseStyle(FontType.body1Semibold, textColor: textColor),
+        h3: _baseStyle(
+          FontType.body1Semibold,
+          textColor: textColor,
+          context: context,
+        ),
         h3Padding: EdgeInsets.only(top: 6.w, bottom: 2.w),
-        h4: _baseStyle(FontType.body1Semibold, textColor: textColor),
-        h5: _baseStyle(FontType.body1Medium, textColor: textColor),
-        h6: _baseStyle(FontType.body1Medium),
-        strong: _baseStyle(FontType.body2Semibold, textColor: textColor),
+        h4: _baseStyle(
+          FontType.body1Semibold,
+          textColor: textColor,
+          context: context,
+        ),
+        h5: _baseStyle(
+          FontType.body1Medium,
+          textColor: textColor,
+          context: context,
+        ),
+        h6: _baseStyle(
+          FontType.body1Medium,
+          context: context,
+          textColor: textColor,
+        ),
+        strong: _baseStyle(
+          FontType.body2Semibold,
+          context: context,
+          textColor: textColor,
+        ),
         em: _baseStyle(
           FontType.body2Regular,
           fontStyle: FontStyle.italic,
           textColor: textColor,
+          context: context,
         ),
         a: _baseStyle(
           FontType.body2Regular,
           decoration: TextDecoration.underline,
           textColor: textColor,
+          context: context,
         ),
-        listBullet: _baseStyle(FontType.body2Regular, textColor: textColor),
+        listBullet: _baseStyle(
+          FontType.body2Regular,
+          textColor: textColor,
+          context: context,
+        ),
         listIndent: 20.w,
         blockSpacing: 10.w,
         blockquote: _baseStyle(
           FontType.body2Regular,
           fontStyle: FontStyle.italic,
           textColor: textColor,
+          context: context,
         ),
         blockquotePadding: EdgeInsets.symmetric(
           horizontal: 12.w,
@@ -310,7 +356,7 @@ class Message extends ConsumerWidget {
             left: BorderSide(color: PrimaryColors.shade500, width: 3.w),
           ),
         ),
-        code: _baseStyle(FontType.body2Regular),
+        code: _baseStyle(FontType.body2Regular, context: context),
         codeblockPadding: EdgeInsets.all(12.w),
         codeblockDecoration: BoxDecoration(color: BGColors.shade300),
       ),

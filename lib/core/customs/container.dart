@@ -76,7 +76,7 @@ class _CustomContainerState extends State<CustomContainer>
   Widget build(BuildContext context) {
     final defaultBorderRadius =
         widget.borderRadius ?? BorderRadius.circular(16.r);
-    final defaultPadding = widget.padding ?? EdgeInsets.all(16.w);
+    final defaultPadding = widget.padding ?? EdgeInsets.all(16.r);
 
     final container = Container(
       height: widget.height,

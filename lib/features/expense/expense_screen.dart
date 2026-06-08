@@ -25,7 +25,7 @@ class ExpenseScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSalution(ref),
+              _buildSalution(context, ref),
 
               SizedBox(height: 16.w),
               balanceCard(data.getAnalysis()),
@@ -41,14 +41,19 @@ class ExpenseScreen extends ConsumerWidget {
           () => const Center(
             child: CircularProgressIndicator(color: CardColors.shade1000),
           ),
-      error: (error, stackTrace) => _buildError(ref).padding(padding: padding),
+      error:
+          (error, stackTrace) =>
+              _buildError(context, ref).padding(padding: padding),
     );
   }
 
-  Widget _buildError(WidgetRef ref) {
+  Widget _buildError(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        Align(alignment: Alignment.centerLeft, child: _buildSalution(ref)),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: _buildSalution(context, ref),
+        ),
         const Spacer(),
         CustomTypography(
           text: "Something went wrong",
@@ -65,7 +70,7 @@ class ExpenseScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSalution(WidgetRef ref) {
+  Widget _buildSalution(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileNotifier).value;
     final name = profile?.name?.split(" ").first;
 
@@ -77,14 +82,15 @@ class ExpenseScreen extends ConsumerWidget {
           maxLines: 1,
           overflow: TextOverflow.clip,
           text: TextSpan(
-            style: CustomTypography(fontType: FontType.h1Bold).getTextStyle(),
+            style: CustomTypography(
+              fontType: FontType.h1Bold,
+            ).getTextStyle(context),
             children: [
               TextSpan(
                 text: "Hello",
-                style:
-                    CustomTypography(
-                      fontType: FontType.h1Semibold,
-                    ).getTextStyle(),
+                style: CustomTypography(
+                  fontType: FontType.h1Semibold,
+                ).getTextStyle(context),
               ),
               if (name != null && name.isNotEmpty) TextSpan(text: " $name!"),
             ],

@@ -205,7 +205,6 @@ class AddCategoryBar extends ConsumerWidget {
           CustomTextField(
             controller: optionState.nameController,
             hintText: 'Name',
-            inputBorderType: InputBorderType.outline,
             onChanged: (value) => optionNotifier.setName(value ?? ''),
           ).padding(horizontal: AppConstants.sidePadding),
           SizedBox(height: 16.w),

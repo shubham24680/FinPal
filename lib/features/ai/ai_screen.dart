@@ -86,7 +86,6 @@ class AIScreen extends ConsumerWidget {
                 child: CustomTextField(
                   controller: aiState.inputController,
                   hintText: 'Ask something…',
-                  inputBorderType: InputBorderType.outline,
                   onChanged: (value) => aiNotifier.setInputText(value ?? ''),
                 ),
               ),

@@ -73,7 +73,7 @@ class AddIncomeScreen extends ConsumerWidget {
                       ? ButtonState.loading
                       : ButtonState.enabled)
                   : ButtonState.disabled,
-          icon: AppSvgs.addPayment,
+          prefixIcon: AppSvgs.addPayment,
           label: incomeState.isSaving ? "Saving..." : "Add Income",
           margin: EdgeInsets.only(
             top: 8.w,

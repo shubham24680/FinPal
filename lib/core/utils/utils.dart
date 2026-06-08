@@ -1,8 +1,9 @@
 import 'package:finpal/app/app.dart';
 
 class AppImages {
-  static const String onboarding1 = 'assets/images/onboarding1.png';
-  static const String onboarding2 = 'assets/images/onboarding2.png';
+  static const String onboarding1 = 'assets/images/onboarding/onboarding1.png';
+  static const String onboarding2 = 'assets/images/onboarding/onboarding2.png';
+  static const String onboarding3 = 'assets/images/onboarding/onboarding3.png';
   static const String splash = 'assets/res/splash.png';
   static const String placeholderImage = 'assets/images/placeholder_image.webp';
   static final avatar = List.generate(
@@ -51,11 +52,6 @@ class AppSvgs {
   static const String policy = "assets/svgs/policy.svg";
   static const String fingerprint = "assets/svgs/fingerprint.svg";
   static const String backspace = "assets/svgs/backspace.svg";
-}
-
-class AppFonts {
-  static const String poppins = 'Poppins';
-  static const String inter = 'Inter';
 }
 
 class AppConstants {

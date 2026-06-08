@@ -135,8 +135,9 @@ Future<T?> customBottomSheet<T>(
 
 // choose date
 Future<String> chooseDate(BuildContext context, String date) async {
-  final textStyle =
-      CustomTypography(fontType: FontType.body1Semibold).getTextStyle();
+  final textStyle = CustomTypography(
+    fontType: FontType.body1Semibold,
+  ).getTextStyle(context);
 
   final firstDate = DateTime(2026);
   final lastDate = DateTime.now();

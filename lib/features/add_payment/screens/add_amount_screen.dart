@@ -18,12 +18,12 @@ class AddAmountScreen extends StatelessWidget {
             dividerColor: BGColors.shade500,
             labelColor: BGColors.shade900,
             unselectedLabelColor: BGColors.shade700,
-            labelStyle:
-                CustomTypography(
-                  fontType: FontType.body1Semibold,
-                ).getTextStyle(),
-            unselectedLabelStyle:
-                CustomTypography(fontType: FontType.body2Medium).getTextStyle(),
+            labelStyle: CustomTypography(
+              fontType: FontType.body1Semibold,
+            ).getTextStyle(context),
+            unselectedLabelStyle: CustomTypography(
+              fontType: FontType.body2Medium,
+            ).getTextStyle(context),
             tabs: [Tab(text: "Income"), Tab(text: "Expense")],
           ),
         ),

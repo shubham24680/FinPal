@@ -1,28 +1,35 @@
 import 'package:finpal/app/app.dart';
+import 'package:finpal/core/theme/app_colors.dart';
 
 enum ButtonType { primary, negative }
+
+enum ButtonVariant { filled, outlined }
 
 enum ButtonState { enabled, loading, disabled }
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
+    this.buttonType = ButtonType.primary,
+    this.buttonVariant = ButtonVariant.filled,
     this.buttonState = ButtonState.enabled,
     this.onTap,
     this.margin,
-    this.icon,
+    this.prefixIcon,
+    this.suffixIcon,
     this.label,
-    this.buttonType = ButtonType.primary,
     this.bgColor,
     this.labelColor,
     this.isFull = true,
   });
 
   final ButtonType buttonType;
+  final ButtonVariant buttonVariant;
   final ButtonState buttonState;
   final VoidCallback? onTap;
   final EdgeInsets? margin;
-  final String? icon;
+  final String? prefixIcon;
+  final String? suffixIcon;
   final String? label;
   final Color? bgColor;
   final Color? labelColor;
@@ -30,44 +37,35 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = switch (buttonType) {
-      ButtonType.primary => CardColors.shade1000,
-      ButtonType.negative => NegativeColors.shade100,
-    };
-    final backgroundShade = switch (buttonState) {
-      ButtonState.disabled => backgroundColor.withAlpha(100),
-      _ => backgroundColor,
-    };
-    final textColor = switch (buttonType) {
-      ButtonType.primary => Colors.white,
-      ButtonType.negative => NegativeColors.shade900,
-    };
-    final child = switch (buttonState) {
-      ButtonState.loading => Center(
+    final backgroundShade = _getBackgroundShade(buttonState);
+    final child = Row(
+      spacing: 8.w,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: isFull ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        CustomTypography(
+          text: label ?? "Submit",
+          color: labelColor ?? AppColors.white,
+          fontType: FontType.body1Medium,
+        ),
+        if (suffixIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: suffixIcon,
+            color: labelColor ?? AppColors.white,
+          ),
+      ],
+    );
+
+    if (buttonState == ButtonState.loading) {
+      return Center(
         child: CircularProgressIndicator(
-          color: textColor,
+          backgroundColor: AppColors.white,
+          color: backgroundShade,
           strokeCap: StrokeCap.round,
         ),
-      ),
-      _ => Row(
-        spacing: 8.w,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: isFull ? MainAxisSize.max : MainAxisSize.min,
-        children: [
-          if (icon != null)
-            CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: icon,
-              color: labelColor ?? textColor,
-            ),
-          CustomTypography(
-            text: label ?? "Submit",
-            color: labelColor ?? textColor,
-            fontType: FontType.body1Medium,
-          ),
-        ],
-      ),
-    };
+      );
+    }
 
     return CustomContainer(
       onTap: buttonState == ButtonState.enabled ? onTap : null,
@@ -76,5 +74,19 @@ class CustomButton extends StatelessWidget {
       margin: margin,
       child: child,
     );
+  }
+
+  Color _getBackgroundColor(ButtonType buttonType) {
+    return switch (buttonType) {
+      ButtonType.primary => AppColors.primary700,
+      ButtonType.negative => NegativeColors.shade100,
+    };
+  }
+
+  Color _getBackgroundShade(ButtonState buttonState) {
+    return switch (buttonState) {
+      ButtonState.disabled => _getBackgroundColor(buttonType).withAlpha(100),
+      _ => _getBackgroundColor(buttonType),
+    };
   }
 }

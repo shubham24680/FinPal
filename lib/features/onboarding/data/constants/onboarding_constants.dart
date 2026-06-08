@@ -1,22 +1,61 @@
 import 'package:finpal/app/app.dart';
+import 'package:finpal/core/theme/app_colors.dart';
+
+enum OnboardingContent {
+  onboarding(
+    data: OnboardingModel(
+      image: AppImages.onboarding1,
+      title: [
+        OnboardingTypographyModel(text: "Track "),
+        OnboardingTypographyModel(
+          text: "Expenses.",
+          color: AppColors.primary500,
+        ),
+        OnboardingTypographyModel(text: "\nBuild Better "),
+        OnboardingTypographyModel(text: "Habits.", color: AppColors.primary500),
+      ],
+      subtitle: OnboardingTypographyModel(
+        text: "Monitor your spending and make smarter financial decisions.",
+      ),
+      button: OnboardingButtonModel(
+        label: "Let's Get Started!",
+        suffixIcon: AppSvgs.arrowRight,
+      ),
+    ),
+  ),
+  personalDetails(
+    data: OnboardingModel(
+      image: AppImages.onboarding2,
+      title: [
+        OnboardingTypographyModel(text: "Tell us a little about"),
+        OnboardingTypographyModel(
+          text: "\n yourself.",
+          color: AppColors.primary500,
+        ),
+      ],
+      subtitle: OnboardingTypographyModel(
+        text:
+            "This will help us personalize your experience.\n All data stays on your device.",
+      ),
+      button: OnboardingButtonModel(label: "Continue"),
+    ),
+  ),
+  security(
+    data: OnboardingModel(
+      image: AppImages.onboarding3,
+      title: [OnboardingTypographyModel(text: "Protect your data")],
+      subtitle: OnboardingTypographyModel(
+        text: "Local lock, No Server. You can control it.",
+      ),
+      button: OnboardingButtonModel(label: "Enable passcode & finish"),
+    ),
+  );
+
+  const OnboardingContent({required this.data});
+  final OnboardingModel data;
+}
 
 class OnboardingConstants {
-  static final onboardingPadding = 24.w;
-  static final List<OnboardingModel> onboardingData = [
-    OnboardingModel(
-      image: 'assets/images/onboarding_1.webp',
-      title: ["Send ", "and ", "receive", "\npayment", "\ninstantly"],
-      subtitle:
-          'Make payments to any of your contacts super easily and fast. Zero fees, no matter the amount.',
-    ),
-    OnboardingModel(
-      image: 'assets/images/onboarding_2.webp',
-      title: ["Grow your\nsavings", " account with", " vaults"],
-      subtitle:
-          'Set a financial goal and achieve it with your vault. No fund locking or any other commitment.',
-    ),
-  ];
-
   static const income = 'income';
   static const expense = 'expense';
   static const paymentMethod = 'payment_method';
