@@ -13,6 +13,7 @@ class OnboardingScreen extends ConsumerWidget {
     final onboardingState = ref.watch(onboardingProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: PageView.builder(
         controller: onboardingState.pageController,
         itemCount: _onboardingData.length,
@@ -28,11 +29,17 @@ class OnboardingScreen extends ConsumerWidget {
                 isMobile: isMobile,
               );
 
-              return isMobile
-                  ? Stack(children: children)
-                  : Row(
-                    children: children.map((e) => Expanded(child: e)).toList(),
-                  );
+              final screen =
+                  isMobile
+                      ? Stack(children: children)
+                      : Row(
+                        children:
+                            children.map((e) => Expanded(child: e)).toList(),
+                      );
+              return GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: screen,
+              );
             },
           );
         },
@@ -47,9 +54,36 @@ class OnboardingScreen extends ConsumerWidget {
     bool isMobile = true,
   }) {
     final height = MediaQuery.of(context).size.height;
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     final onboardingState = ref.watch(onboardingProvider);
     final onboardingNotifier = ref.read(onboardingProvider.notifier);
     final onboarding = type.data;
+    final isOnboarding = type == OnboardingContent.onboarding;
+    final button = onboarding.button;
+
+    final child = SafeArea(
+      top: !isMobile,
+      left: isMobile,
+      child: Column(
+        mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
+        children: [
+          SizedBox(height: 20.spMin),
+          _buildOnboardingContent(context, type),
+          (!isMobile && isOnboarding)
+              ? const Spacer()
+              : SizedBox(height: 32.spMin),
+          _buildPageIndicator(context, onboardingState),
+          SizedBox(height: 24.spMin),
+          CustomButton(
+            label: button.label,
+            prefixIcon: button.prefixIcon,
+            suffixIcon: button.suffixIcon,
+            onTap: () => onboardingNotifier.next(),
+          ),
+          SizedBox(height: 40.spMin),
+        ],
+      ),
+    );
 
     return [
       CustomImage(imageUrl: onboarding.image, fit: BoxFit.fitWidth),
@@ -58,36 +92,18 @@ class OnboardingScreen extends ConsumerWidget {
         child: CustomContainer(
           height: isMobile ? null : height,
           backgroundColor: Theme.of(context).colorScheme.surface,
-          padding: EdgeInsets.only(
-            left: 16.r,
-            right: 16.r,
-            top: 40.r,
-            bottom: 20.r,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 16.r),
           borderRadius:
               isMobile
                   ? BorderRadius.vertical(top: Radius.circular(24.r))
                   : BorderRadius.zero,
-          child: SingleChildScrollView(
-            child: SafeArea(
-              top: !isMobile,
-              child: Column(
-                mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
-                children: [
-                  _buildOnboardingContent(context, type),
-                  SizedBox(height: 32.spMin),
-                  _buildPageIndicator(context, onboardingState),
-                  SizedBox(height: 24.spMin),
-                  CustomButton(
-                    label: onboarding.button.label,
-                    prefixIcon: onboarding.button.prefixIcon,
-                    suffixIcon: onboarding.button.suffixIcon,
-                    onTap: () => onboardingNotifier.next(),
+          child:
+              type == OnboardingContent.onboarding
+                  ? child
+                  : SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: bottomPadding),
+                    child: child,
                   ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     ];
@@ -121,8 +137,19 @@ class OnboardingScreen extends ConsumerWidget {
       spacing: 16.spMin,
       children: [
         SizedBox(height: 16.spMin),
-        CustomTextField(header: "FULL NAME", hintText: "Name"),
-        CustomTextField(header: "DATE OF BIRTH", hintText: "DOB"),
+        CustomTextField(
+          header: "FULL NAME",
+          hintText: "Name",
+          helperText: "This is a helper text",
+        ),
+        CustomTextField(
+          textFieldType: TextFieldType.dropdown,
+          items: ["2026", "2025", "2024", "2023", "2022", "2021", "2020"],
+          onChanged: (value) => {log(value ?? "")},
+          header: "DATE OF BIRTH",
+          hintText: "DOB",
+          helperText: "This is a helper text",
+        ),
       ],
     );
   }

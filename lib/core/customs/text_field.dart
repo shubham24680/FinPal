@@ -1,23 +1,22 @@
-import 'dart:ui';
-
 import 'package:finpal/app/app.dart';
+import 'package:finpal/core/theme/app_colors.dart';
 import 'package:flutter/services.dart';
 
 enum TextFieldType { input, dropdown }
 
-enum InputType { text, amount }
+enum InputType { text, amount, dob }
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
-    this.inputType = InputType.text,
     this.textFieldType = TextFieldType.input,
+    this.inputType = InputType.text,
     this.header,
     this.controller,
     this.fillColor,
-    this.labelText,
     this.hintText,
     this.hintColor,
+    this.labelText,
     this.errorText,
     this.floatingHintColor,
     this.errorColor,
@@ -35,55 +34,62 @@ class CustomTextField extends StatelessWidget {
     this.focusedBorderColor,
     this.inputFormatters,
     this.maxLength,
+    this.helperText,
+    this.helperIcon,
   });
 
-  final InputType inputType;
   final TextFieldType textFieldType;
+  final InputType inputType;
   final String? header;
   final TextEditingController? controller;
   final bool readOnly;
   final bool autofocus;
-  final Color? fillColor;
-  final Color? hintColor;
-  final Color? floatingHintColor;
-  final Color? errorColor;
-  final String? labelText;
-  final String? hintText;
-  final String? errorText;
-  final String? initialValue;
-  final List<String> items;
   final TextInputType? keyboardType;
-  final Widget? perfixIcon;
-  final Widget? suffixIcon;
   final void Function(String?)? onChanged;
   final void Function()? onTap;
   final TextAlign textAlign;
   final int maxLines;
+  final Color? fillColor;
+  final String? hintText;
+  final Color? hintColor;
+  final String? labelText;
+  final Color? floatingHintColor;
+  final String? errorText;
+  final Color? errorColor;
+  final String? helperText;
+  final String? helperIcon;
+  final String? initialValue;
+  final List<String> items;
+  final Widget? perfixIcon;
+  final Widget? suffixIcon;
   final Color? focusedBorderColor;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
+    final hintStyle = buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
       fillColor: fillColor,
-      labelText: labelText,
       hintText: hintText ?? _buildHintText(),
-      errorText: errorText,
-      labelStyle: buildHint(context, hintColor).getTextStyle(context),
+      hintStyle: hintStyle,
+      labelText: labelText,
+      labelStyle: hintStyle,
       floatingLabelStyle: buildHint(
         context,
         floatingHintColor,
       ).getTextStyle(context),
-      hintStyle: buildHint(context, hintColor).getTextStyle(context),
+      errorText: errorText,
       errorStyle: buildHint(
         context,
-        Colors.red.shade700,
+        AppColors.error500,
         fontType: FontType.label1Regular,
       ).getTextStyle(context),
-      prefixIcon: (perfixIcon ?? _buildPrefixIcon())?.padding(horizontal: 10.w),
-      suffixIcon: suffixIcon?.padding(all: 10.w),
+      helper: _buildHelperText(context, helperText, helperIcon),
+      prefixIcon: (perfixIcon ?? _buildPrefixIcon())?.padding(horizontal: 10.r),
+      suffixIcon: suffixIcon?.padding(all: 10.r),
     );
+    final textColor = Theme.of(context).colorScheme.onInverseSurface;
 
     final dropDownMenu =
         items
@@ -98,30 +104,29 @@ class CustomTextField extends StatelessWidget {
     Widget field = switch (textFieldType) {
       TextFieldType.dropdown => DropdownButtonFormField(
         items: dropDownMenu,
-        // initialValue: initialValue,
         value: initialValue,
         onChanged: onChanged,
         decoration: decoration.copyWith(suffixIcon: suffixIcon),
         style: buildHint(context, PrimaryColors.shade500).getTextStyle(context),
         hint: buildHint(context, hintColor, text: hintText),
-        dropdownColor: PrimaryColors.shade500,
-        borderRadius: BorderRadius.circular(0.015.sh),
+        dropdownColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16.r),
       ),
       TextFieldType.input => TextFormField(
         controller: controller,
         onTap: onTap,
         onChanged: onChanged,
-        decoration: decoration,
         readOnly: readOnly,
         autofocus: autofocus,
         textAlign: textAlign,
+        decoration: decoration,
         keyboardType: keyboardType ?? _buildTextInputType(),
-        style: buildHint(context, TextColors.shade900).getTextStyle(context),
-        cursorColor: focusedBorderColor ?? BGColors.shade700,
-        cursorErrorColor: Colors.red.shade700,
+        style: buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,
         inputFormatters: inputFormatters ?? _buildInputFormatters(),
+        cursorColor: AppColors.primary500,
+        cursorErrorColor: AppColors.error500,
       ),
     };
 
@@ -140,9 +145,37 @@ class CustomTextField extends StatelessWidget {
     );
   }
 
+  void _buildOnTap() {}
+
+  Widget? _buildHelperText(
+    BuildContext context,
+    String? helperText,
+    String? helperIcon,
+  ) {
+    if (helperText == null) return null;
+    return Row(
+      spacing: 4.spMin,
+      children: [
+        CustomImage(
+          imageType: ImageType.svgLocal,
+          imageUrl: helperIcon ?? AppSvgs.info,
+          height: 16.spMin,
+          color: AppColors.primary500,
+        ),
+        buildHint(
+          context,
+          Theme.of(context).colorScheme.onSurfaceVariant,
+          text: helperText,
+          fontType: FontType.label1Medium,
+        ),
+      ],
+    );
+  }
+
   String? _buildHintText() {
     return switch (inputType) {
       InputType.amount => "8124.80",
+      InputType.dob => "02/08/1989",
       _ => null,
     };
   }
@@ -192,7 +225,7 @@ class CustomTextField extends StatelessWidget {
     return CustomTypography(
       text: text,
       color: color ?? Theme.of(context).colorScheme.outline,
-      fontType: fontType ?? FontType.body1Medium,
+      fontType: fontType ?? FontType.body1Semibold,
     );
   }
 

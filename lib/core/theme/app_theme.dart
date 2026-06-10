@@ -38,8 +38,14 @@ abstract final class AppTheme {
               ? AppColors.lightSurface2
               : AppColors
                   .darkSurface2, // text field fill color (before container color)
-      onSurface: isLight ? AppColors.neutral400 : AppColors.neutral500,
-      onSurfaceVariant: isLight ? AppColors.neutral700 : AppColors.neutral300,
+      onSurface:
+          isLight
+              ? AppColors.neutral400
+              : AppColors.neutral600, // text color above surface
+      onSurfaceVariant:
+          isLight
+              ? AppColors.neutral300
+              : AppColors.neutral700, // text color above surface
       outline:
           isLight
               ? AppColors.lightBorder
@@ -62,6 +68,37 @@ abstract final class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor:
           isLight ? AppColors.lightBackground : AppColors.darkBackground,
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        prefixIconColor: colorScheme.onSurfaceVariant,
+        suffixIconColor: colorScheme.onSurfaceVariant,
+        fillColor: colorScheme.surfaceContainerHighest,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16.spMin,
+          vertical: 14.spMin,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: colorScheme.outline, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: colorScheme.outline, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: colorScheme.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: const BorderSide(color: AppColors.error500, width: 2),
+        ),
+      ),
+
       appBarTheme: AppBarTheme(
         backgroundColor:
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
@@ -174,50 +211,6 @@ abstract final class AppTheme {
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         // extendedTextStyle: AppTextStyles.labelLarge,
-      ),
-
-      // ── InputDecoration ───────────────────────────────────────────────────
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        prefixIconColor: colorScheme.onSurfaceVariant,
-        suffixIconColor: colorScheme.onSurfaceVariant,
-        fillColor: colorScheme.surfaceContainerHighest,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16.spMin,
-          vertical: 14.spMin,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: colorScheme.outline, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: colorScheme.outline, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: colorScheme.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: colorScheme.error, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: const BorderSide(color: AppColors.error500, width: 2),
-        ),
-        // hintStyle: AppTextStyles.bodyMedium.copyWith(
-        //   color: colorScheme.onSurfaceVariant,
-        // ),
-        // labelStyle: AppTextStyles.bodyMedium.copyWith(
-        //   color: colorScheme.onSurfaceVariant,
-        // ),
-        // floatingLabelStyle: AppTextStyles.labelMedium.copyWith(
-        //   color: AppColors.primary500,
-        // ),
-        // errorStyle: AppTextStyles.labelSmall.copyWith(
-        //   color: AppColors.error500,
-        // ),
       ),
 
       // ── Chip ─────────────────────────────────────────────────────────────
