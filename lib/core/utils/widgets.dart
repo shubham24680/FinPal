@@ -1,31 +1,6 @@
 import 'package:finpal/app/app.dart';
 import 'package:intl/intl.dart';
 
-String formatCurrency(double? amount) {
-  if (amount == null) return "₹0.00";
-  return NumberFormat.currency(
-    locale: 'en_IN',
-    symbol: '₹',
-    decimalDigits: 2,
-  ).format(amount);
-}
-
-enum DateFormatType { fullDate, shortDateWithTime, monthYear }
-
-String formatDate(
-  DateTime date, {
-  DateFormatType type = DateFormatType.fullDate,
-}) {
-  switch (type) {
-    case DateFormatType.shortDateWithTime:
-      return DateFormat("MMM d, hh:mm a").format(date);
-    case DateFormatType.monthYear:
-      return DateFormat("MMM yy").format(date);
-    default:
-      return DateFormat("EE, MMM d, yyyy").format(date);
-  }
-}
-
 DateTime parseDate(String date) {
   return DateFormat("EE, MMM d, yyyy").parse(date);
 }
@@ -90,39 +65,40 @@ Future<T?> customBottomSheet<T>(
     barrierColor: Colors.black.withAlpha(100),
     isScrollControlled: true,
     useSafeArea: true,
-    isDismissible: false,
+    showDragHandle: false,
     builder:
         (context) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CustomContainer(
-              onTap: () => context.pop(),
-              margin: EdgeInsets.all(16.w),
-              backgroundColor: Colors.black.withAlpha(50),
-              borderRadius: BorderRadius.circular(1000.r),
-              padding: EdgeInsets.all(8.w),
-              child: CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: AppSvgs.cross,
-                color: Colors.white,
-                height: 24.w,
-                width: 24.w,
-              ),
-            ),
+            // CustomContainer(
+            //   onTap: () => context.pop(),
+            //   margin: EdgeInsets.all(16.w),
+            //   backgroundColor: Colors.black.withAlpha(50),
+            //   borderRadius: BorderRadius.circular(1000.r),
+            //   padding: EdgeInsets.all(8.w),
+            //   child: CustomImage(
+            //     imageType: ImageType.svgLocal,
+            //     imageUrl: AppSvgs.cross,
+            //     color: Colors.white,
+            //     height: 24.w,
+            //     width: 24.w,
+            //   ),
+            // ),
             Flexible(
               child: CustomContainer(
-                backgroundColor: backgroundColor ?? BGColors.shade200,
+                backgroundColor:
+                    backgroundColor ?? Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16.r),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  spacing: 8.spMin,
                   children: [
                     CustomTypography(
                       text: title,
                       fontType: FontType.body1Medium,
-                      color: TextColors.shade900,
                     ),
-                    Divider(color: BGColors.shade600),
+                    Divider(color: Theme.of(context).colorScheme.outline),
                     Flexible(child: child),
                   ],
                 ),
@@ -141,7 +117,7 @@ Future<String> chooseDate(BuildContext context, String date) async {
 
   final firstDate = DateTime(2026);
   final lastDate = DateTime.now();
-  final initialDate = parseDate(date);
+  final initialDate = date.isEmpty ? lastDate : parseDate(date);
 
   DateTime selectedDate = initialDate;
 
@@ -154,10 +130,10 @@ Future<String> chooseDate(BuildContext context, String date) async {
             data: Theme.of(context).copyWith(
               dividerColor: Colors.transparent,
               dividerTheme: DividerThemeData(color: Colors.transparent),
-              colorScheme: ColorScheme.dark(
-                primary: BGColors.shade700,
-                onPrimary: PrimaryColors.shade500,
-                onSurface: BGColors.shade800,
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                primary: Theme.of(context).colorScheme.onSurface,
+                onPrimary: Theme.of(context).colorScheme.primary,
+                onSurface: Theme.of(context).colorScheme.onSurface,
               ),
               datePickerTheme: DatePickerThemeData(
                 dayStyle: textStyle,
@@ -177,7 +153,7 @@ Future<String> chooseDate(BuildContext context, String date) async {
             ),
           ),
           CustomContainer(
-            onTap: () => context.pop(formatDate(selectedDate)),
+            onTap: () => context.pop(selectedDate.formatDate()),
             backgroundColor: CardColors.shade1000,
             width: double.infinity,
             child: Row(

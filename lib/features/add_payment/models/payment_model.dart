@@ -28,7 +28,7 @@ class PaymentModel extends HiveObject {
     String? paymentMethodId,
     this.notes,
   }) : id = id ?? Uuid().v7(),
-       date = date ?? formatDate(DateTime.now()),
+       date = date ?? DateTime.now().formatDate(),
        categoryId = categoryId ?? _defaultCategoryId(paymentType),
        paymentMethodId = paymentMethodId ?? OnboardingConstants.paymentMethod;
 

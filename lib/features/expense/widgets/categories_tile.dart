@@ -60,7 +60,7 @@ Widget buildCategoryCard(
         CustomTypography(text: category.name, fontType: FontType.label1Regular),
         SizedBox(height: 4.w),
         CustomTypography(
-          text: formatCurrency(totalAmount),
+          text: CurrencyFormatter.format(totalAmount),
           fontType: FontType.body1Semibold,
         ),
       ],

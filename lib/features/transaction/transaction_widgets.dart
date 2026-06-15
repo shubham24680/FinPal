@@ -151,7 +151,7 @@ Widget buildExpenseTile(
           ),
         ),
         CustomTypography(
-          text: formatCurrency(amount),
+          text: CurrencyFormatter.format(amount),
           fontType: FontType.body2Semibold,
           color: isIncome ? PositiveColors.shade700 : NegativeColors.shade900,
         ),

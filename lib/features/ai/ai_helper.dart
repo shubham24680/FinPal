@@ -127,8 +127,7 @@ class Message extends ConsumerWidget {
         PopupMenuItem(
           enabled: false,
           child: CustomTypography(
-            text: formatDate(
-              message.createdAt,
+            text: message.createdAt.formatDate(
               type: DateFormatType.shortDateWithTime,
             ),
             align: TextAlign.center,

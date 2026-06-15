@@ -4,4 +4,5 @@ export 'data/notifiers/onboarding_provider.dart';
 export 'presentation/screens/onboarding_screen.dart';
 export 'presentation/screens/splash_screen.dart';
 export 'presentation/screens/lock_screen.dart';
-export 'presentation/widgets/onboarding_typo.dart';
+export 'presentation/widgets/helper_widgets.dart';
+export 'presentation/screens/intro_screen.dart';

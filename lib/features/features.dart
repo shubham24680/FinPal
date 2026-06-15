@@ -30,6 +30,9 @@ export 'profile/models/profile_model.dart';
 export 'profile/providers/profile_provider.dart';
 export 'profile/screens/options_screen.dart';
 
+// Settings
+export 'settings/settings.dart';
+
 // Add Amount
 export 'add_payment/screens/add_amount_screen.dart';
 export 'add_payment/screens/add_expense_screen.dart';

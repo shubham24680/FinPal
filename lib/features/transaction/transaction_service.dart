@@ -83,7 +83,7 @@ class TransactionService {
 
   List<PaymentModel> getTransactionsByDate(DateTime date) {
     return payments
-        .where((payment) => payment.date == formatDate(date))
+        .where((payment) => payment.date == date.formatDate())
         .toList()
         .reversed
         .toList();

@@ -1,58 +1,38 @@
 import 'package:finpal/app/app.dart';
-import 'package:finpal/core/theme/app_colors.dart';
 
 enum OnboardingContent {
-  onboarding(
-    data: OnboardingModel(
-      image: AppImages.onboarding1,
-      title: [
-        OnboardingTypographyModel(text: "Track "),
-        OnboardingTypographyModel(
-          text: "Expenses.",
-          color: AppColors.primary500,
-        ),
-        OnboardingTypographyModel(text: "\nBuild Better "),
-        OnboardingTypographyModel(text: "Habits.", color: AppColors.primary500),
-      ],
-      subtitle: OnboardingTypographyModel(
-        text: "Monitor your spending and make smarter financial decisions.",
-      ),
-      button: OnboardingButtonModel(
-        label: "Let's Get Started!",
-        suffixIcon: AppSvgs.arrowRight,
-      ),
-    ),
-  ),
-  personalDetails(
-    data: OnboardingModel(
-      image: AppImages.onboarding2,
-      title: [
-        OnboardingTypographyModel(text: "Tell us a little about"),
-        OnboardingTypographyModel(
-          text: "\n yourself.",
-          color: AppColors.primary500,
-        ),
-      ],
-      subtitle: OnboardingTypographyModel(
-        text:
-            "This will help us personalize your experience.\n All data stays on your device.",
-      ),
-      button: OnboardingButtonModel(label: "Continue"),
-    ),
-  ),
-  security(
-    data: OnboardingModel(
-      image: AppImages.onboarding3,
-      title: [OnboardingTypographyModel(text: "Protect your data")],
-      subtitle: OnboardingTypographyModel(
-        text: "Local lock, No Server. You can control it.",
-      ),
-      button: OnboardingButtonModel(label: "Enable passcode & finish"),
-    ),
-  );
+  // personalDetails(
+  //   data: OnboardingModel(
+  //     image: AppImages.onboarding2,
+  //     title: [
+  //       OnboardingTypographyModel(text: "Tell us a little about"),
+  //       OnboardingTypographyModel(
+  //         text: "\n yourself.",
+  //         color: AppColors.primary500,
+  //       ),
+  //     ],
+  //     subtitle: OnboardingTypographyModel(
+  //       text:
+  //           "This will help us personalize your experience.\n All data stays on your device.",
+  //     ),
+  //     button: OnboardingButtonModel(label: "Continue"),
+  //   ),
+  // ),
+  // security(
+  //   data: OnboardingModel(
+  //     image: AppImages.onboarding3,
+  //     title: [OnboardingTypographyModel(text: "Protect your data")],
+  //     subtitle: OnboardingTypographyModel(
+  //       text: "Local lock, No Server. You can control it.",
+  //     ),
+  //     button: OnboardingButtonModel(label: "Enable passcode & finish"),
+  //   ),
+  // );
+  intro(screen: IntroScreen()),
+  personalDetails(screen: PersonalDetailsScreen());
 
-  const OnboardingContent({required this.data});
-  final OnboardingModel data;
+  const OnboardingContent({required this.screen});
+  final Widget screen;
 }
 
 class OnboardingConstants {

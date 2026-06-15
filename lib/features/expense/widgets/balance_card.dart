@@ -70,7 +70,7 @@ Widget buildTile(AnalysisModel expense) {
             color: Colors.white,
           ),
           CustomTypography(
-            text: formatCurrency(expense.amount),
+            text: CurrencyFormatter.format(expense.amount),
             fontType: FontType.label1Regular,
             color: Colors.white,
           ),

@@ -1,4 +1,5 @@
 import 'package:finpal/app/app.dart';
+import 'package:finpal/core/extensions/gesture_extenstion.dart';
 
 enum ImageType { local, svgLocal }
 

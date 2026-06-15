@@ -7,7 +7,7 @@ Widget buildBalance({double balance = 0.0}) {
     children: [
       CustomTypography(text: "Total Balance", fontType: FontType.label1Light),
       CustomTypography(
-        text: formatCurrency(balance),
+        text: CurrencyFormatter.format(balance),
         fontType: FontType.h2Semibold,
       ),
     ],

@@ -23,7 +23,7 @@ class TransactionScreen extends ConsumerWidget {
         CustomTypography(text: "Transactions", fontType: FontType.h1Bold),
         CustomContainer(
           onTap: () async {
-            final date = await chooseDate(context, formatDate(selectedDate));
+            final date = await chooseDate(context, selectedDate.formatDate());
             ref.read(selectedDateProvider.notifier).state = parseDate(date);
           },
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
@@ -32,7 +32,7 @@ class TransactionScreen extends ConsumerWidget {
             spacing: 4.w,
             children: [
               CustomTypography(
-                text: formatDate(selectedDate, type: DateFormatType.monthYear),
+                text: selectedDate.formatDate(type: DateFormatType.monthYear),
                 fontType: FontType.label1SemiBold,
               ),
               CustomImage(
@@ -119,9 +119,10 @@ class TransactionScreen extends ConsumerWidget {
     final now = DateTime.now();
     final date = transactions.first.date;
     String transactionsDate;
-    if (date == formatDate(now)) {
+    if (date == now.formatDate()) {
       transactionsDate = "Today";
-    } else if (date == formatDate(DateTime(now.year, now.month, now.day - 1))) {
+    } else if (date ==
+        DateTime(now.year, now.month, now.day - 1).formatDate()) {
       transactionsDate = "Yesterday";
     } else {
       transactionsDate = date;

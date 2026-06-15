@@ -1,7 +1,5 @@
-import 'package:finpal/core/core.dart';
-import 'package:flutter/material.dart';
+import 'package:finpal/app/app.dart';
 import 'package:flutter/services.dart';
-import 'app_colors.dart';
 
 abstract final class AppTheme {
   static ThemeData get light => _build(brightness: Brightness.light);
@@ -12,22 +10,29 @@ abstract final class AppTheme {
 
     final colorScheme = ColorScheme(
       brightness: brightness,
+      // ── Primary ────────────────────────────────────────────────────────────
       primary: AppColors.primary500,
-      onPrimary: AppColors.white,
-      primaryContainer: isLight ? AppColors.primary100 : AppColors.primary800,
-      onPrimaryContainer: isLight ? AppColors.primary900 : AppColors.primary100,
-      secondary: AppColors.accent500,
-      onSecondary: AppColors.white,
-      secondaryContainer: isLight ? AppColors.accent100 : AppColors.accent800,
-      onSecondaryContainer: isLight ? AppColors.accent900 : AppColors.accent100,
+      onPrimary: AppColors.white, // not in use.
+      primaryContainer: isLight ? AppColors.primary50 : AppColors.primary900,
+      onPrimaryContainer: isLight ? AppColors.primary100 : AppColors.primary700,
+      inversePrimary: isLight ? AppColors.primary700 : AppColors.primary300,
+      // ── Secondary ──────────────────────────────────────────────────────────
+      secondary: AppColors.neutral300,
+      onSecondary: AppColors.white, //not in use.
+      secondaryContainer: isLight ? AppColors.neutral100 : AppColors.neutral600,
+      onSecondaryContainer:
+          isLight ? AppColors.neutral200 : AppColors.neutral500,
+      // ── Tertiary ──────────────────────────────────────────────────────────
       tertiary: AppColors.info500,
       onTertiary: AppColors.white,
       tertiaryContainer: isLight ? AppColors.info200 : AppColors.info700,
       onTertiaryContainer: isLight ? AppColors.info700 : AppColors.info200,
+      // ── Error ──────────────────────────────────────────────────────────────
       error: AppColors.error500,
       onError: AppColors.white,
       errorContainer: isLight ? AppColors.error200 : AppColors.error700,
       onErrorContainer: isLight ? AppColors.error700 : AppColors.error200,
+      // ── Surface ────────────────────────────────────────────────────────────
       surface:
           isLight
               ? AppColors.lightSurface
@@ -41,11 +46,15 @@ abstract final class AppTheme {
       onSurface:
           isLight
               ? AppColors.neutral400
-              : AppColors.neutral600, // text color above surface
+              : AppColors.neutral500, // text color above surface
       onSurfaceVariant:
           isLight
               ? AppColors.neutral300
-              : AppColors.neutral700, // text color above surface
+              : AppColors.neutral600, // text color above surface
+      inverseSurface: isLight ? AppColors.neutral800 : AppColors.neutral100,
+      onInverseSurface:
+          isLight ? AppColors.neutral900 : AppColors.neutral100, // text color
+      // ── Outline ────────────────────────────────────────────────────────────
       outline:
           isLight
               ? AppColors.lightBorder
@@ -54,12 +63,9 @@ abstract final class AppTheme {
           isLight
               ? AppColors.lightDivider
               : AppColors.darkDivider, // for divider color
+      // ── OTHERS ─────────────────────────────────────────────────────────────
       shadow: AppColors.black,
       scrim: AppColors.black,
-      inverseSurface: isLight ? AppColors.neutral800 : AppColors.neutral100,
-      onInverseSurface:
-          isLight ? AppColors.neutral900 : AppColors.neutral100, // text color
-      inversePrimary: isLight ? AppColors.primary200 : AppColors.primary700,
     );
 
     return ThemeData(

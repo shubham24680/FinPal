@@ -26,7 +26,7 @@ class PaymentState {
   factory PaymentState.initial() => PaymentState(
     amountController: TextEditingController(),
     notesController: TextEditingController(),
-    date: formatDate(DateTime.now()),
+    date: DateTime.now().formatDate(),
     isFilled: false,
     isSaving: false,
     isSaved: false,
@@ -99,7 +99,9 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     final isOverspent = totalAmount < 0;
     state = state.copyWith(
       overspent:
-          isOverspent ? "Overspent by ${formatCurrency(totalAmount)} " : null,
+          isOverspent
+              ? "Overspent by ${CurrencyFormatter.format(totalAmount)} "
+              : null,
     );
   }
 
@@ -128,7 +130,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     state = PaymentState(
       amountController: state.amountController,
       notesController: state.notesController,
-      date: formatDate(DateTime.now()),
+      date: DateTime.now().formatDate(),
       category: null,
       paymentMethod: null,
       isFilled: false,

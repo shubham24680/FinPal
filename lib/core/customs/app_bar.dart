@@ -1,4 +1,6 @@
 import 'package:finpal/app/app.dart';
+import 'package:finpal/core/extensions/gesture_extenstion.dart';
+import 'package:flutter/material.dart';
 
 class AppBarModel {
   final String icon;
