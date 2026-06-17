@@ -154,7 +154,7 @@ Future<String> chooseDate(BuildContext context, String date) async {
           ),
           CustomContainer(
             onTap: () => context.pop(selectedDate.formatDate()),
-            backgroundColor: CardColors.shade1000,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             width: double.infinity,
             child: Row(
               spacing: 8.w,

@@ -1,16 +1,31 @@
 import 'package:finpal/app/app.dart';
 
-class PersonalDetailsScreen extends ConsumerWidget {
+class PersonalDetailsScreen extends ConsumerStatefulWidget {
   const PersonalDetailsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PersonalDetailsScreen> createState() => _PersonalDetailsScreenState();
+}
+
+class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  {
+  late TextEditingController nameController;
+  late TextEditingController dateOfBirthController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController();
+    dateOfBirthController = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, screenType) {
         final isMobile = screenType.isMobile;
         final items = [
           _buildTopItem(),
-          _buildMainItem(ref, context, isMobile: isMobile),
+          _buildMainItem(context, isMobile: isMobile),
         ];
 
         return isMobile
@@ -28,14 +43,13 @@ class PersonalDetailsScreen extends ConsumerWidget {
   }
 
   Widget _buildMainItem(
-    WidgetRef ref,
     BuildContext context, {
     bool isMobile = true,
   }) {
     final height = context.screenHeight;
     final bottomPadding = context.viewInsets.bottom;
     final onboardingState = ref.watch(onboardingProvider);
-    final onboardingNotifier = ref.read(onboardingProvider.notifier);
+    final personalDetailsState = ref.watch(personalDetailsProvider);
     final title = [
       OnboardingTypographyModel(text: "Tell us a little about"),
       OnboardingTypographyModel(
@@ -59,14 +73,19 @@ class PersonalDetailsScreen extends ConsumerWidget {
             align: TextAlign.center,
             color: Theme.of(context).colorScheme.onSurface,
           ),
-          _buildPersonalDetails(context, ref),
+          _buildPersonalDetails(context),
           SizedBox(height: 32.spMin),
           buildPageIndicator(context, onboardingState),
           SizedBox(height: 24.spMin),
           CustomButton(
-            buttonState: onboardingState.buttonState,
+            buttonState: personalDetailsState.buttonState,
             label: "Add Details",
-            onTap: () => onboardingNotifier.next(),
+            onTap: () async {
+              final hasSubmitted = await ref.read(personalDetailsProvider.notifier).onSubmit();
+              if (hasSubmitted) {
+                ref.read(onboardingProvider.notifier).next();
+              }
+            },
           ),
           SizedBox(height: 40.spMin),
         ],
@@ -91,9 +110,9 @@ class PersonalDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildPersonalDetails(BuildContext context, WidgetRef ref) {
-    final onboardingState = ref.watch(onboardingProvider);
-    final onboardingNotifier = ref.read(onboardingProvider.notifier);
+  Widget _buildPersonalDetails(BuildContext context) {
+    final personalDetailsState = ref.watch(personalDetailsProvider);
+    final personalDetailsNotifier = ref.read(personalDetailsProvider.notifier);
     final gender = [
       ["Male", AppSvgs.male],
       ["Female", AppSvgs.female],
@@ -107,8 +126,8 @@ class PersonalDetailsScreen extends ConsumerWidget {
       children: [
         SizedBox(height: 16.spMin),
         CustomTextField(
-          controller: onboardingState.nameController,
-          onChanged: (value) => onboardingNotifier.setName(value ?? ""),
+          controller: nameController,
+          onChanged: (value) => personalDetailsNotifier.setName(value ?? ""),
           header: "FULL NAME",
           hintText: "Shubham Patel",
           perfixIcon: CustomImage(
@@ -118,10 +137,10 @@ class PersonalDetailsScreen extends ConsumerWidget {
           ),
         ),
         CustomTextField(
-          controller: onboardingState.dateOfBirthController,
+          controller: dateOfBirthController,
           inputType: InputType.date,
           header: "DATE OF BIRTH",
-          onChanged: (value) => onboardingNotifier.setDob(value ?? ""),
+          onChanged: (value) => personalDetailsNotifier.setDob(value ?? ""),
         ),
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -137,7 +156,7 @@ class PersonalDetailsScreen extends ConsumerWidget {
               runSpacing: 8.spMin,
               children:
                   gender.map((e) {
-                    final selected = e[0] == onboardingState.gender;
+                    final selected = e[0] == personalDetailsState.gender;
                     return CustomChip(
                       variant:
                           selected ? ChipVariant.primary : ChipVariant.inactive,
@@ -145,7 +164,7 @@ class PersonalDetailsScreen extends ConsumerWidget {
                       label: e[0],
                       imageUrl: e[1],
                       selected: selected,
-                      onTap: () => onboardingNotifier.setGender(e[0]),
+                      onTap: () => personalDetailsNotifier.setGender(e[0]),
                     );
                   }).toList(),
             ),

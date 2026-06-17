@@ -1,23 +1,6 @@
 import 'package:finpal/app/app.dart';
 
 enum OnboardingContent {
-  // personalDetails(
-  //   data: OnboardingModel(
-  //     image: AppImages.onboarding2,
-  //     title: [
-  //       OnboardingTypographyModel(text: "Tell us a little about"),
-  //       OnboardingTypographyModel(
-  //         text: "\n yourself.",
-  //         color: AppColors.primary500,
-  //       ),
-  //     ],
-  //     subtitle: OnboardingTypographyModel(
-  //       text:
-  //           "This will help us personalize your experience.\n All data stays on your device.",
-  //     ),
-  //     button: OnboardingButtonModel(label: "Continue"),
-  //   ),
-  // ),
   // security(
   //   data: OnboardingModel(
   //     image: AppImages.onboarding3,
