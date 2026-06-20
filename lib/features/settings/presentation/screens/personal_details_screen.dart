@@ -4,10 +4,11 @@ class PersonalDetailsScreen extends ConsumerStatefulWidget {
   const PersonalDetailsScreen({super.key});
 
   @override
-  ConsumerState<PersonalDetailsScreen> createState() => _PersonalDetailsScreenState();
+  ConsumerState<PersonalDetailsScreen> createState() =>
+      _PersonalDetailsScreenState();
 }
 
-class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  {
+class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   late TextEditingController nameController;
   late TextEditingController dateOfBirthController;
 
@@ -19,7 +20,20 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    dateOfBirthController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final onboardingState = ref.watch(onboardingProvider);
+
+    if (onboardingState.buttonState == ButtonState.loading) {
+      return SplashScreen();
+    }
+
     return ResponsiveBuilder(
       builder: (context, screenType) {
         final isMobile = screenType.isMobile;
@@ -36,23 +50,35 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
   }
 
   Widget _buildTopItem() {
-    return CustomImage(
-      imageUrl: AppImages.personalDetailsScreen,
-      fit: BoxFit.fitWidth,
+    return Stack(
+      alignment: Alignment.topCenter,
+      fit: StackFit.passthrough,
+      children: [
+        CustomImage(
+          imageUrl: AppImages.personalDetailsScreen,
+          fit: BoxFit.fitWidth,
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: CustomChip(
+            label: "Skip",
+            onTap: () async {
+              await ref.read(onboardingProvider.notifier).setupDefaultData();
+            },
+          ),
+        ).padding(top: context.viewPadding.top, right: 16.r),
+      ],
     );
   }
 
-  Widget _buildMainItem(
-    BuildContext context, {
-    bool isMobile = true,
-  }) {
+  Widget _buildMainItem(BuildContext context, {bool isMobile = true}) {
     final height = context.screenHeight;
     final bottomPadding = context.viewInsets.bottom;
     final onboardingState = ref.watch(onboardingProvider);
-    final personalDetailsState = ref.watch(personalDetailsProvider);
+    final personalDetailsState = ref.watch(profileProvider);
     final title = [
-      OnboardingTypographyModel(text: "Tell us a little about"),
-      OnboardingTypographyModel(
+      TypographyModel(text: "Tell us a little about"),
+      TypographyModel(
         text: "\n yourself.",
         color: AppColors.primary500,
       ),
@@ -65,7 +91,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
         mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
         children: [
           SizedBox(height: 20.spMin),
-          onboardingTypo(context, title),
+          CustomTypography(typos: title),
           CustomTypography(
             text:
                 "This will help us personalize your experience.\n All data stays on your device.",
@@ -81,9 +107,9 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
             buttonState: personalDetailsState.buttonState,
             label: "Add Details",
             onTap: () async {
-              final hasSubmitted = await ref.read(personalDetailsProvider.notifier).onSubmit();
+              final hasSubmitted = await ref.read(profileProvider.notifier).onSubmit();
               if (hasSubmitted) {
-                ref.read(onboardingProvider.notifier).next();
+                await ref.read(onboardingProvider.notifier).setupDefaultData();
               }
             },
           ),
@@ -98,6 +124,13 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
         height: isMobile ? null : height,
         backgroundColor: Theme.of(context).colorScheme.surface,
         padding: EdgeInsets.symmetric(horizontal: 16.r),
+        shadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
+        ],
         borderRadius:
             isMobile
                 ? BorderRadius.vertical(top: Radius.circular(24.r))
@@ -111,8 +144,8 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen>  
   }
 
   Widget _buildPersonalDetails(BuildContext context) {
-    final personalDetailsState = ref.watch(personalDetailsProvider);
-    final personalDetailsNotifier = ref.read(personalDetailsProvider.notifier);
+    final personalDetailsState = ref.watch(profileProvider);
+    final personalDetailsNotifier = ref.read(profileProvider.notifier);
     final gender = [
       ["Male", AppSvgs.male],
       ["Female", AppSvgs.female],

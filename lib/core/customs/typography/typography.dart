@@ -16,6 +16,7 @@ class CustomTypography extends StatelessWidget {
     this.fontStyle,
     this.decoration,
     this.letterSpacing,
+    this.typos,
   });
 
   final String? text;
@@ -31,9 +32,32 @@ class CustomTypography extends StatelessWidget {
   final FontStyle? fontStyle;
   final TextDecoration? decoration;
   final double? letterSpacing;
+  final List<TypographyModel>? typos;
 
   @override
   Widget build(BuildContext context) {
+    final typos = this.typos;
+    if (typos != null) {
+      return RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children:
+              typos.map(
+                    (e) => TextSpan(
+                      text: e.text,
+                      style: CustomTypography(
+                        text: e.text,
+                        fontType: e.fontType ?? FontType.h2Medium,
+                        color: e.color,
+                        fontStyle: e.fontStyle,
+                      ).getTextStyle(context),
+                    ),
+                  )
+                  .toList(),
+        ),
+      );
+    }
+
     final typo = Text(
       text ?? "",
       textAlign: align,

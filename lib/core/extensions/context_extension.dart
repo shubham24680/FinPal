@@ -5,6 +5,7 @@ import 'package:finpal/core/customs/typography/typography.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
+enum ToastType { normal, error, success }
 extension ResponsiveContext on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colors => Theme.of(this).colorScheme;
@@ -32,16 +33,34 @@ extension ResponsiveContext on BuildContext {
   Color get successColor => AppColors.success500;
   Color get errorColor => AppColors.error500;
   Color get warningColor => AppColors.warning500;
+  Color get infoColor => AppColors.info500;
 
-  void showSnackBar(String message, {bool isError = false}) {
+  void showSnackBar(String message, {ToastType toastType = ToastType.normal}) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: CustomTypography(
           text: message,
-          fontType: FontType.body1Regular,
+          fontType: FontType.body1Medium,
+          color: _handleToastColor(toastType),
         ),
-        backgroundColor: isError ? errorColor : null,
+        backgroundColor: _handleToastBackgroundColor(toastType),
       ),
     );
+  }
+
+  Color _handleToastColor(ToastType toastType) {
+    return switch (toastType) {
+      ToastType.normal => colors.surface,
+      ToastType.error => AppColors.error500,
+      ToastType.success => AppColors.success500,
+    };
+  }
+
+  Color _handleToastBackgroundColor(ToastType toastType) {
+    return switch (toastType) {
+      ToastType.normal => colors.inverseSurface,
+      ToastType.error => AppColors.error200,
+      ToastType.success => AppColors.success200,
+    };
   }
 }

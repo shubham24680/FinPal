@@ -2,7 +2,7 @@ import 'package:finpal/app/app.dart';
 
 part 'payment_model.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 5)
 class PaymentModel extends HiveObject {
   @HiveField(0)
   final String id;

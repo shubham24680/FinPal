@@ -9,7 +9,7 @@ class IntroScreen extends ConsumerWidget {
       builder: (context, screenType) {
         final isMobile = screenType.isMobile;
         final items = [
-          _buildTopItem(),
+          _buildTopItem(context),
           _buildMainItem(ref, context, isMobile: isMobile),
         ];
 
@@ -20,8 +20,16 @@ class IntroScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTopItem() {
-    return CustomImage(imageUrl: AppImages.introScreen, fit: BoxFit.fitWidth);
+  Widget _buildTopItem(BuildContext context) {
+    return Stack(
+      children: [
+        CustomImage(imageUrl: AppImages.introScreen, fit: BoxFit.fitWidth),
+        Align(
+          alignment: Alignment.topLeft,
+          child: CustomImage(imageUrl: AppImages.splash, height: 40.spMin),
+        ).padding(top: context.viewPadding.top, left: 16.r),
+      ],
+    );
   }
 
   Widget _buildMainItem(
@@ -33,10 +41,10 @@ class IntroScreen extends ConsumerWidget {
     final onboardingState = ref.watch(onboardingProvider);
     final onboardingNotifier = ref.read(onboardingProvider.notifier);
     final title = [
-      OnboardingTypographyModel(text: "Track "),
-      OnboardingTypographyModel(text: "Expenses.", color: AppColors.primary500),
-      OnboardingTypographyModel(text: "\nBuild Better "),
-      OnboardingTypographyModel(text: "Habits.", color: AppColors.primary500),
+      TypographyModel(text: "Track "),
+      TypographyModel(text: "Expenses.", color: AppColors.primary500),
+      TypographyModel(text: "\nBuild Better "),
+      TypographyModel(text: "Habits.", color: AppColors.primary500),
     ];
 
     final child = SafeArea(
@@ -46,7 +54,7 @@ class IntroScreen extends ConsumerWidget {
         mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
         children: [
           SizedBox(height: 20.spMin),
-          onboardingTypo(context, title),
+          CustomTypography(typos: title,),
           CustomTypography(
             text: "Monitor your spending and make smarter financial decisions.",
             fontType: FontType.label1Regular,

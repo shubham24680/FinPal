@@ -13,7 +13,6 @@ abstract class AppColors {
   static const Color primary800 = Color(0xFF2B6D3D);
   static const Color primary900 = Color(0xFF1E5A2D);
 
-  // Removed the following colors, if not needed
   // ── Neutral — Warm Grey ────────────────────────────────────────────────────
   static const Color neutral50 = Color(0xFFF7F7F6);
   static const Color neutral100 = Color(0xFFEEEDEB);
@@ -39,10 +38,10 @@ abstract class AppColors {
   static const Color accent900 = Color(0xFF78350F);
 
   // ── Semantic — Success ─────────────────────────────────────────────────────
-  static const Color success50 = Color(0xFFECFDF5);
-  static const Color success200 = Color(0xFFA7F3D0);
-  static const Color success500 = Color(0xFF10B981);
-  static const Color success700 = Color(0xFF047857);
+  static const Color success50 = Color(0xFFE8F1EB);
+  static const Color success200 = Color(0xFFA1CCAE);
+  static const Color success500 = Color(0xFF428A55);
+  static const Color success700 = Color(0xFF337745);
 
   // ── Semantic — Error ──────────────────────────────────────────────────────
   static const Color error50 = Color(0xFFFEF2F2);

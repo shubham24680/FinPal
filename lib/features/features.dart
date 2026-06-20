@@ -26,8 +26,6 @@ export 'transaction/transaction_service.dart';
 export 'profile/screens/profile_screen.dart';
 export 'profile/screens/edit_profile_screen.dart';
 export 'profile/profile_constants.dart';
-export 'profile/models/profile_model.dart';
-export 'profile/providers/profile_provider.dart';
 export 'profile/screens/options_screen.dart';
 
 // Settings
@@ -42,7 +40,7 @@ export 'add_payment/models/payment_model.dart';
 export 'add_payment/providers/payment_provider.dart';
 export 'profile/providers/options_provider.dart';
 export 'profile/services/option_services.dart';
-export 'profile/models/option_model.dart';
+export 'settings/data/models/option_model.dart';
 
 // Bot
 export 'ai/ai_screen.dart';
@@ -52,9 +50,4 @@ export 'ai/ai_service.dart';
 export 'ai/ai_helper.dart';
 
 // Authentication
-export 'profile/authentication/auth_provider.dart';
-export 'profile/authentication/pin/pin_auth_screen.dart';
-export 'profile/authentication/fingerprint/fingerprint_widget.dart';
-export 'profile/authentication/pin/pin_storage_service.dart';
-export 'profile/authentication/pin/widgets/pin_dots_indicator.dart';
-export 'profile/authentication/pin/widgets/pin_keypad.dart';
+export 'authentication/authentication.dart';

@@ -1,8 +1,8 @@
 import 'package:finpal/app/app.dart';
 
-enum ButtonType { primary, negative }
+enum ButtonType { primary, negative, inherit }
 
-enum ButtonVariant { filled, outlined }
+enum ButtonVariant { filled }
 
 enum ButtonState { enabled, loading, disabled }
 
@@ -36,22 +36,32 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundShade = _getBackgroundShade(buttonState);
+    final backgroundColor = bgColor ?? _getBackgroundColor(context);
+    final foregroundColor = labelColor ?? _getLabelColor();
+
     final child = Row(
       spacing: 8.w,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: isFull ? MainAxisSize.max : MainAxisSize.min,
       children: [
+        if (prefixIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: prefixIcon,
+            color: foregroundColor,
+            height: 24.spMin,
+          ),
         CustomTypography(
           text: label ?? "Submit",
-          color: labelColor ?? AppColors.white,
+          color: foregroundColor,
           fontType: FontType.body1Medium,
         ),
         if (suffixIcon != null)
           CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: suffixIcon,
-            color: labelColor ?? AppColors.white,
+            color: foregroundColor,
+            height: 24.spMin,
           ),
       ],
     );
@@ -59,8 +69,8 @@ class CustomButton extends StatelessWidget {
     if (buttonState == ButtonState.loading) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: AppColors.white,
-          color: backgroundShade,
+          backgroundColor: Colors.transparent,
+          color: backgroundColor,
           strokeCap: StrokeCap.round,
         ),
       );
@@ -68,24 +78,35 @@ class CustomButton extends StatelessWidget {
 
     return CustomContainer(
       onTap: buttonState == ButtonState.enabled ? onTap : null,
-      showShadow: true,
-      backgroundColor: bgColor ?? backgroundShade,
+      showShadow: buttonVariant == ButtonVariant.filled,
+      backgroundColor: backgroundColor,
       margin: margin,
       child: child,
     );
   }
 
-  Color _getBackgroundColor(ButtonType buttonType) {
-    return switch (buttonType) {
+  Color _getBackgroundColor(BuildContext context) {
+    final bgColor = switch (buttonType) {
       ButtonType.primary => AppColors.primary700,
-      ButtonType.negative => NegativeColors.shade100,
+      ButtonType.negative => AppColors.error700,
+      ButtonType.inherit => context.colors.surfaceContainerHighest,
+    };
+
+    return switch (buttonState) {
+      ButtonState.disabled => context.colors.surfaceContainerHighest.withAlpha(100),
+      _ => bgColor,
     };
   }
 
-  Color _getBackgroundShade(ButtonState buttonState) {
+  Color _getLabelColor() {
+    final labelColor = switch (buttonType) {
+      ButtonType.inherit => AppColors.neutral500,
+      _ => AppColors.white,
+    };
+
     return switch (buttonState) {
-      ButtonState.disabled => _getBackgroundColor(buttonType).withAlpha(100),
-      _ => _getBackgroundColor(buttonType),
+      ButtonState.disabled => AppColors.neutral500.withAlpha(100),
+      _ => labelColor,
     };
   }
 }

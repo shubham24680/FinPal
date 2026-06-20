@@ -8,7 +8,7 @@ part of 'ai_model.dart';
 
 class ChatMessageAdapter extends TypeAdapter<ChatMessage> {
   @override
-  final int typeId = 5;
+  final int typeId = 10;
 
   @override
   ChatMessage read(BinaryReader reader) {
@@ -57,7 +57,7 @@ class ChatMessageAdapter extends TypeAdapter<ChatMessage> {
 
 class ChatRoleAdapter extends TypeAdapter<ChatRole> {
   @override
-  final int typeId = 3;
+  final int typeId = 11;
 
   @override
   ChatRole read(BinaryReader reader) {
@@ -96,7 +96,7 @@ class ChatRoleAdapter extends TypeAdapter<ChatRole> {
 
 class ChatMessageStatusAdapter extends TypeAdapter<ChatMessageStatus> {
   @override
-  final int typeId = 4;
+  final int typeId = 12;
 
   @override
   ChatMessageStatus read(BinaryReader reader) {

@@ -7,7 +7,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileProvider);
     final name = profileState.name;
-    final imageUrl = AppImages.avatar[profileState.profilePicIndex];
+    final imageUrl = AppImages.avatar[0];
     final topPadding =
         AppConstants.sidePadding + MediaQuery.of(context).padding.top;
     final bottomPadding =

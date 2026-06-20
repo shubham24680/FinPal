@@ -24,43 +24,44 @@ class AppRoutes {
   static bool isAppLocked = true;
   static final routesProvider = Provider<GoRouter>((ref) {
     final refresh = ValueNotifier<int>(0);
-    ref.listen<AsyncValue<ProfileModel>>(profileNotifier, (_, __) {
+    ref.listen<AsyncValue<SettingsModel>>(settingsNotifier, (_, __) {
       refresh.value++;
     });
     ref.onDispose(refresh.dispose);
 
     return GoRouter(
       refreshListenable: refresh,
-      initialLocation: AppRoutesPath.splash.path,
-      redirect: (context, state) async {
-        final profileAsync = ref.read(profileNotifier);
+      initialLocation: AppRoutesPath.home.path,
+      redirect: (context, state) {
+        final settingsAsync = ref.read(settingsNotifier);
+        final location = state.matchedLocation;
+        final isOnSplash = location == AppRoutesPath.splash.path;
 
         //Splash Screen
-        if (profileAsync.isLoading) {
+        if (settingsAsync.isLoading && !isOnSplash) {
           return AppRoutesPath.splash.path;
         }
-        if (!profileAsync.hasValue) {
+        if (!settingsAsync.hasValue) {
           return null;
         }
 
         //Onboaring
-        final profile = profileAsync.requireValue;
-        final isFirstVisit = profile.isFirstTimeVisit;
-        final isOnboarding =
-            state.matchedLocation == AppRoutesPath.onboarding.path;
+        final settings = settingsAsync.requireValue;
+        final isFirstVisit = settings.isFirstVisit;
+        final isOnboarding = location == AppRoutesPath.onboarding.path;
         if (isFirstVisit && !isOnboarding) {
           return AppRoutesPath.onboarding.path;
         }
 
-        final isPasscodeEnabled = profile.isPasscodeEnabled;
-        final isOnLockScreen =
-            state.matchedLocation == AppRoutesPath.lockScreen.path;
-        if (isPasscodeEnabled && isAppLocked && !isOnLockScreen) {
-          return AppRoutesPath.lockScreen.path;
-        }
+        // final isPasscodeEnabled = settings.isPasscodeEnabled;
+        // final isOnLockScreen =
+        //     state.matchedLocation == AppRoutesPath.lockScreen.path;
+        // if (isPasscodeEnabled && isAppLocked && !isOnLockScreen) {
+        //   return AppRoutesPath.lockScreen.path;
+        // }
 
         isAppLocked = false;
-        return null;
+        return AppRoutesPath.home.path;
       },
       routes: [
         ...List.generate(

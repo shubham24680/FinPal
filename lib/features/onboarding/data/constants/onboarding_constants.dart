@@ -1,18 +1,9 @@
 import 'package:finpal/app/app.dart';
 
 enum OnboardingContent {
-  // security(
-  //   data: OnboardingModel(
-  //     image: AppImages.onboarding3,
-  //     title: [OnboardingTypographyModel(text: "Protect your data")],
-  //     subtitle: OnboardingTypographyModel(
-  //       text: "Local lock, No Server. You can control it.",
-  //     ),
-  //     button: OnboardingButtonModel(label: "Enable passcode & finish"),
-  //   ),
-  // );
   intro(screen: IntroScreen()),
   personalDetails(screen: PersonalDetailsScreen());
+  // security(screen: LockScreen());
 
   const OnboardingContent({required this.screen});
   final Widget screen;
@@ -30,17 +21,25 @@ class OnboardingConstants {
       id: paymentMethod,
       type: paymentMethod,
       name: "Other",
-      icon: AppSvgs.add,
+      icon: AppSvgs.other,
     ),
+    OptionModel(type: paymentMethod, name: "Cash", icon: AppSvgs.cash),
     OptionModel(type: paymentMethod, name: "UPI", icon: AppSvgs.upi),
+    OptionModel(
+      type: paymentMethod,
+      name: "Credit Card",
+      icon: AppSvgs.creditCard,
+    ),
+    OptionModel(
+      type: paymentMethod,
+      name: "Debit Card",
+      icon: AppSvgs.debitCard,
+    ),
     OptionModel(
       type: paymentMethod,
       name: "Net Banking",
       icon: AppSvgs.netBanking,
     ),
-    OptionModel(type: paymentMethod, name: "Credit Card", icon: AppSvgs.card),
-    OptionModel(type: paymentMethod, name: "Debit Card", icon: AppSvgs.card),
-    OptionModel(type: paymentMethod, name: "Cash", icon: AppSvgs.cash),
     OptionModel(type: paymentMethod, name: "Wallet", icon: AppSvgs.wallet),
   ];
 
@@ -55,10 +54,15 @@ class OnboardingConstants {
     OptionModel(
       type: incomeCategory,
       name: "Freelance",
-      icon: AppSvgs.wadOfMoney,
+      icon: AppSvgs.freelance,
     ),
-    OptionModel(type: incomeCategory, name: "Investment", icon: AppSvgs.cash),
+    OptionModel(
+      type: incomeCategory,
+      name: "Investment",
+      icon: AppSvgs.investment,
+    ),
     OptionModel(type: incomeCategory, name: "Gift", icon: AppSvgs.gift),
+    OptionModel(type: incomeCategory, name: "Rental", icon: AppSvgs.rental),
   ];
 
   static final List<OptionModel> expenseCategories = [
@@ -66,16 +70,55 @@ class OnboardingConstants {
       id: expenseCategory,
       type: expenseCategory,
       name: "Other",
-      icon: AppSvgs.add,
+      icon: AppSvgs.other,
     ),
-    OptionModel(type: expenseCategory, name: "Food", icon: AppSvgs.food),
+    OptionModel(
+      type: expenseCategory,
+      name: "Food & Dining",
+      icon: AppSvgs.food,
+    ),
+    OptionModel(
+      type: expenseCategory,
+      name: "Groceries",
+      icon: AppSvgs.groceries,
+    ),
     OptionModel(type: expenseCategory, name: "Rent", icon: AppSvgs.rent),
     OptionModel(
       type: expenseCategory,
-      name: "Shows",
+      name: "Bills & Utilities",
+      icon: AppSvgs.bills,
+    ),
+    OptionModel(
+      type: expenseCategory,
+      name: "Recharge & Internet",
+      icon: AppSvgs.recharge,
+    ),
+    OptionModel(
+      type: expenseCategory,
+      name: "Transport & Fuel",
+      icon: AppSvgs.transportation,
+    ),
+    OptionModel(
+      type: expenseCategory,
+      name: "Shopping",
+      icon: AppSvgs.shopping,
+    ),
+    OptionModel(
+      type: expenseCategory,
+      name: "Entertainment",
       icon: AppSvgs.entertainment,
     ),
-    OptionModel(type: expenseCategory, name: "Bills", icon: AppSvgs.bills),
+    OptionModel(
+      type: expenseCategory,
+      name: "Health & Medical",
+      icon: AppSvgs.health,
+    ),
+    OptionModel(type: expenseCategory, name: "Party", icon: AppSvgs.party),
+    OptionModel(
+      type: expenseCategory,
+      name: "Education",
+      icon: AppSvgs.education,
+    ),
   ];
 
   static final List<OptionModel> allOptions = [

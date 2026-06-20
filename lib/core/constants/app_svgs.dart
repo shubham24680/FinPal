@@ -1,41 +1,93 @@
 class AppSvgs {
-  static const String arrowLeft = 'assets/svgs/arrow_left.svg';
-  static const String arrowRight = 'assets/svgs/arrow_right.svg';
-  static const String arrowDown = 'assets/svgs/arrow_down.svg';
-  static const String addPayment = 'assets/svgs/add_payment.svg';
-  static const String home = 'assets/svgs/home.svg';
-  static const String user = 'assets/svgs/user.svg';
-  static const String transaction = 'assets/svgs/transaction.svg';
-  static const String money = 'assets/svgs/money.svg';
-  static const String rupee = 'assets/svgs/rupee.svg';
-  static const String add = 'assets/svgs/add.svg';
-  static const String calendar = 'assets/svgs/calendar.svg';
-  static const String cross = 'assets/svgs/cross.svg';
-  static const String male = 'assets/svgs/male.svg';
-  static const String female = 'assets/svgs/female.svg';
-  static const String income = 'assets/svgs/income.svg';
-  static const String expense = 'assets/svgs/expense.svg';
-  static const String edit = 'assets/svgs/edit.svg';
-  static const String delete = 'assets/svgs/delete.svg';
-  static const String food = 'assets/svgs/food.svg';
-  static const String rent = 'assets/svgs/rent.svg';
-  static const String entertainment = 'assets/svgs/entertainment.svg';
-  static const String bills = 'assets/svgs/bills.svg';
-  static const String upi = 'assets/svgs/upi.svg';
-  static const String netBanking = 'assets/svgs/net_banking.svg';
-  static const String card = 'assets/svgs/card.svg';
-  static const String cash = 'assets/svgs/cash.svg';
-  static const String salary = 'assets/svgs/salary.svg';
-  static const String wallet = 'assets/svgs/wallet.svg';
-  static const String wadOfMoney = 'assets/svgs/wad_of_money.svg';
-  static const String gift = 'assets/svgs/gift.svg';
-  static const String bot = "assets/svgs/bot.svg";
-  static const String copy = "assets/svgs/copy.svg";
-  static const String retry = "assets/svgs/retry.svg";
-  static const String info = "assets/svgs/info.svg";
-  static const String toc = "assets/svgs/toc.svg";
-  static const String privacy = "assets/svgs/privacy.svg";
-  static const String policy = "assets/svgs/policy.svg";
-  static const String fingerprint = "assets/svgs/fingerprint.svg";
-  static const String backspace = "assets/svgs/backspace.svg";
+  static const String _basePath = "assets/svgs/";
+  static const String _paymentMethodPath = "$_basePath/payment_method/";
+  static const String _incomeCategoryPath = "$_basePath/income_category/";
+  static const String _expenseCategoryPath = "$_basePath/expense_category/";
+
+  static const String add = '$_basePath/add_item.svg';
+  static const String addPayment = '$_basePath/add_payment.svg';
+  static const String arrowDown = '$_basePath/arrow_down.svg';
+  static const String arrowLeft = '$_basePath/arrow_left.svg';
+  static const String arrowRight = '$_basePath/arrow_right.svg';
+  static const String backspace = '$_basePath/backspace.svg';
+  static const String bot = '$_basePath/bot.svg';
+  static const String card = '$_basePath/card.svg';
+  static const String copy = '$_basePath/copy.svg';
+  static const String cross = '$_basePath/cross.svg';
+  static const String calendar = '$_basePath/calendar.svg';
+  static const String delete = '$_basePath/delete.svg';
+  static const String edit = '$_basePath/edit.svg';
+  static const String expense = '$_basePath/expense.svg';
+  static const String female = '$_basePath/female.svg';
+  static const String fingerprint = '$_basePath/fingerprint.svg';
+  static const String home = '$_basePath/home.svg';
+  static const String income = '$_basePath/income.svg';
+  static const String info = '$_basePath/info.svg';
+  static const String lock = '$_basePath/lock.svg';
+  static const String male = '$_basePath/male.svg';
+  static const String money = '$_basePath/money.svg';
+  static const String other = '$_basePath/other.svg';
+  static const String policy = '$_basePath/policy.svg';
+  static const String privacy = '$_basePath/privacy.svg';
+  static const String retry = '$_basePath/retry.svg';
+  static const String rupee = '$_basePath/rupee.svg';
+  static const String toc = '$_basePath/toc.svg';
+  static const String transaction = '$_basePath/transaction.svg';
+  static const String user = '$_basePath/user.svg';
+  static const String wadOfMoney = '$_basePath/wad_of_money.svg';
+
+  /// Payment Method
+  static const String cash = "$_paymentMethodPath/cash.svg";
+  static const String creditCard = "$_paymentMethodPath/card.svg";
+  static const String debitCard = "$_paymentMethodPath/card.svg";
+  static const String netBanking = "$_paymentMethodPath/suitcase.svg";
+  static const String wallet = "$_paymentMethodPath/wallet.svg";
+  static const String upi = "$_paymentMethodPath/upi.svg";
+
+  // Income Category
+  static const String freelance = "$_incomeCategoryPath/freelancing.svg";
+  static const String gift = "$_incomeCategoryPath/gift.svg";
+  static const String investment = "$_incomeCategoryPath/investment.svg";
+  static const String rental = "$_incomeCategoryPath/rental.svg";
+  static const String salary = "$_incomeCategoryPath/salary.svg";
+
+  // Expense Category
+  static const String bills = "$_expenseCategoryPath/bill.svg";
+  static const String education = "$_expenseCategoryPath/book.svg";
+  static const String entertainment = "$_expenseCategoryPath/entertainment.svg";
+  static const String food = "$_expenseCategoryPath/food.svg";
+  static const String groceries = "$_expenseCategoryPath/groceries.svg";
+  static const String health = "$_expenseCategoryPath/health.svg";
+  static const String party = "$_expenseCategoryPath/party.svg";
+  static const String recharge = "$_expenseCategoryPath/recharge.svg";
+  static const String rent = "$_expenseCategoryPath/rent.svg";
+  static const String shopping = "$_expenseCategoryPath/shopping.svg";
+  static const String transportation =
+      "$_expenseCategoryPath/transportation.svg";
+
+  // Icons for user
+  static const List<String> userIcons = [
+    upi,
+    netBanking,
+    creditCard,
+    debitCard,
+    cash,
+    wallet,
+    freelance,
+    gift,
+    investment,
+    rental,
+    salary,
+    bills,
+    education,
+    entertainment,
+    food,
+    groceries,
+    health,
+    party,
+    recharge,
+    rent,
+    shopping,
+    transportation,
+  ];
 }

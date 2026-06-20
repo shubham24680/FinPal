@@ -2,7 +2,7 @@ import 'package:finpal/app/app.dart';
 
 part 'ai_model.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 11)
 enum ChatRole {
   @HiveField(0)
   user,
@@ -10,7 +10,7 @@ enum ChatRole {
   assistant,
 }
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 12)
 enum ChatMessageStatus {
   @HiveField(0)
   sent,
@@ -18,7 +18,7 @@ enum ChatMessageStatus {
   error,
 }
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 10)
 class ChatMessage {
   @HiveField(0)
   final String id;
