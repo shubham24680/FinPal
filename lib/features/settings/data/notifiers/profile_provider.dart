@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 final profileBoxProvider = Provider<Box<ProfileModel>>(
@@ -108,6 +110,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
 
   void onChange() {
     final isValid = state.name.isNotEmpty || state.dob.isNotEmpty || state.gender.isNotEmpty;
+    log("isValid: $isValid ${state.name} ${state.dob} ${state.gender}");
     state = state.copyWith(buttonState: isValid ? ButtonState.enabled : ButtonState.disabled);
   }
 

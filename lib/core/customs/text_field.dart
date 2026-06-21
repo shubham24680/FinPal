@@ -153,7 +153,11 @@ class CustomTextField extends StatelessWidget {
     switch (inputType) {
       case InputType.date:
         final current = controller?.text ?? '';
-        final picked = await chooseDate(context, current);
+        final picked = await CustomBottomSheet.chooseDate(
+          context,
+          current,
+          firstDate: DateTime(1900),
+        );
         controller?.text = picked;
         onChanged?.call(picked);
         break;

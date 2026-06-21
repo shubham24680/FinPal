@@ -110,14 +110,14 @@ Future<T?> customBottomSheet<T>(
 }
 
 // choose date
-Future<String> chooseDate(BuildContext context, String date) async {
+Future<String> chooseDate(BuildContext context, String date, {DateTime? firstDate, DateTime? lastDate}) async {
   final textStyle = CustomTypography(
     fontType: FontType.body1Semibold,
   ).getTextStyle(context);
 
-  final firstDate = DateTime(2026);
-  final lastDate = DateTime.now();
-  final initialDate = date.isEmpty ? lastDate : parseDate(date);
+  final first = firstDate ?? DateTime(2026);
+  final last = lastDate ?? DateTime.now();
+  final initialDate = date.isEmpty ? last : parseDate(date);
 
   DateTime selectedDate = initialDate;
 
@@ -143,8 +143,8 @@ Future<String> chooseDate(BuildContext context, String date) async {
             ),
             child: CalendarDatePicker(
               initialDate: selectedDate,
-              firstDate: firstDate,
-              lastDate: lastDate,
+              firstDate: first,
+              lastDate: last,
               onDateChanged: (DateTime date) {
                 setState(() {
                   selectedDate = date;
@@ -178,12 +178,7 @@ Future<String> chooseDate(BuildContext context, String date) async {
     },
   );
 
-  return await customBottomSheet<String>(
-        context,
-        "Select date",
-        widget: child,
-      ) ??
-      date;
+  return await CustomBottomSheet.show<String>(context, title: "Select date", widget: child) ?? date;
 }
 
 Future<void> hitUrl(String url) async {

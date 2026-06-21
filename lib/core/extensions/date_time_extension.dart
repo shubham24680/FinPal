@@ -22,7 +22,6 @@ extension DateTimeX on DateTime {
   DateTime get endOfMonth =>
       DateTime(year, month + 1).subtract(const Duration(milliseconds: 1));
 
-  /// Returns a copy with only year, month, day (time zeroed).
   DateTime get dateOnly => DateTime(year, month, day);
 
   String formatDate({DateFormatType type = DateFormatType.fullDate}) {

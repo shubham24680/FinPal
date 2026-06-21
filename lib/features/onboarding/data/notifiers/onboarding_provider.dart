@@ -42,11 +42,12 @@ class OnboardingNotifer extends StateNotifier<OnboardingState> {
 
   Future<void> setupDefaultData() async {
     state = state.copyWith(buttonState: ButtonState.loading);
-    await _ref.read(settingsNotifier.notifier).save(isFirstVisit: false);
     await _ref.read(optionNotifer.future);
     await _ref
         .read(optionNotifer.notifier)
         .saveAllOptions(OnboardingConstants.allOptions);
+    await Future.delayed(const Duration(seconds: 5));
+    await _ref.read(settingsNotifier.notifier).save(isFirstVisit: false);
     state = state.copyWith(buttonState: ButtonState.enabled);
   }
 }

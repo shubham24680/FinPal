@@ -1,8 +1,8 @@
 class AppSvgs {
-  static const String _basePath = "assets/svgs/";
-  static const String _paymentMethodPath = "$_basePath/payment_method/";
-  static const String _incomeCategoryPath = "$_basePath/income_category/";
-  static const String _expenseCategoryPath = "$_basePath/expense_category/";
+  static const String _basePath = "assets/svgs";
+  static const String _paymentMethodPath = "$_basePath/payment_method";
+  static const String _incomeCategoryPath = "$_basePath/income_category";
+  static const String _expenseCategoryPath = "$_basePath/expense_category";
 
   static const String add = '$_basePath/add_item.svg';
   static const String addPayment = '$_basePath/add_payment.svg';

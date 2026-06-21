@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 class PersonalDetailsScreen extends ConsumerStatefulWidget {
@@ -42,9 +44,14 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
           _buildMainItem(context, isMobile: isMobile),
         ];
 
-        return isMobile
+        final screen = isMobile
             ? Stack(children: items)
             : Row(children: items.map((e) => Expanded(child: e)).toList());
+
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: screen,
+        );
       },
     );
   }
@@ -111,6 +118,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
               if (hasSubmitted) {
                 await ref.read(onboardingProvider.notifier).setupDefaultData();
               }
+              log("hasSubmitted: $hasSubmitted");
             },
           ),
           SizedBox(height: 40.spMin),

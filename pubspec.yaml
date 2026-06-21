@@ -71,6 +71,9 @@ flutter:
     - assets/images/onboarding/
     - assets/images/avatars/
     - assets/svgs/
+    - assets/svgs/expense_category/
+    - assets/svgs/income_category/
+    - assets/svgs/payment_method/
     - assets/lotties/
     - assets/res/
 

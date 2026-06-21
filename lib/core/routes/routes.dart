@@ -48,8 +48,7 @@ class AppRoutes {
         //Onboaring
         final settings = settingsAsync.requireValue;
         final isFirstVisit = settings.isFirstVisit;
-        final isOnboarding = location == AppRoutesPath.onboarding.path;
-        if (isFirstVisit && !isOnboarding) {
+        if (isFirstVisit) {
           return AppRoutesPath.onboarding.path;
         }
 
@@ -61,7 +60,12 @@ class AppRoutes {
         // }
 
         isAppLocked = false;
-        return AppRoutesPath.home.path;
+        final isOnboarding = location == AppRoutesPath.onboarding.path;
+        if (isOnboarding || isOnSplash) {
+          return AppRoutesPath.home.path;
+        }
+
+        return null;
       },
       routes: [
         ...List.generate(
