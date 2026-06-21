@@ -9,6 +9,7 @@ class AppSvgs {
   static const String arrowDown = '$_basePath/arrow_down.svg';
   static const String arrowLeft = '$_basePath/arrow_left.svg';
   static const String arrowRight = '$_basePath/arrow_right.svg';
+  static const String arrowRight1 = '$_basePath/arrow_right_small.svg';
   static const String backspace = '$_basePath/backspace.svg';
   static const String bot = '$_basePath/bot.svg';
   static const String card = '$_basePath/card.svg';
@@ -34,7 +35,7 @@ class AppSvgs {
   static const String toc = '$_basePath/toc.svg';
   static const String transaction = '$_basePath/transaction.svg';
   static const String user = '$_basePath/user.svg';
-  static const String wadOfMoney = '$_basePath/wad_of_money.svg';
+  static const String user1 = '$_basePath/user1.svg';
 
   /// Payment Method
   static const String cash = "$_paymentMethodPath/cash.svg";

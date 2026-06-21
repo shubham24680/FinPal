@@ -111,7 +111,7 @@ abstract final class AppTheme {
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
         scrolledUnderElevation: 1,
-        shadowColor: colorScheme.shadow.withOpacity(0.08),
+        shadowColor: colorScheme.shadow,
         systemOverlayStyle:
             isLight
                 ? SystemUiOverlayStyle.dark.copyWith(

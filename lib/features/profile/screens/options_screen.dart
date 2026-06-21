@@ -8,7 +8,6 @@ const List<String> _categoryIconChoices = [
   AppSvgs.entertainment,
   AppSvgs.bills,
   AppSvgs.salary,
-  AppSvgs.wadOfMoney,
   AppSvgs.gift,
   AppSvgs.cash,
   AppSvgs.wallet,

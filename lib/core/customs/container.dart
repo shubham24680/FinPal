@@ -7,6 +7,7 @@ class CustomContainer extends StatefulWidget {
     this.onTap,
     this.padding,
     this.margin,
+    this.image,
     this.backgroundColor,
     this.borderRadius,
     this.border,
@@ -23,6 +24,7 @@ class CustomContainer extends StatefulWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
+  final String? image;
   final Color? backgroundColor;
   final BorderRadiusGeometry? borderRadius;
   final BoxBorder? border;
@@ -77,6 +79,7 @@ class _CustomContainerState extends State<CustomContainer>
     final defaultBorderRadius =
         widget.borderRadius ?? BorderRadius.circular(16.r);
     final defaultPadding = widget.padding ?? EdgeInsets.all(16.r);
+    final image = widget.image;
 
     final container = Container(
       height: widget.height,
@@ -85,6 +88,10 @@ class _CustomContainerState extends State<CustomContainer>
       padding: defaultPadding,
       alignment: widget.alignment,
       decoration: BoxDecoration(
+        image:
+            image != null
+                ? DecorationImage(image: AssetImage(image), fit: BoxFit.cover)
+                : null,
         color: widget.backgroundColor ?? PrimaryColors.shade100,
         borderRadius: defaultBorderRadius,
         border: widget.border,

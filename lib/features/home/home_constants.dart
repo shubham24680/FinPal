@@ -25,6 +25,6 @@ class HomeConstants {
   static final List<NavModel> nav1 = [
     NavModel(icon: AppSvgs.home, defaultPath: ExpenseScreen()),
     NavModel(icon: AppSvgs.transaction, defaultPath: TransactionScreen()),
-    NavModel(icon: AppSvgs.user, defaultPath: ProfileScreen()),
+    NavModel(icon: AppSvgs.user, defaultPath: SettingsScreen()),
   ];
 }

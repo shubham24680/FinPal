@@ -1,8 +1,11 @@
 import 'package:finpal/app/app.dart';
 
 enum AppRoutesPath {
+  splash(path: "/", child: SplashScreen()),
   onboarding(path: "/onboarding", child: OnboardingScreen()),
+  lockScreen(path: "/lock", child: LockScreen()),
   home(path: "/home", child: HomeScreen()),
+  profile(path: "/profile", child: ProfileScreen()),
   addAmount(path: "/add_amount", child: AddAmountScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
   transactionOverview(
@@ -11,9 +14,7 @@ enum AppRoutesPath {
   ),
   options(path: "/options", child: OptionsScreen()),
   ai(path: "/ai", child: AIScreen()),
-  pinAuth(path: "/pin_auth", child: PinAuthScreen()),
-  lockScreen(path: "/lock", child: LockScreen()),
-  splash(path: "/", child: SplashScreen());
+  pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;

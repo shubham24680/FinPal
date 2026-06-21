@@ -1,6 +1,4 @@
 import 'package:finpal/app/app.dart';
-import 'package:finpal/core/extensions/gesture_extenstion.dart';
-import 'package:flutter/material.dart';
 
 class AppBarModel {
   final String icon;
@@ -19,17 +17,17 @@ AppBar customAppBar(
 }) {
   return AppBar(
     automaticallyImplyLeading: false,
-    backgroundColor: BGColors.shade500,
+    // backgroundColor: BGColors.shade500,
     leading:
         enableBack
             ? CustomImage(
               imageType: ImageType.svgLocal,
               imageUrl: AppSvgs.arrowLeft,
-            ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.w)
+            ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.r)
             : null,
     title:
         title != null
-            ? CustomTypography(text: title, fontType: FontType.body1Medium)
+            ? CustomTypography(text: title, fontType: FontType.h4Medium)
             : null,
     actions:
         actions

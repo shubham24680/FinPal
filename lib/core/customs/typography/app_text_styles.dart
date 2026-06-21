@@ -66,6 +66,70 @@ enum FontType {
     letterSpacing: 0.15,
   ),
 
+  // h3 — 24
+  h3Bold(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 1.33,
+    letterSpacing: -0.25,
+  ),
+  h3Semibold(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 1.33,
+    letterSpacing: 0,
+  ),
+  h3Medium(
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    height: 1.33,
+    letterSpacing: 0,
+  ),
+  h3Regular(
+    fontSize: 24,
+    fontWeight: FontWeight.w400,
+    height: 1.33,
+    letterSpacing: 0,
+  ),
+  h3Light(
+    fontSize: 24,
+    fontWeight: FontWeight.w300,
+    height: 1.33,
+    letterSpacing: 0.15,
+  ),
+
+  // h4 — 20
+  h4Bold(
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    height: 1.4,
+    letterSpacing: -0.25,
+  ),
+  h4Semibold(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.4,
+    letterSpacing: 0,
+  ),
+  h4Medium(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    letterSpacing: 0,
+  ),
+  h4Regular(
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    letterSpacing: 0,
+  ),
+  h4Light(
+    fontSize: 20,
+    fontWeight: FontWeight.w300,
+    height: 1.4,
+    letterSpacing: 0.15,
+  ),
+
   // body1 — 16
   body1Bold(
     fontSize: 16,

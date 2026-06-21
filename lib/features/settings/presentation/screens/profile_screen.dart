@@ -1,4 +1,5 @@
 import 'package:finpal/app/app.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -8,46 +9,94 @@ class ProfileScreen extends ConsumerWidget {
     final profileState = ref.watch(profileProvider);
     final name = profileState.name;
     final imageUrl = AppImages.avatar[0];
-    final topPadding =
-        AppConstants.sidePadding + MediaQuery.of(context).padding.top;
+    final topPadding = AppConstants.sidePadding;
     final bottomPadding =
-        50.w + AppConstants.sidePadding + MediaQuery.of(context).padding.bottom;
+        50.spMin + AppConstants.sidePadding + context.viewInsets.bottom;
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        left: AppConstants.sidePadding,
-        right: AppConstants.sidePadding,
-        top: topPadding,
-        bottom: bottomPadding,
+    return Scaffold(
+      appBar: customAppBar(context, title: "Profile"),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          left: AppConstants.sidePadding,
+          right: AppConstants.sidePadding,
+          top: topPadding,
+          bottom: bottomPadding,
+        ),
+        child: Column(children: [_buildViewProfile(context)]),
       ),
+    );
+
+    // return SingleChildScrollView(
+    //   padding: EdgeInsets.only(
+    //     left: AppConstants.sidePadding,
+    //     right: AppConstants.sidePadding,
+    //     top: topPadding,
+    //     bottom: bottomPadding,
+    //   ),
+    //   child: Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     crossAxisAlignment: CrossAxisAlignment.stretch,
+    //     spacing: 16.w,
+    //     children: [
+    //       CustomTypography(text: "Profile", fontType: FontType.h1Bold),
+    //       Column(
+    //         spacing: 8.w,
+    //         children: [
+    //           CustomContainer(
+    //             padding: EdgeInsets.all(2.w),
+    //             borderRadius: BorderRadius.circular(1000.r),
+    //             backgroundColor: CardColors.shade1000,
+    //             height: 120.w,
+    //             width: 120.w,
+    //             child: ClipOval(
+    //               child: CustomImage(
+    //                 imageType: ImageType.local,
+    //                 imageUrl: imageUrl,
+    //               ),
+    //             ),
+    //           ),
+    //           if (name != null && name.isNotEmpty)
+    //             CustomTypography(text: name, fontType: FontType.body1Semibold),
+    //         ],
+    //       ),
+    //       _buildButtons(context, false),
+    //       _contents(context, profileState),
+    //     ],
+    //   ),
+    // );
+  }
+
+  Widget _buildViewProfile(BuildContext context) {
+    final name = "Shubham Patel";
+    return CustomContainer(
+      backgroundColor: context.colors.surface,
+      showShadow: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 16.w,
+        spacing: 16.spMin,
         children: [
-          CustomTypography(text: "Profile", fontType: FontType.h1Bold),
-          Column(
-            spacing: 8.w,
+          Row(
+            spacing: 12.spMin,
             children: [
-              CustomContainer(
-                padding: EdgeInsets.all(2.w),
-                borderRadius: BorderRadius.circular(1000.r),
-                backgroundColor: CardColors.shade1000,
-                height: 120.w,
-                width: 120.w,
-                child: ClipOval(
-                  child: CustomImage(
-                    imageType: ImageType.local,
-                    imageUrl: imageUrl,
+              buildAvatar(context, name: name),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTypography(text: name, fontType: FontType.h4Semibold),
+                  CustomTypography(
+                    text: "Member since June 2026",
+                    fontType: FontType.body2Medium,
+                    color: context.colors.onSurfaceVariant,
                   ),
-                ),
+                ],
               ),
-              if (name != null && name.isNotEmpty)
-                CustomTypography(text: name, fontType: FontType.body1Semibold),
             ],
           ),
-          _buildButtons(context, false),
-          _contents(context, profileState),
+          CustomButton(
+            label: "Edit Profile",
+            onTap: () => context.push(AppRoutesPath.editProfile.path),
+          ),
         ],
       ),
     );
