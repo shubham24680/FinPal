@@ -92,7 +92,7 @@ class _CustomContainerState extends State<CustomContainer>
             image != null
                 ? DecorationImage(image: AssetImage(image), fit: BoxFit.cover)
                 : null,
-        color: widget.backgroundColor ?? PrimaryColors.shade100,
+        color: widget.backgroundColor ?? context.colors.surface,
         borderRadius: defaultBorderRadius,
         border: widget.border,
         boxShadow:

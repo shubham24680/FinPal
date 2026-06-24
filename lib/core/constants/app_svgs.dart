@@ -16,11 +16,13 @@ class AppSvgs {
   static const String copy = '$_basePath/copy.svg';
   static const String cross = '$_basePath/cross.svg';
   static const String calendar = '$_basePath/calendar.svg';
+  static const String camera = '$_basePath/camera.svg';
   static const String delete = '$_basePath/delete.svg';
   static const String edit = '$_basePath/edit.svg';
   static const String expense = '$_basePath/expense.svg';
   static const String female = '$_basePath/female.svg';
   static const String fingerprint = '$_basePath/fingerprint.svg';
+  static const String gallery = '$_basePath/gallery.svg';
   static const String home = '$_basePath/home.svg';
   static const String income = '$_basePath/income.svg';
   static const String info = '$_basePath/info.svg';
@@ -32,6 +34,7 @@ class AppSvgs {
   static const String privacy = '$_basePath/privacy.svg';
   static const String retry = '$_basePath/retry.svg';
   static const String rupee = '$_basePath/rupee.svg';
+  static const String settings = '$_basePath/settings.svg';
   static const String toc = '$_basePath/toc.svg';
   static const String transaction = '$_basePath/transaction.svg';
   static const String user = '$_basePath/user.svg';

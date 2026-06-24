@@ -1,5 +1,6 @@
 class AppImages {
   static const String banner = 'assets/images/banner.png';
+  static const String bannerDark = 'assets/images/banner_dark.png';
   static const String introScreen = 'assets/images/onboarding/intro.png';
   static const String personalDetailsScreen =
       'assets/images/onboarding/personal_details.png';

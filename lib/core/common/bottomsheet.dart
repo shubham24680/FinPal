@@ -17,7 +17,7 @@ extension BottomSheetTypeX on BottomSheetType {
       this == BottomSheetType.dismissByCrossOrTapOutside;
 }
 
-class CustomBottomSheet extends StatelessWidget {
+class CustomBottomSheet extends StatefulWidget {
   const CustomBottomSheet({
     super.key,
     this.type = BottomSheetType.dismissByCrossOrTapOutside,
@@ -28,7 +28,6 @@ class CustomBottomSheet extends StatelessWidget {
   final BottomSheetType type;
   final String? title;
   final Widget? widget;
-
   static Future<T?> show<T>(
     BuildContext context, {
     String? title,
@@ -68,17 +67,23 @@ class CustomBottomSheet extends StatelessWidget {
   }
 
   @override
+  State<CustomBottomSheet> createState() => _CustomBottomSheetState();
+}
+
+class _CustomBottomSheetState extends State<CustomBottomSheet> {
+  @override
   Widget build(BuildContext context) {
     return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (type.showCloseButton) _closeButton(context),
+          if (widget.type.showCloseButton) _closeButton(context),
           Flexible(child: _buildBody(context)),
         ],
     );
   }
 
   Widget _buildBody(BuildContext context) {
+    final title = widget.title;
     return CustomContainer(
       backgroundColor: context.colors.surface,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
@@ -93,7 +98,7 @@ class CustomBottomSheet extends StatelessWidget {
               CustomTypography(text: title, fontType: FontType.body1Medium),
               Divider(color: context.colors.outline),
             ],
-            Flexible(child: widget ?? const SizedBox.shrink()),
+            Flexible(child: widget.widget ?? const SizedBox.shrink()),
           ],
         ),
       ),

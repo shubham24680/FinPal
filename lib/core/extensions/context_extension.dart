@@ -9,7 +9,7 @@ enum ToastType { normal, error, success }
 extension ResponsiveContext on BuildContext {
   ThemeData get theme => Theme.of(this);
   ColorScheme get colors => Theme.of(this).colorScheme;
-
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
   ScreenType get screenType => ScreenType.fromWidth(screenWidth);
   bool get isMobileScreen => screenType.isMobile;
   bool get isTabletScreen => screenType.isTablet;

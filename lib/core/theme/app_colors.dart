@@ -61,6 +61,12 @@ abstract class AppColors {
   static const Color info500 = Color(0xFF3B82F6);
   static const Color info700 = Color(0xFF1D4ED8);
 
+  // ── Semantic — Profile Picture ────────────────────────────────────────────
+  static const Color purple50 = Color(0xFFF1EAF9);
+  static const Color purple200 = Color(0xFFCBB2E8);
+  static const Color purple500 = Color(0xFF8B5CF6);
+  static const Color purple700 = Color(0xFF6D28D9);
+
   // ── Light surfaces ────────────────────────────────────────────────────────
   static const Color lightBackground = Color(0xFFF7F7F6);
   static const Color lightSurface = Color(0xFFFFFFFF);

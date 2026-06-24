@@ -22,13 +22,14 @@ class OptionModelAdapter extends TypeAdapter<OptionModel> {
       name: fields[2] as String,
       icon: fields[3] as String,
       color: fields[4] as Color?,
+      backgroundColor: fields[5] as Color?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OptionModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class OptionModelAdapter extends TypeAdapter<OptionModel> {
       ..writeByte(3)
       ..write(obj.icon)
       ..writeByte(4)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(5)
+      ..write(obj.backgroundColor);
   }
 
   @override

@@ -51,3 +51,37 @@ class ProfileModel extends HiveObject {
     monthlyIncome: monthlyIncome ?? this.monthlyIncome,
   );
 }
+
+class ProfileContentModel {
+  final String id;
+  final String title;
+  final String icon;
+  final Color iconColor;
+  final Color iconBgColor;
+  final String value;
+
+  ProfileContentModel({
+    required this.id,
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBgColor,
+    this.value = "",
+  });
+
+  ProfileContentModel copyWith({
+    String? id,
+    String? title,
+    String? icon,
+    Color? iconColor,
+    Color? iconBgColor,
+    String? value,
+  }) => ProfileContentModel(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    icon: icon ?? this.icon,
+    iconColor: iconColor ?? this.iconColor,
+    iconBgColor: iconBgColor ?? this.iconBgColor,
+    value: value ?? this.value,
+  );
+}

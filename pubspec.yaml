@@ -46,6 +46,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1 # Change this to custom package
   flutter_markdown_plus: ^1.0.7
   shimmer: ^3.0.0
+  image_picker: ^1.2.1
 
 flutter_native_splash:
   android: true

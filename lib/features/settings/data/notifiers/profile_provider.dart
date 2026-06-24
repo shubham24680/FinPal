@@ -18,6 +18,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
   }
 
   Future<void> save({
+    String? profileImage,
     String? name,
     String? dob,
     String? gender,
@@ -26,6 +27,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     final profile = state.value ?? ProfileModel();
     state = await AsyncValue.guard(() async {
       final profileModel = profile.copyWith(
+        profileImage: profileImage,
         name: name,
         dob: dob,
         gender: gender,
@@ -42,12 +44,14 @@ final profileNotifier = AsyncNotifierProvider<ProfileNotifier, ProfileModel>(
 );
 
 class ProfileState {
+  final String profileImage;
   final String name;
   final String dob;
   final String gender;
   final ButtonState buttonState;
 
   ProfileState({
+    required this.profileImage,
     required this.name,
     required this.dob,
     required this.gender,
@@ -56,6 +60,7 @@ class ProfileState {
 
   factory ProfileState.initial() {
     return ProfileState(
+      profileImage: "",
       name: "",
       dob: "",
       gender: "",
@@ -64,12 +69,14 @@ class ProfileState {
   }
 
   ProfileState copyWith({
+    String? profileImage,
     String? name,
     String? dob,
     String? gender,
     ButtonState? buttonState,
   }) {
     return ProfileState(
+      profileImage: profileImage ?? this.profileImage,
       name: name ?? this.name,
       dob: dob ?? this.dob,
       gender: gender ?? this.gender,
@@ -87,10 +94,17 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   Future<void> loadData() async {
     final profile = ref.read(profileNotifier).value;
     state = state.copyWith(
+      profileImage: profile?.profileImage,
       name: profile?.name,
       dob: profile?.dob,
       gender: profile?.gender,
     );
+  }
+
+  void setProfileImage(String? profileImage) {
+    if (profileImage == null) return;
+    state = state.copyWith(profileImage: profileImage);
+    onChange();
   }
 
   void setName(String name) {
@@ -109,33 +123,37 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   }
 
   void onChange() {
-    final isValid = state.name.isNotEmpty || state.dob.isNotEmpty || state.gender.isNotEmpty;
-    log("isValid: $isValid ${state.name} ${state.dob} ${state.gender}");
-    state = state.copyWith(buttonState: isValid ? ButtonState.enabled : ButtonState.disabled);
+    final isValid =
+        state.name.isNotEmpty ||
+        state.dob.isNotEmpty ||
+        state.gender.isNotEmpty ||
+        state.profileImage.isNotEmpty;
+    log(
+      "isValid: $isValid ${state.name} ${state.dob} ${state.gender} ${state.profileImage}",
+    );
+    state = state.copyWith(
+      buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
+    );
   }
 
   Future<bool> onSubmit() async {
     state = state.copyWith(buttonState: ButtonState.loading);
     try {
       await ref
-        .read(profileNotifier.notifier)
-        .save(name: state.name, dob: state.dob, gender: state.gender);
-        return true;
+          .read(profileNotifier.notifier)
+          .save(
+            profileImage: state.profileImage,
+            name: state.name,
+            dob: state.dob,
+            gender: state.gender,
+          );
+      return true;
     } catch (e) {
       return false;
-    }
-    finally {
+    } finally {
       state = state.copyWith(buttonState: ButtonState.enabled);
     }
   }
-
-  // void toggle() {
-  //   state = state.copyWith(tryEditing: !state.tryEditing);
-  //   if (state.tryEditing) {
-  //     loadField();
-  //   }
-  //   log("set editing to ${state.tryEditing}");
-  // }
 }
 
 final profileProvider =

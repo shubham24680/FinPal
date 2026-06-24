@@ -2,7 +2,7 @@ import 'package:finpal/app/app.dart';
 
 enum ButtonType { primary, negative, inherit }
 
-enum ButtonVariant { filled }
+enum ButtonVariant { primary, secondary }
 
 enum ButtonState { enabled, loading, disabled }
 
@@ -10,7 +10,7 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     this.buttonType = ButtonType.primary,
-    this.buttonVariant = ButtonVariant.filled,
+    this.buttonVariant = ButtonVariant.primary,
     this.buttonState = ButtonState.enabled,
     this.onTap,
     this.margin,
@@ -37,7 +37,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = bgColor ?? _getBackgroundColor(context);
-    final foregroundColor = labelColor ?? _getLabelColor();
+    final foregroundColor = labelColor ?? _getLabelColor(context);
 
     final child = Row(
       spacing: 8.w,
@@ -53,7 +53,10 @@ class CustomButton extends StatelessWidget {
           ),
         CustomTypography(
           text: label ?? "Submit",
-          color: foregroundColor,
+          color:
+              buttonVariant == ButtonVariant.secondary
+                  ? backgroundColor
+                  : foregroundColor,
           fontType: FontType.body1Medium,
         ),
         if (suffixIcon != null)
@@ -78,35 +81,39 @@ class CustomButton extends StatelessWidget {
 
     return CustomContainer(
       onTap: buttonState == ButtonState.enabled ? onTap : null,
-      showShadow: buttonVariant == ButtonVariant.filled,
-      backgroundColor: backgroundColor,
+      showShadow: buttonVariant == ButtonVariant.primary,
+      backgroundColor:
+          buttonVariant == ButtonVariant.primary
+              ? backgroundColor
+              : Colors.transparent,
+      border:
+          buttonVariant == ButtonVariant.secondary
+              ? Border.all(color: backgroundColor)
+              : null,
       margin: margin,
       child: child,
     );
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    final bgColor = switch (buttonType) {
+    if (buttonState == ButtonState.disabled) {
+      return context.colors.surfaceContainerHighest.withAlpha(100);
+    }
+
+    return switch (buttonType) {
       ButtonType.primary => AppColors.primary700,
       ButtonType.negative => AppColors.error700,
       ButtonType.inherit => context.colors.surfaceContainerHighest,
     };
-
-    return switch (buttonState) {
-      ButtonState.disabled => context.colors.surfaceContainerHighest.withAlpha(100),
-      _ => bgColor,
-    };
   }
 
-  Color _getLabelColor() {
-    final labelColor = switch (buttonType) {
-      ButtonType.inherit => AppColors.neutral500,
-      _ => AppColors.white,
-    };
+  Color _getLabelColor(BuildContext context) {
+    if (buttonState == ButtonState.disabled) {
+      return AppColors.neutral500.withAlpha(100);
+    }
 
-    return switch (buttonState) {
-      ButtonState.disabled => AppColors.neutral500.withAlpha(100),
-      _ => labelColor,
+    return switch (buttonType) {
+      _ => AppColors.white,
     };
   }
 }

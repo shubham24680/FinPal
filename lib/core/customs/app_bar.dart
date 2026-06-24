@@ -17,12 +17,12 @@ AppBar customAppBar(
 }) {
   return AppBar(
     automaticallyImplyLeading: false,
-    // backgroundColor: BGColors.shade500,
     leading:
         enableBack
             ? CustomImage(
               imageType: ImageType.svgLocal,
               imageUrl: AppSvgs.arrowLeft,
+              color: context.colors.inverseSurface,
             ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.r)
             : null,
     title:

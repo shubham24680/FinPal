@@ -13,7 +13,11 @@ class SettingsScreen extends ConsumerWidget {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          CustomImage(imageUrl: AppImages.banner, fit: BoxFit.fitWidth),
+          CustomImage(
+            imageUrl:
+                context.isDarkMode ? AppImages.bannerDark : AppImages.banner,
+            fit: BoxFit.fitWidth,
+          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -25,7 +29,7 @@ class SettingsScreen extends ConsumerWidget {
                 fontType: FontType.body2Medium,
                 color: context.colors.onSurface,
               ),
-              _buildViewProfile(context),
+              _buildViewProfile(context, ref),
             ],
           ).padding(
             left: AppConstants.sidePadding,
@@ -38,8 +42,17 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildViewProfile(BuildContext context) {
-    final name = "Shubham Patel";
+  Widget _buildViewProfile(BuildContext context, WidgetRef ref) {
+    final profileState = ref.watch(profileNotifier);
+    final profile = profileState.value;
+
+    if (profile == null) {
+      return CustomButton(
+            label: "Edit Profile",
+            onTap: () => context.push(AppRoutesPath.editProfile.path),
+          );
+    }
+
     return CustomContainer(
       onTap: () => context.push(AppRoutesPath.profile.path),
       backgroundColor: context.colors.surface,
@@ -47,12 +60,12 @@ class SettingsScreen extends ConsumerWidget {
       child: Row(
         spacing: 12.spMin,
         children: [
-          buildAvatar(context, name: name),
+          buildAvatar(context, name: profile.name, image: profile.profileImage),
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomTypography(text: name, fontType: FontType.body1Semibold),
+              CustomTypography(text: profile.name, fontType: FontType.body1Semibold),
               CustomTypography(
                 text: "View profile",
                 fontType: FontType.body2Medium,
