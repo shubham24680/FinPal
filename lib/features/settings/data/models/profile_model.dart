@@ -62,6 +62,7 @@ class ProfileContentModel {
   final String icon;
   final Color iconColor;
   final Color iconBgColor;
+  final Color? iconBgDarkColor;
   final String value;
 
   ProfileContentModel({
@@ -70,6 +71,7 @@ class ProfileContentModel {
     required this.icon,
     required this.iconColor,
     required this.iconBgColor,
+    this.iconBgDarkColor,
     this.value = "",
   });
 
@@ -80,12 +82,14 @@ class ProfileContentModel {
     Color? iconColor,
     Color? iconBgColor,
     String? value,
+    Color? iconBgDarkColor,
   }) => ProfileContentModel(
     id: id ?? this.id,
     title: title ?? this.title,
     icon: icon ?? this.icon,
     iconColor: iconColor ?? this.iconColor,
     iconBgColor: iconBgColor ?? this.iconBgColor,
+    iconBgDarkColor: iconBgDarkColor ?? this.iconBgDarkColor,
     value: value ?? this.value,
   );
 }

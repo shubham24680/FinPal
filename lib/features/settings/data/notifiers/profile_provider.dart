@@ -38,12 +38,12 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     });
   }
 
-  bool isFieldsNotEmpty() {
-    final profile = state.value;
-    return (profile?.name.isNotEmpty ?? false) ||
-        (profile?.dob.isNotEmpty ?? false) ||
-        (profile?.gender.isNotEmpty ?? false) ||
-        (profile?.profileImage.isNotEmpty ?? false);
+  Future<void> clearData() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await _hiveService.clearData(_key);
+      return ProfileModel();
+    });
   }
 }
 

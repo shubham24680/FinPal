@@ -254,13 +254,7 @@ abstract final class AppTheme {
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
         surfaceTintColor: AppColors.transparent,
         elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        // titleTextStyle: AppTextStyles.titleLarge.copyWith(
-        //   color: colorScheme.onSurface,
-        // ),
-        // contentTextStyle: AppTextStyles.bodyMedium.copyWith(
-        //   color: colorScheme.onSurfaceVariant,
-        // ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
       ),
 
       // ── SnackBar ──────────────────────────────────────────────────────────

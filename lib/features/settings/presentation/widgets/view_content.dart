@@ -16,6 +16,7 @@ Widget viewContents(
       return const SizedBox.shrink();
     }
 
+    final isDark = context.isDarkMode;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,12 +37,13 @@ Widget viewContents(
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemBuilder: (_, index) {
+                  final iconDarkColor = contents[index].iconBgDarkColor ?? contents[index].iconBgColor;
                   return Row(
                     spacing: 12.spMin,
                     children: [
                       CustomContainer(
                         padding: EdgeInsets.all(12.r),
-                        backgroundColor: contents[index].iconBgColor,
+                        backgroundColor: isDark ? iconDarkColor : contents[index].iconBgColor,
                         child: CustomImage(
                           imageType: ImageType.svgLocal,
                           imageUrl: contents[index].icon,

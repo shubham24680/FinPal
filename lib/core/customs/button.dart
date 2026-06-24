@@ -1,10 +1,8 @@
 import 'package:finpal/app/app.dart';
 
-enum ButtonType { primary, negative, inherit }
-
-enum ButtonVariant { primary, secondary }
-
 enum ButtonState { enabled, loading, disabled }
+enum ButtonType { primary, negative, inherit }
+enum ButtonVariant { primary, secondary, tertiary }
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -81,11 +79,11 @@ class CustomButton extends StatelessWidget {
 
     return CustomContainer(
       onTap: buttonState == ButtonState.enabled ? onTap : null,
-      showShadow: buttonVariant == ButtonVariant.primary,
+      showShadow: buttonVariant != ButtonVariant.secondary,
       backgroundColor:
-          buttonVariant == ButtonVariant.primary
-              ? backgroundColor
-              : Colors.transparent,
+          buttonVariant == ButtonVariant.secondary
+              ? Colors.transparent
+              : backgroundColor,
       border:
           buttonVariant == ButtonVariant.secondary
               ? Border.all(color: backgroundColor)
@@ -96,14 +94,20 @@ class CustomButton extends StatelessWidget {
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    if (buttonState == ButtonState.disabled) {
-      return context.colors.surfaceContainerHighest.withAlpha(100);
+    final isDark = context.isDarkMode;
+    final isDisabled = buttonState == ButtonState.disabled;
+    final darkButton = isDark && buttonVariant == ButtonVariant.tertiary;
+
+    if(isDisabled || darkButton) {
+      return isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.lightSurface2;
     }
 
-    return switch (buttonType) {
-      ButtonType.primary => AppColors.primary700,
-      ButtonType.negative => AppColors.error700,
-      ButtonType.inherit => context.colors.surfaceContainerHighest,
+    return switch ((buttonType, buttonVariant)) {
+      (ButtonType.primary, ButtonVariant.tertiary) => AppColors.primary50,
+      (ButtonType.primary, _) => AppColors.primary700,
+      (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error50,
+      (ButtonType.negative, _) => AppColors.error700,
+      (ButtonType.inherit, _) => isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.neutral100,
     };
   }
 
@@ -112,7 +116,10 @@ class CustomButton extends StatelessWidget {
       return AppColors.neutral500.withAlpha(100);
     }
 
-    return switch (buttonType) {
+    return switch ((buttonType, buttonVariant)) {
+      (ButtonType.primary, ButtonVariant.tertiary) => AppColors.primary500,
+      (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error500,
+      (ButtonType.inherit, _) => AppColors.neutral500,
       _ => AppColors.white,
     };
   }

@@ -3,32 +3,14 @@ import 'package:finpal/app/app.dart';
 class EditProfileScreen extends ConsumerWidget {
   const EditProfileScreen({super.key});
 
-  static final values = [
-    ProfileContentModel(
-      id: "camera",
-      title: "Camera",
-      icon: AppSvgs.camera,
-      iconColor: AppColors.warning500,
-      iconBgColor: AppColors.warning50,
-    ),
-    ProfileContentModel(
-      id: "gallery",
-      title: "Gallery",
-      icon: AppSvgs.gallery,
-      iconColor: AppColors.purple500,
-      iconBgColor: AppColors.purple50,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final bottomPadding = AppConstants.sidePadding + context.viewInsets.bottom;
+    final bottomPadding = AppConstants.sidePadding + context.viewInsets.bottom;
     final profileState = ref.watch(profileProvider);
     final profileNotifier = ref.watch(profileProvider.notifier);
 
     return Scaffold(
       appBar: customAppBar(context, title: "Edit Profile"),
-      // resizeToAvoidBottomInset: false,
       bottomNavigationBar: CustomButton(
         buttonState: profileState.buttonState,
         label: "Save Changes",
@@ -38,7 +20,11 @@ class EditProfileScreen extends ConsumerWidget {
             context.pop();
           }
         },
-      ).padding(all: AppConstants.sidePadding),
+      ).padding(
+        left: AppConstants.sidePadding,
+        right: AppConstants.sidePadding,
+        bottom: bottomPadding,
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppConstants.sidePadding),
         child: Column(
@@ -63,6 +49,7 @@ class EditProfileScreen extends ConsumerWidget {
     ProfileState profileState,
     ProfileProvider profileNotifier,
   ) {
+    final values = ProfileConstants.profileImageOptions;
     final options = ListView.separated(
       shrinkWrap: true,
       itemCount: values.length,
