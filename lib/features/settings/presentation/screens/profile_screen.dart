@@ -58,7 +58,12 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildViewProfile(BuildContext context, ProfileModel profile) {
-    final name = profile.name;
+    final name = profile.name.isEmpty ? "Complete your profile" : profile.name;
+    final profileDate = profile.createdAt?.formatDate(type: DateFormatType.monthYear) ?? "";
+    final desc =
+        profile.name.isEmpty
+            ? "Add your details to personalize your experience"
+            : "Member ${profileDate.isNotEmpty ? "since $profileDate" : ""}";
 
     return CustomContainer(
       backgroundColor: context.colors.surface,
@@ -67,23 +72,23 @@ class ProfileScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 16.spMin,
         children: [
-          if (name.isNotEmpty)
             Row(
               spacing: 12.spMin,
               children: [
-                buildAvatar(context, name: name, image: profile.profileImage),
-                Column(
+                buildAvatar(context, name: profile.name, image: profile.profileImage),
+                Expanded(child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 2.spMin,
                   children: [
-                    CustomTypography(text: name, fontType: FontType.h4Semibold),
+                    CustomTypography(text: name, fontType: FontType.body1Semibold),
                     CustomTypography(
-                      text: "Member since June 2026",
-                      fontType: FontType.body2Medium,
+                      text: desc,
+                      fontType: FontType.label1Medium,
                       color: context.colors.onSurfaceVariant,
                     ),
                   ],
-                ),
+                ),)
               ],
             ),
           CustomButton(

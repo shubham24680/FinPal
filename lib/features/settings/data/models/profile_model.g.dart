@@ -18,6 +18,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
     };
     return ProfileModel(
       id: fields[0] as String?,
+      createdAt: fields[8] as DateTime?,
       profileImage: fields[1] == null ? '' : fields[1] as String,
       name: fields[2] == null ? '' : fields[2] as String,
       dob: fields[3] == null ? '' : fields[3] as String,
@@ -31,7 +32,7 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
   @override
   void write(BinaryWriter writer, ProfileModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class ProfileModelAdapter extends TypeAdapter<ProfileModel> {
       ..writeByte(6)
       ..write(obj.phone)
       ..writeByte(7)
-      ..write(obj.monthlyIncome);
+      ..write(obj.monthlyIncome)
+      ..writeByte(8)
+      ..write(obj.createdAt);
   }
 
   @override

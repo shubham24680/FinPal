@@ -48,10 +48,16 @@ class SettingsScreen extends ConsumerWidget {
 
     if (profile == null) {
       return CustomButton(
-            label: "Edit Profile",
-            onTap: () => context.push(AppRoutesPath.editProfile.path),
-          );
+        label: "Edit Profile",
+        onTap: () => context.push(AppRoutesPath.editProfile.path),
+      );
     }
+
+    final name = profile.name.isEmpty ? "Complete your profile" : profile.name;
+    final desc =
+        profile.name.isEmpty
+            ? "Add your details to personalize your experience"
+            : "View profile";
 
     return CustomContainer(
       onTap: () => context.push(AppRoutesPath.profile.path),
@@ -61,25 +67,27 @@ class SettingsScreen extends ConsumerWidget {
         spacing: 12.spMin,
         children: [
           buildAvatar(context, name: profile.name, image: profile.profileImage),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomTypography(text: profile.name, fontType: FontType.body1Semibold),
-              CustomTypography(
-                text: "View profile",
-                fontType: FontType.body2Medium,
-                color: context.colors.onSurfaceVariant,
-              ),
-            ],
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2.spMin,
+              children: [
+                CustomTypography(text: name, fontType: FontType.body1Semibold),
+                CustomTypography(
+                  text: desc,
+                  fontType: FontType.label1Medium,
+                  color: context.colors.onSurfaceVariant,
+                ),
+              ],
+            ),
           ),
-          const Spacer(),
           CustomImage(
-            imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.arrowRight1,
-            color: context.colors.onSurfaceVariant,
-            height: 16.spMin,
-          ),
+                imageType: ImageType.svgLocal,
+                imageUrl: AppSvgs.arrowRight1,
+                color: context.colors.onSurfaceVariant,
+                height: 16.spMin,
+              ),
         ],
       ),
     );

@@ -127,9 +127,7 @@ class Message extends ConsumerWidget {
         PopupMenuItem(
           enabled: false,
           child: CustomTypography(
-            text: message.createdAt.formatDate(
-              type: DateFormatType.shortDateWithTime,
-            ),
+            text: message.createdAt.formatDate(),
             align: TextAlign.center,
             fontType: FontType.body2Regular,
             color: BGColors.shade700,

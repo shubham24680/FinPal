@@ -20,9 +20,12 @@ class ProfileModel extends HiveObject {
   final String phone;
   @HiveField(7)
   final double? monthlyIncome;
+  @HiveField(8)
+  final DateTime? createdAt;
 
   ProfileModel({
     String? id,
+    DateTime? createdAt,
     this.profileImage = "",
     this.name = "",
     this.dob = "",
@@ -30,7 +33,8 @@ class ProfileModel extends HiveObject {
     this.email = "",
     this.phone = "",
     this.monthlyIncome,
-  }) : id = id ?? Uuid().v4();
+  }) : id = id ?? Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now();
 
   ProfileModel copyWith({
     String? name,

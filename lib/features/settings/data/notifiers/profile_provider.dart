@@ -37,6 +37,14 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
       return profileModel;
     });
   }
+
+  bool isFieldsNotEmpty() {
+    final profile = state.value;
+    return (profile?.name.isNotEmpty ?? false) ||
+        (profile?.dob.isNotEmpty ?? false) ||
+        (profile?.gender.isNotEmpty ?? false) ||
+        (profile?.profileImage.isNotEmpty ?? false);
+  }
 }
 
 final profileNotifier = AsyncNotifierProvider<ProfileNotifier, ProfileModel>(

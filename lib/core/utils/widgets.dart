@@ -1,10 +1,6 @@
 import 'package:finpal/app/app.dart';
 import 'package:intl/intl.dart';
 
-DateTime parseDate(String date) {
-  return DateFormat("EE, MMM d, yyyy").parse(date);
-}
-
 // Bottom Sheet
 Future<T?> customBottomSheet<T>(
   BuildContext context,
@@ -117,7 +113,7 @@ Future<String> chooseDate(BuildContext context, String date, {DateTime? firstDat
 
   final first = firstDate ?? DateTime(2026);
   final last = lastDate ?? DateTime.now();
-  final initialDate = date.isEmpty ? last : parseDate(date);
+  final initialDate = date.isEmpty ? last : date.parseDate(type: DateFormatType.date1);
 
   DateTime selectedDate = initialDate;
 
