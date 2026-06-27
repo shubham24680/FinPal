@@ -22,6 +22,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     String? name,
     String? dob,
     String? gender,
+    double? monthlyIncome,
   }) async {
     state = const AsyncLoading();
     final profile = state.value ?? ProfileModel();
@@ -31,6 +32,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
         name: name,
         dob: dob,
         gender: gender,
+        monthlyIncome: monthlyIncome,
       );
 
       await _hiveService.saveData(_key, profileModel);
@@ -56,6 +58,7 @@ class ProfileState {
   final String name;
   final String dob;
   final String gender;
+  final double? monthlyIncome;
   final ButtonState buttonState;
 
   ProfileState({
@@ -63,6 +66,7 @@ class ProfileState {
     required this.name,
     required this.dob,
     required this.gender,
+    this.monthlyIncome,
     required this.buttonState,
   });
 
@@ -81,6 +85,7 @@ class ProfileState {
     String? name,
     String? dob,
     String? gender,
+    double? monthlyIncome,
     ButtonState? buttonState,
   }) {
     return ProfileState(
@@ -88,6 +93,7 @@ class ProfileState {
       name: name ?? this.name,
       dob: dob ?? this.dob,
       gender: gender ?? this.gender,
+      monthlyIncome: monthlyIncome ?? this.monthlyIncome,
       buttonState: buttonState ?? this.buttonState,
     );
   }
@@ -106,6 +112,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
       name: profile?.name,
       dob: profile?.dob,
       gender: profile?.gender,
+      monthlyIncome: profile?.monthlyIncome,
     );
   }
 
@@ -130,15 +137,22 @@ class ProfileProvider extends StateNotifier<ProfileState> {
     onChange();
   }
 
+  void setMonthlyIncome(String? monthlyIncome) {
+    if(monthlyIncome == null) return;
+    final amount = double.tryParse(monthlyIncome.trim());
+    if(amount == null) return;
+    state = state.copyWith(monthlyIncome: amount);
+    onChange();
+  }
+
   void onChange() {
     final isValid =
         state.name.isNotEmpty ||
         state.dob.isNotEmpty ||
         state.gender.isNotEmpty ||
-        state.profileImage.isNotEmpty;
-    log(
-      "isValid: $isValid ${state.name} ${state.dob} ${state.gender} ${state.profileImage}",
-    );
+        state.profileImage.isNotEmpty ||
+        state.monthlyIncome != null;
+
     state = state.copyWith(
       buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
     );
@@ -154,6 +168,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
             name: state.name,
             dob: state.dob,
             gender: state.gender,
+            monthlyIncome: state.monthlyIncome,
           );
       return true;
     } catch (e) {

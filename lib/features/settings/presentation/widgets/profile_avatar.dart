@@ -14,7 +14,7 @@ Widget buildAvatar(
       .split(' ')
       .where((e) => e.isNotEmpty)
       .map((e) => e[0])
-      .join('');
+      .join('').toUpperCase();
 
   final child =
       image.isNotEmpty

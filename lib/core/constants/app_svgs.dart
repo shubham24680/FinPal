@@ -11,6 +11,7 @@ class AppSvgs {
   static const String arrowRight = '$_basePath/arrow_right.svg';
   static const String arrowRight1 = '$_basePath/arrow_right_small.svg';
   static const String backspace = '$_basePath/backspace.svg';
+  static const String bin = '$_basePath/bin.svg';
   static const String bot = '$_basePath/bot.svg';
   static const String card = '$_basePath/card.svg';
   static const String copy = '$_basePath/copy.svg';

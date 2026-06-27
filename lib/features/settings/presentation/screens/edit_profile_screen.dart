@@ -1,13 +1,37 @@
 import 'package:finpal/app/app.dart';
 
-class EditProfileScreen extends ConsumerWidget {
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+  late TextEditingController monthlyIncomeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() {
+    final profileState = ref.read(profileProvider);
+    monthlyIncomeController = TextEditingController(text: profileState.monthlyIncome?.toString());
+  }
+
+  @override
+  void dispose() {
+    monthlyIncomeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final bottomPadding = AppConstants.sidePadding + context.viewInsets.bottom;
     final profileState = ref.watch(profileProvider);
-    final profileNotifier = ref.watch(profileProvider.notifier);
+    final profileNotifier = ref.read(profileProvider.notifier);
 
     return Scaffold(
       appBar: customAppBar(context, title: "Edit Profile"),
@@ -37,7 +61,21 @@ class EditProfileScreen extends ConsumerWidget {
               fontType: FontType.body2Medium,
               color: context.colors.onSurface,
             ).padding(left: 8.r, bottom: 4.r),
-            CustomContainer(child: PersonalDetailsForm()),
+            CustomContainer(child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 16.spMin,
+              children: [
+                PersonalDetailsForm(),
+                CustomTextField(
+                    controller: monthlyIncomeController,
+                    onChanged:
+                        (value) => profileNotifier.setMonthlyIncome(value),
+                    inputType: InputType.amount,
+                    header: "MONTHLY INCOME",
+                )
+              ],
+            )),
           ],
         ),
       ),

@@ -26,6 +26,14 @@ class ProfileConstants {
       iconBgColor: AppColors.warning50,
       iconBgDarkColor: AppColors.warning700.withAlpha(100),
     ),
+    ProfileContentModel(
+      id: "monthly_income",
+      title: "Monthly Income",
+      icon: AppSvgs.rupee,
+      iconColor: AppColors.purple500,
+      iconBgColor: AppColors.purple50,
+      iconBgDarkColor: AppColors.purple700.withAlpha(100),
+    ),
   ];
 
   static final profileImageOptions = [
