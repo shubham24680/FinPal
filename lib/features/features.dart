@@ -1,6 +1,3 @@
-// ONBOARDING
-export 'onboarding/onboarding.dart';
-
 // Home
 export 'home/screens/home_screen.dart';
 export 'home/models/helper_model.dart';
@@ -22,13 +19,6 @@ export 'transaction/transaction_widgets.dart';
 export 'transaction/transaction_provider.dart';
 export 'transaction/transaction_service.dart';
 
-// Profile
-export 'profile/profile_constants.dart';
-export 'profile/screens/options_screen.dart';
-
-// Settings
-export 'settings/settings.dart';
-
 // Add Amount
 export 'add_payment/screens/add_amount_screen.dart';
 export 'add_payment/screens/add_expense_screen.dart';
@@ -36,9 +26,6 @@ export 'add_payment/screens/add_income_screen.dart';
 export 'add_payment/add_payment_widgets.dart';
 export 'add_payment/models/payment_model.dart';
 export 'add_payment/providers/payment_provider.dart';
-export 'profile/providers/options_provider.dart';
-export 'profile/services/option_services.dart';
-export 'settings/data/models/option_model.dart';
 
 // Bot
 export 'ai/ai_screen.dart';

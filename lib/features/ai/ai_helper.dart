@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 enum ChatMenu {
   copy("Copy", AppSvgs.copy),
-  edit("Edit Message", AppSvgs.edit);
+  edit("Edit Message", AppSvgs.other);
 
   const ChatMenu(this.name, this.icon);
   final String name;

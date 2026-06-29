@@ -106,15 +106,15 @@ class _SwipeActionRowState extends State<SwipeActionRow>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (widget.onEdit != null)
-                  _buildActionButton(AppSvgs.edit, onTap: widget.onEdit),
-                const Spacer(),
-                if (widget.onDelete != null)
-                  _buildActionButton(
-                    AppSvgs.delete,
-                    onTap: widget.onDelete,
-                    backgroundColor: NegativeColors.shade800,
-                  ),
+                // if (widget.onEdit != null)
+                //   _buildActionButton(AppSvgs.edit, onTap: widget.onEdit),
+                // const Spacer(),
+                // if (widget.onDelete != null)
+                //   _buildActionButton(
+                //     AppSvgs.delete,
+                //     onTap: widget.onDelete,
+                //     backgroundColor: NegativeColors.shade800,
+                //   ),
               ],
             ),
           ),

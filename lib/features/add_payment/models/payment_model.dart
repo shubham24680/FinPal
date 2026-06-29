@@ -30,7 +30,7 @@ class PaymentModel extends HiveObject {
   }) : id = id ?? Uuid().v7(),
        date = date ?? DateTime.now().formatDate(),
        categoryId = categoryId ?? _defaultCategoryId(paymentType),
-       paymentMethodId = paymentMethodId ?? OnboardingConstants.paymentMethod;
+       paymentMethodId = paymentMethodId ?? OptionsConstant.paymentMethod;
 
   PaymentModel copyWith({
     String? id,
@@ -52,7 +52,7 @@ class PaymentModel extends HiveObject {
 }
 
 String _defaultCategoryId(String paymentType) {
-  return (paymentType == OnboardingConstants.income)
-      ? OnboardingConstants.incomeCategory
-      : OnboardingConstants.expenseCategory;
+  return (paymentType == OptionsConstant.income)
+      ? OptionsConstant.incomeCategory
+      : OptionsConstant.expenseCategory;
 }

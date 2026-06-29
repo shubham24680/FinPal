@@ -10,15 +10,25 @@ Widget buildAvatar(
   bool enableBorder = false,
   Color? borderColor,
 }) {
-  final initials = name
-      .split(' ')
-      .where((e) => e.isNotEmpty)
-      .map((e) => e[0])
-      .join('').toUpperCase();
+  final isDark = context.isDarkMode;
+  final initials =
+      name
+          .split(' ')
+          .where((e) => e.isNotEmpty)
+          .map((e) => e[0])
+          .join('')
+          .toUpperCase();
 
   final child =
       image.isNotEmpty
-          ? ClipOval(child: Image.file(File(image), fit: BoxFit.cover, height: size ?? 60.spMin, width: size ?? 60.spMin))
+          ? ClipOval(
+            child: Image.file(
+              File(image),
+              fit: BoxFit.cover,
+              height: size ?? 60.spMin,
+              width: size ?? 60.spMin,
+            ),
+          )
           : initials.isNotEmpty
           ? CustomTypography(
             text: initials,
@@ -34,8 +44,8 @@ Widget buildAvatar(
     borderRadius: BorderRadius.circular(1000.r),
     height: size ?? 60.spMin,
     width: size ?? 60.spMin,
-    padding: image.isNotEmpty ? EdgeInsets.zero :EdgeInsets.all(8.r),
-    backgroundColor: AppColors.primary50,
+    padding: image.isNotEmpty ? EdgeInsets.zero : EdgeInsets.all(8.r),
+    backgroundColor: isDark ? AppColors.primary700.withAlpha(100) : AppColors.primary50,
     border:
         enableBorder
             ? Border.all(

@@ -5,7 +5,7 @@ class AppSvgs {
   static const String _expenseCategoryPath = "$_basePath/expense_category";
 
   static const String add = '$_basePath/add_item.svg';
-  static const String addPayment = '$_basePath/add_payment.svg';
+  static const String add1 = '$_basePath/add_item1.svg';
   static const String arrowDown = '$_basePath/arrow_down.svg';
   static const String arrowLeft = '$_basePath/arrow_left.svg';
   static const String arrowRight = '$_basePath/arrow_right.svg';
@@ -13,31 +13,30 @@ class AppSvgs {
   static const String backspace = '$_basePath/backspace.svg';
   static const String bin = '$_basePath/bin.svg';
   static const String bot = '$_basePath/bot.svg';
-  static const String card = '$_basePath/card.svg';
   static const String copy = '$_basePath/copy.svg';
   static const String cross = '$_basePath/cross.svg';
   static const String calendar = '$_basePath/calendar.svg';
   static const String calendar1 = '$_basePath/calendar1.svg';
   static const String camera = '$_basePath/camera.svg';
-  static const String delete = '$_basePath/delete.svg';
-  static const String edit = '$_basePath/edit.svg';
   static const String expense = '$_basePath/expense.svg';
+  static const String edit = '$_basePath/edit.svg';
   static const String female = '$_basePath/female.svg';
   static const String fingerprint = '$_basePath/fingerprint.svg';
   static const String gallery = '$_basePath/gallery.svg';
   static const String home = '$_basePath/home.svg';
+  static const String help = '$_basePath/help.svg';
   static const String income = '$_basePath/income.svg';
   static const String info = '$_basePath/info.svg';
   static const String lock = '$_basePath/lock.svg';
   static const String male = '$_basePath/male.svg';
   static const String money = '$_basePath/money.svg';
   static const String other = '$_basePath/other.svg';
-  static const String policy = '$_basePath/policy.svg';
+  static const String options = '$_basePath/categories.svg';
   static const String privacy = '$_basePath/privacy.svg';
   static const String retry = '$_basePath/retry.svg';
   static const String rupee = '$_basePath/rupee.svg';
   static const String settings = '$_basePath/settings.svg';
-  static const String toc = '$_basePath/toc.svg';
+  static const String terms = '$_basePath/terms.svg';
   static const String transaction = '$_basePath/transaction.svg';
   static const String user = '$_basePath/user.svg';
   static const String user1 = '$_basePath/user1.svg';
@@ -46,7 +45,7 @@ class AppSvgs {
   /// Payment Method
   static const String cash = "$_paymentMethodPath/cash.svg";
   static const String creditCard = "$_paymentMethodPath/card.svg";
-  static const String debitCard = "$_paymentMethodPath/card.svg";
+  static const String debitCard = "$_paymentMethodPath/card1.svg";
   static const String netBanking = "$_paymentMethodPath/suitcase.svg";
   static const String wallet = "$_paymentMethodPath/wallet.svg";
   static const String upi = "$_paymentMethodPath/upi.svg";
@@ -70,7 +69,7 @@ class AppSvgs {
   static const String rent = "$_expenseCategoryPath/rent.svg";
   static const String shopping = "$_expenseCategoryPath/shopping.svg";
   static const String transportation =
-      "$_expenseCategoryPath/transportation.svg";
+      "$_expenseCategoryPath/transport.svg";
 
   // Icons for user
   static const List<String> userIcons = [

@@ -2,9 +2,10 @@ import 'package:finpal/app/app.dart';
 
 class AppBarModel {
   final String icon;
+  final Color? color;
   final VoidCallback onTap;
 
-  AppBarModel({required this.icon, required this.onTap});
+  AppBarModel({required this.icon, this.color, required this.onTap});
 }
 
 AppBar customAppBar(
@@ -35,8 +36,9 @@ AppBar customAppBar(
               (e) => CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: e.icon,
-                height: 24.w,
-              ).onTap(event: e.onTap).padding(right: 16.w),
+                // height: 24.spMin,
+                color: e.color,
+              ).onTap(event: e.onTap).padding(right: 16.r),
             )
             .toList(),
     bottom: bottom,

@@ -9,13 +9,13 @@ class HomeConstants {
       defaultPath: const SizedBox.shrink(),
     ),
     NavModel(
-      icon: AppSvgs.addPayment,
+      icon: AppSvgs.add1,
       pathType: PathType.screenPath,
       screenPath: '/add_amount',
       defaultPath: const SizedBox.shrink(),
     ),
     NavModel(
-      icon: AppSvgs.addPayment,
+      icon: AppSvgs.add1,
       pathType: PathType.screenPath,
       screenPath: '/add_amount',
       defaultPath: const SizedBox.shrink(),

@@ -5,19 +5,39 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topPadding = AppConstants.sidePadding + context.viewPadding.top;
-    final bottomPadding =
-        50.spMin + AppConstants.sidePadding + context.viewInsets.bottom;
-
     return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 110.spMin),
+      child: Column(
+        children: [
+          _buildTopWidget(context, ref),
+          SizedBox(height: 16.spMin),
+          Column(
+            spacing: 16.spMin,
+            children: [
+              settingsTiles(context, SettingsConstants.accountContents, title: "ACCOUNT"),
+              settingsTiles(context, SettingsConstants.appearanceContents, title: "APPEARANCE"),
+              settingsTiles(context, SettingsConstants.securityContents, title: "SECURITY & PRIVACY"),
+              settingsTiles(context, SettingsConstants.aboutContents, title: "ABOUT & SUPPORT"),
+            ],
+          ).padding(horizontal: AppConstants.sidePadding)
+        ],
+      )
+    );
+  }
+
+  Widget _buildTopWidget(BuildContext context, WidgetRef ref) {
+    final topPadding = AppConstants.sidePadding + context.viewPadding.top;
+
+    return SizedBox(
+      height: 290.spMin,
       child: Stack(
         alignment: Alignment.topCenter,
+        fit: StackFit.expand,
         children: [
           CustomImage(
             imageUrl:
                 context.isDarkMode ? AppImages.bannerDark : AppImages.banner,
-            fit: BoxFit.fitWidth,
-          ),
+          ).padding(bottom: 44.spMin),
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,13 +49,13 @@ class SettingsScreen extends ConsumerWidget {
                 fontType: FontType.body2Medium,
                 color: context.colors.onSurface,
               ),
+              Spacer(),
               _buildViewProfile(context, ref),
             ],
           ).padding(
             left: AppConstants.sidePadding,
             right: AppConstants.sidePadding,
             top: topPadding,
-            bottom: bottomPadding,
           ),
         ],
       ),

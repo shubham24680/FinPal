@@ -1,5 +1,26 @@
 import 'package:flutter/material.dart';
 
+enum ColorSet {
+  primary(AppColors.primary50, AppColors.primary700, AppColors.primary500),
+  neutral(AppColors.neutral50, AppColors.neutral700, AppColors.neutral500),
+  accent(AppColors.accent50, AppColors.accent700, AppColors.accent500),
+  info(AppColors.info50, AppColors.info700, AppColors.info500),
+  purple(AppColors.purple50, AppColors.purple700, AppColors.purple500),
+  error(AppColors.error50, AppColors.error700, AppColors.error500);
+  
+  const ColorSet(this.light, this.dark, this.normal);
+  final Color light, dark, normal;
+
+  Color get dimDark => dark.withAlpha(100);
+}
+
+extension ColorSetExtension on String {
+  ColorSet get colorSet => ColorSet.values.firstWhere(
+    (e) => e.name.toLowerCase() == toLowerCase(),
+    orElse: () => ColorSet.primary,
+  );
+}
+
 abstract class AppColors {
   // Primary
   static const Color primary50 = Color(0xFFE8F1EB);
@@ -85,28 +106,4 @@ abstract class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color transparent = Color(0x00000000);
-
-  static const List<Color> chartPalette = [
-    Color(0xFF5C7457),
-    Color(0xFFF59000),
-    Color(0xFF10B981),
-    Color(0xFF3B82F6),
-    Color(0xFFEF4444),
-    Color(0xFF8B5CF6),
-    Color(0xFFF97316),
-    Color(0xFFEC4899),
-  ];
-
-  static const MaterialColor primarySwatch = MaterialColor(0xFF5C7457, {
-    50: Color(0xFFEEF2ED),
-    100: Color(0xFFD5E2D3),
-    200: Color(0xFFB4C9B1),
-    300: Color(0xFF8FAD8B),
-    400: Color(0xFF74936F),
-    500: Color(0xFF5C7457),
-    600: Color(0xFF4F6449),
-    700: Color(0xFF41533C),
-    800: Color(0xFF34422F),
-    900: Color(0xFF223020),
-  });
 }

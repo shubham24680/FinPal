@@ -1,6 +1,6 @@
 import 'package:finpal/app/app.dart';
 
-Widget viewContents(
+Widget profileTiles(
     BuildContext context,
     List<ProfileContentModel> profileContents,
     Map<String, String> values, {
@@ -52,18 +52,18 @@ Widget viewContents(
                           width: 16.spMin,
                         ),
                       ),
-                      CustomTypography(
+                      Expanded(
+                      child: CustomTypography(
                         text: contents[index].title,
                         fontType: FontType.body2Medium,
                       ),
-                      if (contents[index].value.isNotEmpty) ...[
-                        const Spacer(),
-                        CustomTypography(
-                          text: contents[index].value,
-                          fontType: FontType.body2Medium,
-                          color: context.colors.onSurface,
-                        ),
-                      ],
+                    ),
+                    if (contents[index].value.isNotEmpty)
+                      CustomTypography(
+                        text: contents[index].value,
+                        fontType: FontType.body2Medium,
+                        color: context.colors.onSurface,
+                      ),
                     ],
                   ).padding(horizontal: 16.r, vertical: 12.r);
                 },

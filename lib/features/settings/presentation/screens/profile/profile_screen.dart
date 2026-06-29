@@ -25,7 +25,7 @@ class ProfileScreen extends ConsumerWidget {
             spacing: 16.spMin,
             children: [
               _buildViewProfile(context, profile),
-              viewContents(
+              profileTiles(
                 context,
                 ProfileConstants.profileContents,
                 values,

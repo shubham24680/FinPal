@@ -56,15 +56,15 @@ class OptionServices {
     log("Option deleted: $id");
   }
 
-  List<OptionModel> byType(String type) =>
-      options.where((o) => o.type == type).toList();
+  List<OptionModel> byType(String type, {String? excludeId}) =>
+      options.where((o) => o.type == type && o.id != excludeId).toList();
 
   List<OptionModel> get incomeCategories =>
-      byType(OnboardingConstants.incomeCategory);
+      byType(OptionsConstant.incomeCategory);
 
   List<OptionModel> get expenseCategories =>
-      byType(OnboardingConstants.expenseCategory);
+      byType(OptionsConstant.expenseCategory);
 
   List<OptionModel> get paymentMethods =>
-      byType(OnboardingConstants.paymentMethod);
+      byType(OptionsConstant.paymentMethod);
 }

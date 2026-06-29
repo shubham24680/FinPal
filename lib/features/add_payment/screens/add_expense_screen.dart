@@ -10,7 +10,7 @@ class AddExpenseScreen extends ConsumerWidget {
     final totalExpense = transactionProv.value?.totalExpense ?? 0;
     final optionsProv = ref.watch(optionNotifer);
     final paymentProv = paymentProvider((
-      OnboardingConstants.expense,
+      OptionsConstant.expense,
       extra?.id,
     ));
     final expenseState = ref.watch(paymentProv);

@@ -10,7 +10,7 @@ class AddIncomeScreen extends ConsumerWidget {
     final totalIncome = transactionProv.value?.totalIncome ?? 0;
     final optionsProv = ref.watch(optionNotifer);
     final paymentProv = paymentProvider((
-      OnboardingConstants.income,
+      OptionsConstant.income,
       extra?.id,
     ));
     final incomeState = ref.watch(paymentProv);
@@ -73,7 +73,7 @@ class AddIncomeScreen extends ConsumerWidget {
                       ? ButtonState.loading
                       : ButtonState.enabled)
                   : ButtonState.disabled,
-          prefixIcon: AppSvgs.addPayment,
+          prefixIcon: AppSvgs.add1,
           label: incomeState.isSaving ? "Saving..." : "Add Income",
           margin: EdgeInsets.only(
             top: 8.w,

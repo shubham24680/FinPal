@@ -6,13 +6,14 @@ enum AppRoutesPath {
   lockScreen(path: "/lock", child: LockScreen()),
   home(path: "/home", child: HomeScreen()),
   profile(path: "/profile", child: ProfileScreen()),
-  addAmount(path: "/add_amount", child: AddAmountScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
+  options(path: "/options", child: OptionsScreen()),
+  editOption(path: "/edit_option", child: EditOptionScreen()),
+  addAmount(path: "/add_amount", child: AddAmountScreen()),
   transactionOverview(
     path: "/transaction_overview",
     child: TransactionOverviewScreen(),
   ),
-  options(path: "/options", child: OptionsScreen()),
   ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
@@ -76,7 +77,6 @@ class AppRoutes {
             pageBuilder: (context, state) {
               final extra = state.extra as ExtraModel?;
               final widget = switch (AppRoutesPath.values[index]) {
-                AppRoutesPath.options => OptionsScreen(extra: extra),
                 AppRoutesPath.addAmount => AddAmountScreen(extra: extra),
                 _ => AppRoutesPath.values[index].child,
               };
