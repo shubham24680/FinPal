@@ -29,7 +29,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = AppConstants.sidePadding + context.viewInsets.bottom;
+    final bottomPadding = AppConstants.bottomPadding + context.viewInsets.bottom;
     final profileState = ref.watch(profileProvider);
     final profileNotifier = ref.read(profileProvider.notifier);
 

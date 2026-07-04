@@ -32,7 +32,14 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = AppConstants.bottomPadding + context.viewInsets.bottom;
+    final bottomPadding =
+        AppConstants.bottomPadding + context.viewInsets.bottom;
+    final allOptions =
+        ref.watch(optionNotifer).value?.optionsWithoutOthers ?? [];
+    final unselectedOptions =
+        OptionsConstant.allOptions
+            .where((e) => allOptions.any((o) => o.id == e.id))
+            .toList();
     final optionState = ref.watch(optionProvider);
     final optionNotifier = ref.read(optionProvider.notifier);
     final isAdded = optionState.id.isNotEmpty;
@@ -61,7 +68,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
         right: AppConstants.sidePadding,
         bottom: bottomPadding,
       ),
-      body: _buildBody(context, optionState, optionNotifier),
+      body: _buildBody(context, optionState, optionNotifier, unselectedOptions),
     ).onTap(event: () => context.focusNode.unfocus());
   }
 
@@ -69,6 +76,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
     BuildContext context,
     OptionState optionState,
     OptionProvider optionNotifier,
+    List<OptionModel> allOptions,
   ) {
     final typeIcon = optionState.type?.icon ?? "";
 
@@ -76,26 +84,29 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
       padding: EdgeInsets.all(AppConstants.sidePadding),
       child: Column(
         spacing: 24.spMin,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildAvatar(
-            context,
-            size: 100.spMin,
-            icon: optionState.icon,
-            color: optionState.color,
-            onTap: () async {
-              final selected =
-                  await CustomBottomSheet.show<Map<String, dynamic>>(
-                    context,
-                    widget: _ImageBS(
-                      icon: optionState.icon,
-                      color: optionState.color,
-                    ),
-                  );
-              if (context.mounted) {
-                optionNotifier.setIcon(selected?["icon"]);
-                optionNotifier.setColor(selected?["color"]);
-              }
-            },
+          Center(
+            child: buildAvatar(
+              context,
+              size: 100.spMin,
+              icon: optionState.icon,
+              color: optionState.color,
+              onTap: () async {
+                final selected =
+                    await CustomBottomSheet.show<Map<String, dynamic>>(
+                      context,
+                      widget: _ImageBS(
+                        icon: optionState.icon,
+                        color: optionState.color,
+                      ),
+                    );
+                if (context.mounted) {
+                  optionNotifier.setIcon(selected?["icon"]);
+                  optionNotifier.setColor(selected?["color"]);
+                }
+              },
+            ),
           ),
           CustomContainer(
             child: Column(
@@ -140,9 +151,22 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
               ],
             ),
           ),
-          // Wrap(
-          //   children: ,
-          // )
+          Wrap(
+            spacing: 8.spMin,
+            runSpacing: 8.spMin,
+            children:
+                allOptions.map((e) {
+                  // final selected = e[0] == personalDetailsState.gender;
+                  return CustomChip(
+                    variant: ChipVariant.inactive,
+                    outlined: true,
+                    label: e.name,
+                    imageUrl: e.icon,
+                    // selected: selected,
+                    onTap: () {},
+                  );
+                }).toList(),
+          ),
         ],
       ),
     );
@@ -211,62 +235,9 @@ class _ImageBSSState extends State<_ImageBS> {
           color: selectedColor,
         ),
         SizedBox(height: 24.spMin),
-        Row(
-          spacing: 16.spMin,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(ColorSet.values.length, (index) {
-            final colorSet = ColorSet.values[index];
-            final isSelected = colorSet == selectedColor;
-
-            return CustomContainer(
-              onTap:
-                  () => setState(() {
-                    selectedColor = colorSet;
-                  }),
-              backgroundColor: colorSet.normal,
-              height: 52.spMin,
-              width: 52.spMin,
-              padding: EdgeInsets.all(8.r),
-              child:
-                  isSelected
-                      ? CustomImage(
-                        imageType: ImageType.svgLocal,
-                        imageUrl: AppSvgs.checkSquare,
-                        color: context.colors.surface,
-                      )
-                      : null,
-            );
-          }),
-        ),
+        _buildColorPicker(),
         SizedBox(height: 16.spMin),
-        GridView.builder(
-          itemCount: AppSvgs.icons.length,
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            childAspectRatio: 1,
-          ),
-          itemBuilder: (context, index) {
-            final isSelected = AppSvgs.icons[index] == selectedIcon;
-
-            return CustomContainer(
-              onTap:
-                  () => setState(() {
-                    selectedIcon = AppSvgs.icons[index];
-                  }),
-              padding: EdgeInsets.all(12.r),
-              child: CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: AppSvgs.icons[index],
-                color:
-                    isSelected
-                        ? context.colors.inverseSurface
-                        : context.colors.onSurface,
-              ),
-            );
-          },
-        ),
+        _buildIconPicker(context),
         SizedBox(height: 48.spMin),
         CustomButton(
           onTap:
@@ -276,6 +247,71 @@ class _ImageBSSState extends State<_ImageBS> {
         ),
         SizedBox(height: 24.spMin),
       ],
+    );
+  }
+
+  Widget _buildColorPicker() {
+    return Row(
+      spacing: 16.spMin,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(ColorSet.values.length, (index) {
+        final colorSet = ColorSet.values[index];
+        final isSelected = colorSet == selectedColor;
+
+        return CustomContainer(
+          onTap:
+              () => setState(() {
+                selectedColor = colorSet;
+              }),
+          backgroundColor: colorSet.normal,
+          height: 52.spMin,
+          width: 52.spMin,
+          padding: EdgeInsets.all(8.r),
+          child:
+              isSelected
+                  ? CustomImage(
+                    imageType: ImageType.svgLocal,
+                    imageUrl: AppSvgs.checkSquare,
+                    color: context.colors.surface,
+                  )
+                  : null,
+        );
+      }),
+    );
+  }
+
+  Widget _buildIconPicker(BuildContext context) {
+    final isLandscape = context.isLandscape;
+    final crossAxisCount = isLandscape ? 10 : 7;
+
+    return GridView.builder(
+      itemCount: AppSvgs.icons.length,
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: 1,
+      ),
+      itemBuilder: (context, index) {
+        final isSelected = AppSvgs.icons[index] == selectedIcon;
+
+        return CustomContainer(
+          onTap:
+              () => setState(() {
+                selectedIcon = AppSvgs.icons[index];
+              }),
+          padding: EdgeInsets.all(12.r),
+          child: CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: AppSvgs.icons[index],
+            color:
+                isSelected
+                    ? context.colors.inverseSurface
+                    : context.colors.onSurface,
+          ),
+        );
+      },
     );
   }
 }

@@ -64,7 +64,7 @@ abstract final class AppTheme {
               ? AppColors.lightDivider
               : AppColors.darkDivider, // for divider color
       // ── OTHERS ─────────────────────────────────────────────────────────────
-      shadow: isLight ? AppColors.black : AppColors.white,
+      shadow: AppColors.darkSurface,
       scrim: AppColors.black,
     );
 

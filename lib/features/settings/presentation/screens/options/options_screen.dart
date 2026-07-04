@@ -60,7 +60,7 @@ class OptionsScreen extends ConsumerWidget {
           OptionTiles(incomeCategories, title: "Income Categories"),
           OptionTiles(expenseCategories, title: "Expense Categories"),
           OptionTiles(paymentMethods, title: "Payment Methods"),
-          SizedBox(height: 50.spMin),
+          SizedBox(height: AppConstants.appNavPadding),
         ],
       ),
     );

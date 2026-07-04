@@ -3,68 +3,57 @@ import 'package:finpal/app/app.dart';
 import 'dart:developer';
 
 class OptionServices {
-  final Box<OptionModel> box;
-  late HiveService<OptionModel> _hiveService;
+  final HiveService<OptionModel> _hiveService;
+  List<OptionModel>? _cache;
 
-  OptionServices(this.box) {
-    _hiveService = HiveService<OptionModel>(box);
-  }
+  OptionServices(Box<OptionModel> box)
+    : _hiveService = HiveService<OptionModel>(box);
 
-  List<OptionModel> get options => _hiveService.getAllData();
-  OptionModel? findById(String id) {
-    for (var option in options) {
-      if (option.id == id) {
-        return option;
-      }
-    }
-    return null;
-  }
-
-  OptionModel? findByName(String name, String type) {
-    for (var option in options) {
-      if (option.name.toLowerCase() == name.toLowerCase() &&
-          option.type == type) {
-        return option;
-      }
-    }
-    return null;
-  }
-
-  OptionModel? findByType(String type) {
-    for (var option in options) {
-      if (option.type == type) {
-        return option;
-      }
-    }
-    return null;
-  }
-
+  // CRUD Operations
   Future<void> save(OptionModel option) async {
     await _hiveService.saveData(option.id, option);
+    clearCache();
     log("Option saved: ${option.name}, ${option.id}");
   }
 
   Future<void> saveAll(List<OptionModel> newOptions) async {
-    for (var option in newOptions) {
-      await _hiveService.saveData(option.id, option);
-    }
+    if (newOptions.isEmpty) return;
+    await _hiveService.saveAllData({for (final o in newOptions) o.id: o});
+    clearCache();
     log("Options saved: ${newOptions.length}");
   }
 
   Future<void> delete(String id) async {
     await _hiveService.clearData(id);
+    clearCache();
     log("Option deleted: $id");
   }
 
-  List<OptionModel> byType(String type, {String? excludeId}) =>
-      options.where((o) => o.type == type && o.id != excludeId).toList();
+  void clearCache() => _cache = null;
 
-  List<OptionModel> get incomeCategories =>
-      byType(OptionType.income.id);
+  // Getters
+  List<OptionModel> get options => _cache ??= _hiveService.getAllData();
+  List<OptionModel> get optionsWithoutOthers =>
+      options.where((o) => o.name != "Other").toList();
+  List<OptionModel> get incomeCategories => byType(OptionType.income.id);
+  List<OptionModel> get expenseCategories => byType(OptionType.expense.id);
+  List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
 
-  List<OptionModel> get expenseCategories =>
-      byType(OptionType.expense.id);
+  //Filters
+  OptionModel? findById(String id) => _hiveService.getData(id);
+  
+  OptionModel? findByName(String name, String type) {
+    final normalized = name.trim().toLowerCase();
+    if (normalized.isEmpty) return null;
+    for (var option in options) {
+      if (option.type == type && option.name.toLowerCase() == normalized) {
+        return option;
+      }
+    }
+    return null;
+  }
 
-  List<OptionModel> get paymentMethods =>
-      byType(OptionType.paymentMethod.id);
+  List<OptionModel> byType(String type, {String? excludeId}) => options
+      .where((o) => o.type == type && o.id != excludeId)
+      .toList(growable: false);
 }

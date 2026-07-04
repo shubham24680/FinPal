@@ -20,50 +20,60 @@ class ProfileScreen extends ConsumerWidget {
             "monthly_income": CurrencyFormatter.format(profile.monthlyIncome),
           };
           final isAllEmpty = values.values.every((value) => value.isEmpty);
-
-          return Column(
-            spacing: 16.spMin,
-            children: [
-              _buildViewProfile(context, profile),
-              profileTiles(
-                context,
-                ProfileConstants.profileContents,
-                values,
-                title: "Personal Information",
-              ),
-              const Spacer(),
-              if(!isAllEmpty)
-              CustomButton(
-                prefixIcon: AppSvgs.bin,
-                label: "Clear Data",
-                buttonType: ButtonType.negative,
-                buttonVariant: ButtonVariant.tertiary,
-                onTap:
-                    () => CustomDialog.show(
-                      context,
-                      icon: AppSvgs.bin,
-                      iconColor: AppColors.error500,
-                      iconBgColor: isDark ? AppColors.error700.withAlpha(50) : AppColors.error50,
-                      title: "Confirm Clear Data",
-                      message:
-                          "This will permanently delete all your data from Finpal. This action cannot be undone.",
-                      buttonText: "Clear All Data",
-                      buttonColor: AppColors.error500,
-                      onPressed: () {
-                        ref.read(profileNotifier.notifier).clearData().then((_) {
-                          if (context.mounted) {
-                            context.showSnackBar("Data cleared successfully", toastType: ToastType.success);
-                            context.pop();
-                          }
-                        });
-                      },
-                    ),
-              ),
-            ],
-          ).padding(
-            horizontal: AppConstants.sidePadding,
-            top: AppConstants.sidePadding,
-            bottom: 28.r,
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: AppConstants.sidePadding,
+              right: AppConstants.sidePadding,
+              top: AppConstants.sidePadding,
+              bottom: AppConstants.bottomPadding,
+            ),
+            child: Column(
+              spacing: 16.spMin,
+              children: [
+                _buildViewProfile(context, profile),
+                profileTiles(
+                  context,
+                  ProfileConstants.profileContents,
+                  values,
+                  title: "Personal Information",
+                ),
+                if (!isAllEmpty)
+                  CustomButton(
+                    prefixIcon: AppSvgs.bin,
+                    label: "Clear Data",
+                    buttonType: ButtonType.negative,
+                    buttonVariant: ButtonVariant.tertiary,
+                    onTap:
+                        () => CustomDialog.show(
+                          context,
+                          icon: AppSvgs.bin,
+                          iconColor: AppColors.error500,
+                          iconBgColor:
+                              isDark
+                                  ? AppColors.error700.withAlpha(50)
+                                  : AppColors.error50,
+                          title: "Confirm Clear Data",
+                          message:
+                              "This will permanently delete all your data from Finpal. This action cannot be undone.",
+                          buttonText: "Clear All Data",
+                          buttonColor: AppColors.error500,
+                          onPressed: () {
+                            ref.read(profileNotifier.notifier).clearData().then(
+                              (_) {
+                                if (context.mounted) {
+                                  context.showSnackBar(
+                                    "Data cleared successfully",
+                                    toastType: ToastType.success,
+                                  );
+                                  context.pop();
+                                }
+                              },
+                            );
+                          },
+                        ),
+                  ),
+              ],
+            ),
           );
         },
         error: (e, s) {
