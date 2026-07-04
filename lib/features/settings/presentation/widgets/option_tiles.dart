@@ -86,9 +86,11 @@ class OptionTiles extends ConsumerWidget {
                               buttonText: "Yes, Delete",
                               buttonColor: AppColors.error500,
                               onPressed:
-                                  () => optionProvider.deleteOption(
-                                    contents[index].id,
-                                  ),
+                                  () {
+                                    optionProvider.deleteOption(contents[index].id);
+                                    context.showSnackBar("Option deleted successfully");
+                                    context.pop();
+                                  },
                             ),
                       ),
                     ],

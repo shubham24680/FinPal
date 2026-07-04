@@ -32,7 +32,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = 40.spMin + context.viewInsets.bottom;
+    final bottomPadding = AppConstants.bottomPadding + context.viewInsets.bottom;
     final optionState = ref.watch(optionProvider);
     final optionNotifier = ref.read(optionProvider.notifier);
     final isAdded = optionState.id.isNotEmpty;
@@ -140,6 +140,9 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
               ],
             ),
           ),
+          // Wrap(
+          //   children: ,
+          // )
         ],
       ),
     );
