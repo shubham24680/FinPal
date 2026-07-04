@@ -10,12 +10,15 @@ class OptionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: customAppBar(
         context,
-        title: "Manage Options",
+        title: "Manage Categories",
         actions: [
           AppBarModel(
             icon: AppSvgs.add1,
             color: AppColors.primary500,
-            onTap: () => context.push(AppRoutesPath.editOption.path),
+            onTap: () {
+              ref.read(selectedOptionProvider.notifier).state = null;
+            context.push(AppRoutesPath.editOption.path);
+            }
           ),
         ],
       ),
@@ -37,16 +40,16 @@ class OptionsScreen extends ConsumerWidget {
 
   Widget _buildOptions(BuildContext context, OptionServices options) {
     final incomeCategories = options.byType(
-      OptionsConstant.incomeCategory,
-      excludeId: OptionsConstant.incomeCategory,
+      OptionType.income.id,
+      excludeId: OptionType.income.id,
     );
     final expenseCategories = options.byType(
-      OptionsConstant.expenseCategory,
-      excludeId: OptionsConstant.expenseCategory,
+      OptionType.expense.id,
+      excludeId: OptionType.expense.id,
     );
     final paymentMethods = options.byType(
-      OptionsConstant.paymentMethod,
-      excludeId: OptionsConstant.paymentMethod,
+      OptionType.paymentMethod.id,
+      excludeId: OptionType.paymentMethod.id,
     );
 
     return SingleChildScrollView(

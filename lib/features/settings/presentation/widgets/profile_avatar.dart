@@ -6,9 +6,12 @@ Widget buildAvatar(
   BuildContext context, {
   String image = "",
   String name = "",
+  String icon = AppSvgs.user1,
+  ColorSet color = ColorSet.primary,
   double? size,
   bool enableBorder = false,
   Color? borderColor,
+  VoidCallback? onTap,
 }) {
   final isDark = context.isDarkMode;
   final initials =
@@ -33,19 +36,20 @@ Widget buildAvatar(
           ? CustomTypography(
             text: initials,
             fontType: FontType.h2Semibold,
-            color: AppColors.primary500,
+            color: color.normal,
           )
           : CustomImage(
             imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.user1,
-            color: AppColors.primary500,
+            imageUrl: icon,
+            color: color.normal,
           );
   return CustomContainer(
+    onTap: onTap,
     borderRadius: BorderRadius.circular(1000.r),
     height: size ?? 60.spMin,
     width: size ?? 60.spMin,
     padding: image.isNotEmpty ? EdgeInsets.zero : EdgeInsets.all(8.r),
-    backgroundColor: isDark ? AppColors.primary700.withAlpha(100) : AppColors.primary50,
+    backgroundColor: isDark ? color.dimDark : color.light,
     border:
         enableBorder
             ? Border.all(

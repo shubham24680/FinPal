@@ -1,112 +1,142 @@
 import 'package:finpal/app/app.dart';
 
+enum OptionType {
+  income("income_category", "Income Category", AppSvgs.income),
+  expense("expense_category", "Expense Category", AppSvgs.expense),
+  paymentMethod("payment_method", "Payment Method", AppSvgs.upi);
+
+  const OptionType(this.id, this.name, this.icon);
+  final String id, name, icon;
+}
+
 class OptionsConstant {
   static const income = 'income';
   static const expense = 'expense';
-  static const paymentMethod = 'payment_method';
-  static const incomeCategory = 'income_category';
-  static const expenseCategory = 'expense_category';
 
   static final List<OptionModel> paymentMethods = [
     OptionModel(
-      id: paymentMethod,
-      type: paymentMethod,
+      id: OptionType.paymentMethod.id,
+      type: OptionType.paymentMethod.id,
       name: "Other",
       icon: AppSvgs.other,
-    ), 
-    OptionModel(type: paymentMethod, name: "Cash", icon: AppSvgs.cash),
-    OptionModel(type: paymentMethod, name: "UPI", icon: AppSvgs.upi),
+    ),
     OptionModel(
-      type: paymentMethod,
+      type: OptionType.paymentMethod.id,
+      name: "Cash",
+      icon: AppSvgs.cash,
+    ),
+    OptionModel(
+      type: OptionType.paymentMethod.id,
+      name: "UPI",
+      icon: AppSvgs.upi,
+    ),
+    OptionModel(
+      type: OptionType.paymentMethod.id,
       name: "Credit Card",
       icon: AppSvgs.creditCard,
     ),
     OptionModel(
-      type: paymentMethod,
+      type: OptionType.paymentMethod.id,
       name: "Debit Card",
       icon: AppSvgs.debitCard,
     ),
     OptionModel(
-      type: paymentMethod,
+      type: OptionType.paymentMethod.id,
       name: "Net Banking",
       icon: AppSvgs.netBanking,
     ),
-    OptionModel(type: paymentMethod, name: "Wallet", icon: AppSvgs.wallet),
+    OptionModel(
+      type: OptionType.paymentMethod.id,
+      name: "Wallet",
+      icon: AppSvgs.wallet,
+    ),
   ];
 
   static final List<OptionModel> incomeCategories = [
     OptionModel(
-      id: incomeCategory,
-      type: incomeCategory,
+      id: OptionType.income.id,
+      type: OptionType.income.id,
       name: "Other",
       icon: AppSvgs.add,
     ),
-    OptionModel(type: incomeCategory, name: "Salary", icon: AppSvgs.salary),
     OptionModel(
-      type: incomeCategory,
+      type: OptionType.income.id,
+      name: "Salary",
+      icon: AppSvgs.salary,
+    ),
+    OptionModel(
+      type: OptionType.income.id,
       name: "Freelance",
       icon: AppSvgs.freelance,
     ),
     OptionModel(
-      type: incomeCategory,
+      type: OptionType.income.id,
       name: "Investment",
       icon: AppSvgs.investment,
     ),
-    OptionModel(type: incomeCategory, name: "Gift", icon: AppSvgs.gift),
-    OptionModel(type: incomeCategory, name: "Rental", icon: AppSvgs.rental),
+    OptionModel(type: OptionType.income.id, name: "Gift", icon: AppSvgs.gift),
+    OptionModel(
+      type: OptionType.income.id,
+      name: "Rental",
+      icon: AppSvgs.rental,
+    ),
   ];
 
   static final List<OptionModel> expenseCategories = [
     OptionModel(
-      id: expenseCategory,
-      type: expenseCategory,
+      id: OptionType.expense.id,
+      type: OptionType.expense.id,
       name: "Other",
       icon: AppSvgs.other,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Food & Dining",
       icon: AppSvgs.food,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Groceries",
       icon: AppSvgs.groceries,
     ),
-    OptionModel(type: expenseCategory, name: "Rent", icon: AppSvgs.rent),
+    OptionModel(type: OptionType.expense.id, name: "Rent", icon: AppSvgs.rent),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Bills & Utilities",
       icon: AppSvgs.bills,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Recharge & Internet",
       icon: AppSvgs.recharge,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Transport & Fuel",
       icon: AppSvgs.transportation,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Shopping",
       icon: AppSvgs.shopping,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Entertainment",
       icon: AppSvgs.entertainment,
     ),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
       name: "Health & Medical",
       icon: AppSvgs.health,
     ),
-    OptionModel(type: expenseCategory, name: "Party", icon: AppSvgs.party),
     OptionModel(
-      type: expenseCategory,
+      type: OptionType.expense.id,
+      name: "Party",
+      icon: AppSvgs.party,
+    ),
+    OptionModel(
+      type: OptionType.expense.id,
       name: "Education",
       icon: AppSvgs.education,
     ),

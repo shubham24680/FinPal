@@ -29,7 +29,7 @@ class SettingsScreen extends ConsumerWidget {
     final topPadding = AppConstants.sidePadding + context.viewPadding.top;
 
     return SizedBox(
-      height: 290.spMin,
+      height: 310.spMin,
       child: Stack(
         alignment: Alignment.topCenter,
         fit: StackFit.expand,

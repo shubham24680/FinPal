@@ -60,11 +60,11 @@ class OptionServices {
       options.where((o) => o.type == type && o.id != excludeId).toList();
 
   List<OptionModel> get incomeCategories =>
-      byType(OptionsConstant.incomeCategory);
+      byType(OptionType.income.id);
 
   List<OptionModel> get expenseCategories =>
-      byType(OptionsConstant.expenseCategory);
+      byType(OptionType.expense.id);
 
   List<OptionModel> get paymentMethods =>
-      byType(OptionsConstant.paymentMethod);
+      byType(OptionType.paymentMethod.id);
 }

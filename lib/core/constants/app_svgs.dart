@@ -18,8 +18,11 @@ class AppSvgs {
   static const String calendar = '$_basePath/calendar.svg';
   static const String calendar1 = '$_basePath/calendar1.svg';
   static const String camera = '$_basePath/camera.svg';
+  static const String checkCircle = '$_basePath/check_circle.svg';
+  static const String checkSquare = '$_basePath/check_square.svg';
   static const String expense = '$_basePath/expense.svg';
   static const String edit = '$_basePath/edit.svg';
+  static const String edit1 = '$_basePath/edit1.svg';
   static const String female = '$_basePath/female.svg';
   static const String fingerprint = '$_basePath/fingerprint.svg';
   static const String gallery = '$_basePath/gallery.svg';
@@ -31,7 +34,7 @@ class AppSvgs {
   static const String male = '$_basePath/male.svg';
   static const String money = '$_basePath/money.svg';
   static const String other = '$_basePath/other.svg';
-  static const String options = '$_basePath/categories.svg';
+  static const String category = '$_basePath/categories.svg';
   static const String privacy = '$_basePath/privacy.svg';
   static const String retry = '$_basePath/retry.svg';
   static const String rupee = '$_basePath/rupee.svg';
@@ -72,28 +75,33 @@ class AppSvgs {
       "$_expenseCategoryPath/transport.svg";
 
   // Icons for user
-  static const List<String> userIcons = [
-    upi,
-    netBanking,
+  static final List<String> icons = [
+    bot,
+    bills,
+    cash,
     creditCard,
     debitCard,
-    cash,
-    wallet,
-    freelance,
-    gift,
-    investment,
-    rental,
-    salary,
-    bills,
+    expense,
     education,
     entertainment,
+    freelance,
     food,
+    gift,
     groceries,
     health,
+    income,
+    investment,
+    lock,
+    money,
+    netBanking,
     party,
     recharge,
     rent,
+    rental,
+    salary,
     shopping,
     transportation,
+    wallet,
+    upi,
   ];
 }

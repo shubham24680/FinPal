@@ -63,7 +63,10 @@ class OptionTiles extends ConsumerWidget {
                         height: 20.spMin,
                         width: 20.spMin,
                         onClick:
-                            () => context.push(AppRoutesPath.editOption.path),
+                            () {
+                              ref.read(selectedOptionProvider.notifier).state = contents[index];
+                              context.push(AppRoutesPath.editOption.path);
+                            },
                       ),
                       CustomImage(
                         imageType: ImageType.svgLocal,

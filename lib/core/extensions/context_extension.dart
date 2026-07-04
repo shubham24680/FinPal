@@ -29,6 +29,7 @@ extension ResponsiveContext on BuildContext {
   Orientation get orientation => MediaQuery.orientationOf(this);
   bool get isPortrait => orientation == Orientation.portrait;
   bool get isLandscape => orientation == Orientation.landscape;
+  FocusNode get focusNode => FocusScope.of(this);
 
   Color get successColor => AppColors.success500;
   Color get errorColor => AppColors.error500;

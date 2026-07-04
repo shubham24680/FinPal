@@ -12,9 +12,9 @@ class SettingsConstants {
       path: AppRoutesPath.editProfile.path,
     ),
     SettingsContentModel(
-      id: "manage_options",
-      title: "Manage Options",
-      icon: AppSvgs.options,
+      id: "manage_categories",
+      title: "Manage Categories",
+      icon: AppSvgs.category,
       iconColor: AppColors.info500,
       iconBgColor: AppColors.info50,
       iconBgDarkColor: AppColors.info700.withAlpha(100),
