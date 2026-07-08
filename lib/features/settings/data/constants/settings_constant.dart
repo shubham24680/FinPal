@@ -24,12 +24,13 @@ class SettingsConstants {
 
   static List<SettingsContentModel> appearanceContents = [
     SettingsContentModel(
-      id: "theme_mode",
-      title: "Theme Mode",
-      icon: AppSvgs.bot,
+      id: "theme",
+      title: "Theme",
+      icon: AppSvgs.theme,
       iconColor: AppColors.purple500,
       iconBgColor: AppColors.purple50,
       iconBgDarkColor: AppColors.purple700.withAlpha(100),
+      path: AppRoutesPath.theme.path,
     ),
   ];
 

@@ -14,10 +14,10 @@ class SettingsScreen extends ConsumerWidget {
           Column(
             spacing: 16.spMin,
             children: [
-              settingsTiles(context, SettingsConstants.accountContents, title: "ACCOUNT"),
-              settingsTiles(context, SettingsConstants.appearanceContents, title: "APPEARANCE"),
-              settingsTiles(context, SettingsConstants.securityContents, title: "SECURITY & PRIVACY"),
-              settingsTiles(context, SettingsConstants.aboutContents, title: "ABOUT & SUPPORT"),
+              SettingsTiles(contents: SettingsConstants.accountContents, title: "ACCOUNT"),
+              SettingsTiles(contents: SettingsConstants.appearanceContents, title: "APPEARANCE"),
+              SettingsTiles(contents: SettingsConstants.securityContents, title: "SECURITY & PRIVACY"),
+              SettingsTiles(contents: SettingsConstants.aboutContents, title: "ABOUT & SUPPORT"),
             ],
           ).padding(horizontal: AppConstants.sidePadding)
         ],
