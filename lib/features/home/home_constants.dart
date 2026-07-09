@@ -9,13 +9,13 @@ class HomeConstants {
       defaultPath: const SizedBox.shrink(),
     ),
     NavModel(
-      icon: AppSvgs.addPayment,
+      icon: AppSvgs.add1,
       pathType: PathType.screenPath,
       screenPath: '/add_amount',
       defaultPath: const SizedBox.shrink(),
     ),
     NavModel(
-      icon: AppSvgs.addPayment,
+      icon: AppSvgs.add1,
       pathType: PathType.screenPath,
       screenPath: '/add_amount',
       defaultPath: const SizedBox.shrink(),
@@ -25,6 +25,6 @@ class HomeConstants {
   static final List<NavModel> nav1 = [
     NavModel(icon: AppSvgs.home, defaultPath: ExpenseScreen()),
     NavModel(icon: AppSvgs.transaction, defaultPath: TransactionScreen()),
-    NavModel(icon: AppSvgs.user, defaultPath: ProfileScreen()),
+    NavModel(icon: AppSvgs.user, defaultPath: SettingsScreen()),
   ];
 }

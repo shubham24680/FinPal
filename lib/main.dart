@@ -1,5 +1,4 @@
 import 'package:finpal/app/app.dart';
-import 'package:finpal/core/theme/app_theme.dart';
 
 void main() async {
   final init = await AppInitializer.init();

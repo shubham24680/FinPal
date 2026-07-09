@@ -6,21 +6,21 @@ part 'option_model.g.dart';
 class OptionModel extends HiveObject {
   @HiveField(0)
   final String id;
-  @HiveField(1)
+  @HiveField(1, defaultValue: "")
   final String type;
-  @HiveField(2)
+  @HiveField(2, defaultValue: "")
   final String name;
-  @HiveField(3)
+  @HiveField(3, defaultValue: "")
   final String icon;
-  @HiveField(4)
-  final Color? color;
+  @HiveField(4, defaultValue: "")
+  final String color;
 
   OptionModel({
     String? id,
     required this.type,
     required this.name,
     this.icon = "",
-    this.color,
+    this.color = "",
   }) : id = id ?? Uuid().v4();
 
   OptionModel copyWith({
@@ -28,7 +28,7 @@ class OptionModel extends HiveObject {
     String? type,
     String? name,
     String? icon,
-    Color? color,
+    String? color,
   }) => OptionModel(
     id: id ?? this.id,
     type: type ?? this.type,

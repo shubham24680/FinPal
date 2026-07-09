@@ -20,9 +20,12 @@ class ProfileModel extends HiveObject {
   final String phone;
   @HiveField(7)
   final double? monthlyIncome;
+  @HiveField(8)
+  final DateTime? createdAt;
 
   ProfileModel({
     String? id,
+    DateTime? createdAt,
     this.profileImage = "",
     this.name = "",
     this.dob = "",
@@ -30,7 +33,8 @@ class ProfileModel extends HiveObject {
     this.email = "",
     this.phone = "",
     this.monthlyIncome,
-  }) : id = id ?? Uuid().v4();
+  }) : id = id ?? Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now();
 
   ProfileModel copyWith({
     String? name,
@@ -49,5 +53,43 @@ class ProfileModel extends HiveObject {
     email: email ?? this.email,
     phone: phone ?? this.phone,
     monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+  );
+}
+
+class ProfileContentModel {
+  final String id;
+  final String title;
+  final String icon;
+  final Color iconColor;
+  final Color iconBgColor;
+  final Color? iconBgDarkColor;
+  final String value;
+
+  ProfileContentModel({
+    required this.id,
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBgColor,
+    this.iconBgDarkColor,
+    this.value = "",
+  });
+
+  ProfileContentModel copyWith({
+    String? id,
+    String? title,
+    String? icon,
+    Color? iconColor,
+    Color? iconBgColor,
+    String? value,
+    Color? iconBgDarkColor,
+  }) => ProfileContentModel(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    icon: icon ?? this.icon,
+    iconColor: iconColor ?? this.iconColor,
+    iconBgColor: iconBgColor ?? this.iconBgColor,
+    iconBgDarkColor: iconBgDarkColor ?? this.iconBgDarkColor,
+    value: value ?? this.value,
   );
 }

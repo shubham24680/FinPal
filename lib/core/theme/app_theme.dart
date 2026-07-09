@@ -64,7 +64,7 @@ abstract final class AppTheme {
               ? AppColors.lightDivider
               : AppColors.darkDivider, // for divider color
       // ── OTHERS ─────────────────────────────────────────────────────────────
-      shadow: isLight ? AppColors.black : AppColors.white,
+      shadow: AppColors.darkSurface,
       scrim: AppColors.black,
     );
 
@@ -108,10 +108,12 @@ abstract final class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor:
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
-        foregroundColor: colorScheme.onSurface,
+        foregroundColor:
+            isLight ? AppColors.lightSurface : AppColors.darkSurface,
+        surfaceTintColor: AppColors.transparent,
         elevation: 0,
-        scrolledUnderElevation: 1,
-        shadowColor: colorScheme.shadow.withOpacity(0.08),
+        scrolledUnderElevation: 4,
+        shadowColor: colorScheme.shadow,
         systemOverlayStyle:
             isLight
                 ? SystemUiOverlayStyle.dark.copyWith(
@@ -122,9 +124,6 @@ abstract final class AppTheme {
                   statusBarColor: AppColors.transparent,
                   systemNavigationBarColor: AppColors.darkSurface,
                 ),
-        // titleTextStyle: AppTextStyles.titleLarge.copyWith(
-        //   color: colorScheme.onSurface,
-        // ),
         centerTitle: false,
       ),
 
@@ -243,13 +242,10 @@ abstract final class AppTheme {
         modalBackgroundColor:
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
         surfaceTintColor: AppColors.transparent,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
-        showDragHandle: true,
-        dragHandleColor: isLight ? AppColors.neutral300 : AppColors.neutral600,
-        dragHandleSize: const Size(40, 4),
-        elevation: 8,
+        showDragHandle: false,
       ),
 
       // ── Dialog ────────────────────────────────────────────────────────────
@@ -258,13 +254,7 @@ abstract final class AppTheme {
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
         surfaceTintColor: AppColors.transparent,
         elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        // titleTextStyle: AppTextStyles.titleLarge.copyWith(
-        //   color: colorScheme.onSurface,
-        // ),
-        // contentTextStyle: AppTextStyles.bodyMedium.copyWith(
-        //   color: colorScheme.onSurfaceVariant,
-        // ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
       ),
 
       // ── SnackBar ──────────────────────────────────────────────────────────
@@ -282,7 +272,7 @@ abstract final class AppTheme {
       // ── Divider ───────────────────────────────────────────────────────────
       dividerTheme: DividerThemeData(
         color: isLight ? AppColors.lightDivider : AppColors.darkDivider,
-        thickness: 0.5,
+        thickness: 1,
         space: 0,
       ),
 
@@ -293,8 +283,9 @@ abstract final class AppTheme {
           return isLight ? AppColors.neutral400 : AppColors.neutral600;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected))
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary500;
+          }
           return isLight ? AppColors.neutral200 : AppColors.neutral700;
         }),
       ),
@@ -331,13 +322,6 @@ abstract final class AppTheme {
         // valueIndicatorTextStyle: AppTextStyles.labelSmall.copyWith(
         //   color: AppColors.white,
         // ),
-      ),
-
-      // ── Icon ─────────────────────────────────────────────────────────────
-      iconTheme: IconThemeData(color: colorScheme.onSurface, size: 24),
-      primaryIconTheme: const IconThemeData(
-        color: AppColors.primary500,
-        size: 24,
       ),
 
       // ── PageTransitions ───────────────────────────────────────────────────

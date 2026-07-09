@@ -6,6 +6,7 @@ export 'app_bar.dart';
 export 'button.dart';
 export 'chip.dart';
 export 'container.dart';
+export 'dialog.dart';
 export 'image.dart';
 export 'text_field.dart';
 export 'swipe_action_row.dart';

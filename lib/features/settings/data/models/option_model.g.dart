@@ -18,10 +18,10 @@ class OptionModelAdapter extends TypeAdapter<OptionModel> {
     };
     return OptionModel(
       id: fields[0] as String?,
-      type: fields[1] as String,
-      name: fields[2] as String,
-      icon: fields[3] as String,
-      color: fields[4] as Color?,
+      type: fields[1] == null ? '' : fields[1] as String,
+      name: fields[2] == null ? '' : fields[2] as String,
+      icon: fields[3] == null ? '' : fields[3] as String,
+      color: fields[4] == null ? '' : fields[4] as String,
     );
   }
 

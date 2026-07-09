@@ -113,7 +113,7 @@ class CustomTextField extends StatelessWidget {
           PrimaryColors.shade500,
         ).getTextStyle(context),
         hint: _buildHint(context, hintColor, text: hintText),
-        dropdownColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        dropdownColor: context.colors.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16.r),
       ),
       TextFieldType.input => TextFormField(

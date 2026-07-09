@@ -24,7 +24,7 @@ class TransactionScreen extends ConsumerWidget {
         CustomContainer(
           onTap: () async {
             final date = await chooseDate(context, selectedDate.formatDate());
-            ref.read(selectedDateProvider.notifier).state = parseDate(date);
+            ref.read(selectedDateProvider.notifier).state = date.parseDate();
           },
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
           child: Row(

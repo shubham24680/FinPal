@@ -78,3 +78,60 @@ class SettingsModel extends HiveObject {
         aiInsightsEnabled: aiInsightsEnabled ?? this.aiInsightsEnabled,
       );
 }
+
+enum ActionType {
+  toggle,
+  navigate,
+  launchUrl,
+  bottomSheet,
+}
+
+class SettingsContentModel {
+  final String id;
+  final String title;
+  final String subtitle;
+  final String actionText;
+  final String icon;
+  final Color iconColor;
+  final Color iconBgColor;
+  final Color? iconBgDarkColor;
+  final ActionType actionType;
+  final String path;
+
+  SettingsContentModel({
+    required this.id,
+    required this.title,
+    this.subtitle = "",
+    this.actionText = "",
+    required this.icon,
+    required this.iconColor,
+    required this.iconBgColor,
+    this.iconBgDarkColor,
+    this.actionType = ActionType.navigate,
+    this.path = "",
+  });
+
+  SettingsContentModel copyWith({
+    String? id,
+    String? title,
+    String? icon,
+    Color? iconColor,
+    Color? iconBgColor,
+    ActionType? actionType,
+    String? path,
+    String? subtitle,
+    String? actionText,
+    Color? iconBgDarkColor,
+  }) => SettingsContentModel(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    actionText: actionText ?? this.actionText,
+    icon: icon ?? this.icon,
+    iconColor: iconColor ?? this.iconColor,
+    iconBgColor: iconBgColor ?? this.iconBgColor,
+    iconBgDarkColor: iconBgDarkColor ?? this.iconBgDarkColor,
+    path: path ?? this.path,
+    actionType: actionType ?? this.actionType,
+  );
+}

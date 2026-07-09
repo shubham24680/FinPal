@@ -33,12 +33,12 @@ class TransactionService {
 
   List<PaymentModel> get incomeTransactions =>
       payments
-          .where((p) => p.paymentType == OnboardingConstants.income)
+          .where((p) => p.paymentType == OptionsConstant.income)
           .toList();
 
   List<PaymentModel> get expenseTransactions =>
       payments
-          .where((p) => p.paymentType == OnboardingConstants.expense)
+          .where((p) => p.paymentType == OptionsConstant.expense)
           .toList();
 
   List<AnalysisModel> getAnalysis() {

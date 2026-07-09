@@ -45,8 +45,8 @@ class OnboardingNotifer extends StateNotifier<OnboardingState> {
     await _ref.read(optionNotifer.future);
     await _ref
         .read(optionNotifer.notifier)
-        .saveAllOptions(OnboardingConstants.allOptions);
-    await Future.delayed(const Duration(seconds: 5));
+        .saveAllOptions(OptionsConstant.allOptions);
+    await Future.delayed(const Duration(seconds: 3));
     await _ref.read(settingsNotifier.notifier).save(isFirstVisit: false);
     state = state.copyWith(buttonState: ButtonState.enabled);
   }

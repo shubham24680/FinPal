@@ -1,19 +1,21 @@
 import 'package:finpal/app/app.dart';
 
 enum AppRoutesPath {
+  splash(path: "/", child: SplashScreen()),
   onboarding(path: "/onboarding", child: OnboardingScreen()),
+  lockScreen(path: "/lock", child: LockScreen()),
   home(path: "/home", child: HomeScreen()),
-  addAmount(path: "/add_amount", child: AddAmountScreen()),
+  profile(path: "/profile", child: ProfileScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
+  options(path: "/options", child: OptionsScreen()),
+  editOption(path: "/edit_option", child: EditOptionScreen()),
+  addAmount(path: "/add_amount", child: AddAmountScreen()),
   transactionOverview(
     path: "/transaction_overview",
     child: TransactionOverviewScreen(),
   ),
-  options(path: "/options", child: OptionsScreen()),
   ai(path: "/ai", child: AIScreen()),
-  pinAuth(path: "/pin_auth", child: PinAuthScreen()),
-  lockScreen(path: "/lock", child: LockScreen()),
-  splash(path: "/", child: SplashScreen());
+  pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;
@@ -75,7 +77,6 @@ class AppRoutes {
             pageBuilder: (context, state) {
               final extra = state.extra as ExtraModel?;
               final widget = switch (AppRoutesPath.values[index]) {
-                AppRoutesPath.options => OptionsScreen(extra: extra),
                 AppRoutesPath.addAmount => AddAmountScreen(extra: extra),
                 _ => AppRoutesPath.values[index].child,
               };

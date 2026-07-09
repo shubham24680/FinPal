@@ -59,7 +59,7 @@ class CustomBottomSheet extends StatelessWidget {
       context,
       title: "Select date",
       widget: _DatePickerSheet(
-        initialDate: date.isEmpty ? last : parseDate(date),
+        initialDate: date.isEmpty ? last : date.parseDate(type: DateFormatType.date1),
         firstDate: firstDate ?? DateTime(2026),
         lastDate: last,
       ),
@@ -143,7 +143,7 @@ class _DatePickerSheetState extends State<_DatePickerSheet> {
       children: [
         _buildCalendar(context),
         CustomButton(
-          onTap: () => context.pop(_selectedDate.formatDate()),
+          onTap: () => context.pop(_selectedDate.formatDate(type: DateFormatType.date1)),
           prefixIcon: AppSvgs.calendar,
           label: "Save Date",
           buttonType: ButtonType.primary,
