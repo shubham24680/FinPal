@@ -7,6 +7,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileNotifier);
+    final currency = ref.watch(currencyProvider);
     final isDark = context.isDarkMode;
 
     return Scaffold(
@@ -17,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
             "full_name": profile.name,
             "date_of_birth": profile.dob,
             "gender": profile.gender,
-            "monthly_income": CurrencyFormatter.format(profile.monthlyIncome),
+            "monthly_income": CurrencyFormatter.format(profile.monthlyIncome, currency: currency),
           };
           final isAllEmpty = values.values.every((value) => value.isEmpty);
           return SingleChildScrollView(

@@ -1,16 +1,17 @@
 import 'package:intl/intl.dart';
+import '../constants/constants.dart';
 
 class CurrencyFormatter {
   CurrencyFormatter._();
 
   static String format(
     double? amount, {
-    String symbol = '₹',
-    String locale = 'en_IN',
+    CurrencyContants currency = CurrencyContants.rupee,
     int decimalDigits = 2,
     bool compact = false,
   }) {
-    if (amount == null) return '₹0.00';
+    final symbol = currency.symbol;
+    if (amount == null) return '${symbol}0.00';
 
     if (compact) {
       if (amount >= 10000000) {
@@ -25,8 +26,8 @@ class CurrencyFormatter {
     }
 
     final formatter = NumberFormat.currency(
-      locale: locale,
-      symbol: symbol,
+      locale: currency.locale,
+      symbol: currency.symbol,
       decimalDigits: decimalDigits,
     );
     return formatter.format(amount);
@@ -36,9 +37,9 @@ class CurrencyFormatter {
   static String signed(
     double amount, {
     required bool isExpense,
-    String symbol = '₹',
+    CurrencyContants currency = CurrencyContants.rupee,
   }) {
-    final abs = format(amount.abs(), symbol: symbol);
+    final abs = format(amount.abs(), currency: currency);
     return isExpense ? '−$abs' : '+$abs';
   }
 

@@ -11,6 +11,7 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routes = ref.watch(AppRoutes.routesProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return ScreenUtilInit(
       designSize: const Size(390, 844),
@@ -22,7 +23,7 @@ class MainApp extends ConsumerWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          themeMode: ThemeMode.system, // change to themeMode later
+          themeMode: themeMode,
           routerConfig: routes,
         );
       },

@@ -7,3 +7,11 @@ class AppConstants {
   static final mobileBreakpoint = 600.w;
   static final tabletBreakpoint = 1100.w;
 }
+
+enum CurrencyContants {
+  rupee('INR', '\u20B9', 'en_IN'),
+  dollar('USD', '\$', 'en_US');
+
+  const CurrencyContants(this.currency, this.symbol, this.locale);
+  final String currency, symbol, locale;
+}

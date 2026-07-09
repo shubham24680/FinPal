@@ -18,6 +18,8 @@ export 'presentation/screens/profile/edit_profile_screen.dart';
 export 'presentation/screens/profile/personal_details_screen.dart';
 export 'presentation/screens/options/options_screen.dart';
 export 'presentation/screens/options/edit_option_screen.dart';
+export 'presentation/screens/appearance/theme_screen.dart';
+export 'presentation/screens/preferences/currency_screen.dart';
 
 export 'presentation/widgets/profile_avatar.dart';
 export 'presentation/widgets/profile_tiles.dart';

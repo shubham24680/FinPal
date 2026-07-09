@@ -19,10 +19,8 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
     bool? isFirstVisit,
     bool? isFingerprintEnabled,
     bool? isPasscodeEnabled,
-    String? currencyCode,
-    String? currencySymbol,
-    String? languageCode,
-    String? themeMode,
+    CurrencyContants? currency,
+    ThemeMode? themeMode,
     bool? hideBalanceOnHome,
     bool? dailyReminderEnabled,
     DateTime? dailyReminderTime,
@@ -36,10 +34,10 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
         isFirstVisit: isFirstVisit,
         isFingerprintEnabled: isFingerprintEnabled,
         isPasscodeEnabled: isPasscodeEnabled,
-        currencyCode: currencyCode,
-        currencySymbol: currencySymbol,
-        languageCode: languageCode,
-        themeMode: themeMode,
+        currencyCode: currency?.currency,
+        currencySymbol: currency?.symbol,
+        languageCode: currency?.locale,
+        themeMode: themeMode?.name,
           hideBalanceOnHome: hideBalanceOnHome,
         dailyReminderEnabled: dailyReminderEnabled,
         dailyReminderTime: dailyReminderTime,
@@ -54,3 +52,38 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
 }
 
 final settingsNotifier = AsyncNotifierProvider<SettingsNotifier, SettingsModel>(() => SettingsNotifier());
+
+// THEME
+ThemeMode _themeModeFromString(String? value) {
+  return ThemeMode.values.firstWhere(
+    (mode) => mode.name == value,
+    orElse: () => ThemeMode.system,
+  );
+}
+
+final themeProvider = Provider<ThemeMode>((ref) {
+  final settings = ref.watch(settingsNotifier);
+  return settings.when(
+    data: (settings) => _themeModeFromString(settings.themeMode),
+    error: (error, stackTrace) => ThemeMode.system,
+    loading: () => ThemeMode.system,
+  );
+});
+
+// CURRENCY
+
+CurrencyContants _currencyFromString(String? value) {
+  return CurrencyContants.values.firstWhere(
+    (currency) => currency.currency == value,
+    orElse: () => CurrencyContants.rupee,
+  );
+}
+
+final currencyProvider = Provider<CurrencyContants>((ref) {
+  final settings = ref.watch(settingsNotifier);
+  return settings.when(
+    data: (settings) => _currencyFromString(settings.currencyCode),
+    error: (error, stackTrace) => CurrencyContants.rupee,
+    loading: () => CurrencyContants.rupee,
+  );
+});

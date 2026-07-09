@@ -37,13 +37,16 @@ class AppSvgs {
   static const String category = '$_basePath/categories.svg';
   static const String privacy = '$_basePath/privacy.svg';
   static const String retry = '$_basePath/retry.svg';
-  static const String rupee = '$_basePath/rupee.svg';
   static const String settings = '$_basePath/settings.svg';
   static const String terms = '$_basePath/terms.svg';
   static const String transaction = '$_basePath/transaction.svg';
+  static const String theme = '$_basePath/theme.svg';
   static const String user = '$_basePath/user.svg';
   static const String user1 = '$_basePath/user1.svg';
   static const String userId = '$_basePath/user_id.svg';
+
+  // Currency Icons
+  static const String rupee = '$_basePath/rupee.svg';
 
   /// Payment Method
   static const String cash = "$_paymentMethodPath/cash.svg";

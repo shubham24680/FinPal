@@ -79,7 +79,9 @@ class OptionTiles extends ConsumerWidget {
                               context,
                               icon: AppSvgs.bin,
                               iconColor: AppColors.error500,
-                              iconBgColor: AppColors.error50,
+                              iconBgColor: isDark
+                                  ? AppColors.error700.withAlpha(50)
+                                  : AppColors.error50,
                               title: "Delete ${contents[index].name}",
                               message:
                                   "You can't undo this. Existing records keep their data.",
