@@ -229,7 +229,7 @@ class CustomTextField extends StatelessWidget {
 
   Widget? _buildPrefixIcon(BuildContext context) {
     final icon = switch (inputType) {
-      InputType.amount => AppSvgs.rupee,
+      InputType.amount => AppSvgs.money,
       InputType.date => AppSvgs.calendar,
       _ => null,
     };

@@ -10,6 +10,7 @@ enum AppRoutesPath {
   options(path: "/options", child: OptionsScreen()),
   editOption(path: "/edit_option", child: EditOptionScreen()),
   theme(path: "/theme", child: ThemeScreen()),
+  currency(path: "/currency", child: CurrencyScreen()),
   addAmount(path: "/add_amount", child: AddAmountScreen()),
   transactionOverview(
     path: "/transaction_overview",

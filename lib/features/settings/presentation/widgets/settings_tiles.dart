@@ -126,7 +126,11 @@ class SettingsTiles extends ConsumerWidget {
         final themeMode = ref.watch(themeProvider);
         return e.copyWith(actionText: themeMode.name);
       }
-
+      if(e.id == "currency") {
+        final currency = ref.watch(currencyProvider);
+        return e.copyWith(actionText: currency.currency);
+      }
+      
       return e;
     }).toList();
   }

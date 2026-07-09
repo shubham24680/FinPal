@@ -1,31 +1,29 @@
 import 'package:finpal/app/app.dart';
 
-class ThemeScreen extends ConsumerWidget {
-  const ThemeScreen({super.key});
+class CurrencyScreen extends ConsumerWidget {
+  const CurrencyScreen({super.key});
 
-  final List<ThemeMode> _themeModes = ThemeMode.values;
+  final List<CurrencyContants> _currencies = CurrencyContants.values;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedThemeMode = ref.watch(themeProvider);
+    final selectedCurrency = ref.watch(currencyProvider);
 
     return Scaffold(
-      appBar: customAppBar(context, title: "Theme"),
+      appBar: customAppBar(context, title: "Currency"),
       body: CustomContainer(
         padding: EdgeInsets.zero,
         margin: EdgeInsets.all(AppConstants.sidePadding),
         child: ListView.separated(
-          itemCount: _themeModes.length,
+          itemCount: _currencies.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           separatorBuilder: (context, index) => Divider(),
           itemBuilder: (context, index) {
-            final themeMode = _themeModes[index];
-            final name =
-                themeMode.name.substring(0, 1).toUpperCase() +
-                themeMode.name.substring(1).toLowerCase();
-            final isSelected = selectedThemeMode == themeMode;
+            final currency = _currencies[index];
+            final name = "${currency.currency} (${currency.symbol})";
+            final isSelected = selectedCurrency == currency;
             final borderColor =
                 isSelected
                     ? context.colors.primary
@@ -40,7 +38,7 @@ class ThemeScreen extends ConsumerWidget {
               onTap:
                   () => ref
                       .read(settingsNotifier.notifier)
-                      .save(themeMode: themeMode.name),
+                      .save(currency: currency),
               padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

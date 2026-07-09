@@ -63,17 +63,17 @@ class SettingsConstants {
     ),
   ];
 
-  // static List<SettingsContentModel> preferencesContents = [
-  //   SettingsContentModel(
-  //     id: "currency",
-  //     title: "Currency",
-  //     icon: AppSvgs.rupee,
-  //     iconColor: AppColors.primary500,
-  //     iconBgColor: AppColors.primary50,
-  //     iconBgDarkColor: AppColors.primary700.withAlpha(100),
-  //     actionText: "INR",
-  //   ),
-  // ];
+  static List<SettingsContentModel> preferencesContents = [
+    SettingsContentModel(
+      id: "currency",
+      title: "Currency",
+      icon: AppSvgs.money,
+      iconColor: AppColors.primary500,
+      iconBgColor: AppColors.primary50,
+      iconBgDarkColor: AppColors.primary700.withAlpha(100),
+      path: AppRoutesPath.currency.path,
+    ),
+  ];
 
   static List<SettingsContentModel> aboutContents = [
     SettingsContentModel(

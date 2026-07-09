@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:finpal/app/app.dart';
 
 final profileBoxProvider = Provider<Box<ProfileModel>>(
