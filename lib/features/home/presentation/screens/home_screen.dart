@@ -14,19 +14,8 @@ class HomeScreen extends ConsumerWidget {
         children: HomeConstants.navigationBar.map((e) => e.page).toList(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: BottomNavBar(),
-      floatingActionButton: _buildFloatingActionButton(context),
+      floatingActionButton: const AnimatedFab(),
       bottomNavigationBar: _bottomNavigationBar(context, ref, navIndex),
-    );
-  }
-
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return CustomContainer(
-      height: 70.spMin,
-      width: 70.spMin,
-      borderRadius: BorderRadius.circular(1000.r),
-      backgroundColor: context.colors.primary,
-      child: CustomImage(imageUrl: AppSvgs.add2, imageType: ImageType.svgLocal),
     );
   }
 

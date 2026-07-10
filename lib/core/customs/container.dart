@@ -18,6 +18,7 @@ class CustomContainer extends StatefulWidget {
     this.height,
     this.width,
     this.alignment,
+    this.gradient,
   });
 
   final Widget? child;
@@ -35,6 +36,7 @@ class CustomContainer extends StatefulWidget {
   final double? height;
   final double? width;
   final AlignmentGeometry? alignment;
+  final Gradient? gradient;
 
   @override
   State<CustomContainer> createState() => _CustomContainerState();
@@ -46,6 +48,15 @@ class _CustomContainerState extends State<CustomContainer> {
     final defaultBorderRadius =
         widget.borderRadius ?? BorderRadius.circular(16.r);
     final defaultPadding = widget.padding ?? EdgeInsets.all(16.r);
+    final defaultShadow =
+        widget.shadow ??
+        [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ];
     final image = widget.image;
 
     final container = Container(
@@ -62,17 +73,8 @@ class _CustomContainerState extends State<CustomContainer> {
         color: widget.backgroundColor ?? context.colors.surface,
         borderRadius: defaultBorderRadius,
         border: widget.border,
-        boxShadow:
-            widget.showShadow
-                ? widget.shadow ??
-                    [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(10),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                : null,
+        boxShadow: widget.showShadow ? defaultShadow : null,
+        gradient: widget.gradient
       ),
       child: widget.child,
     );
