@@ -6,7 +6,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(bottom: 110.spMin),
+      padding: EdgeInsets.only(bottom: 180.spMin),
       child: Column(
         children: [
           _buildTopWidget(context, ref),

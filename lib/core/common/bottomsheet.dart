@@ -79,12 +79,14 @@ class CustomBottomSheet extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
+    final bottomPadding = 16.r + context.viewPadding.bottom;
+
     return CustomContainer(
       backgroundColor: context.colors.surface,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       padding: EdgeInsets.zero,
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 20.r),
+        padding: EdgeInsets.only(left: 16.r, right: 16.r, top: 20.r, bottom: bottomPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           spacing: 8.spMin,

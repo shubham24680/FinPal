@@ -40,40 +40,7 @@ class CustomContainer extends StatefulWidget {
   State<CustomContainer> createState() => _CustomContainerState();
 }
 
-class _CustomContainerState extends State<CustomContainer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: widget.scaleDownFactor,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() async {
-    if (widget.onTap != null) {
-      widget.onTap!();
-      await _controller.forward();
-      if (mounted) {
-        _controller.reverse();
-      }
-    }
-  }
-
+class _CustomContainerState extends State<CustomContainer> {
   @override
   Widget build(BuildContext context) {
     final defaultBorderRadius =
@@ -110,14 +77,11 @@ class _CustomContainerState extends State<CustomContainer>
       child: widget.child,
     );
 
-    if (widget.onTap == null) {
-      return container;
-    }
-
-    return GestureDetector(
-      onTap: _handleTap,
-      behavior: HitTestBehavior.opaque,
-      child: ScaleTransition(scale: _scaleAnimation, child: container),
+    return AnimatedTap(
+      onTap: widget.onTap,
+      scaleDownFactor: widget.scaleDownFactor,
+      animationDuration: widget.animationDuration,
+      child: container,
     );
   }
 }

@@ -13,5 +13,6 @@ export '../core/theme/theme.dart';
 export '../core/utils/utils.dart';
 
 export '../features/onboarding/onboarding.dart';
+export '../features/home/home.dart';
 export '../features/settings/settings.dart';
 export '../features/features.dart';

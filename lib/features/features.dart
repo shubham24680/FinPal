@@ -1,10 +1,3 @@
-// Home
-export 'home/screens/home_screen.dart';
-export 'home/models/helper_model.dart';
-export 'home/home_constants.dart';
-export 'home/widgets/bottom_nav_bar.dart';
-export 'home/home_provider.dart';
-
 // Expense
 export 'expense/expense_screen.dart';
 export 'expense/expense_model.dart';

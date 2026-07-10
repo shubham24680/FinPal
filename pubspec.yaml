@@ -70,7 +70,6 @@ flutter:
   assets:
     - assets/images/
     - assets/images/onboarding/
-    - assets/images/avatars/
     - assets/svgs/
     - assets/svgs/expense_category/
     - assets/svgs/income_category/
