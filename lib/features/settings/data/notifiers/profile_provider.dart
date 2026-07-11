@@ -136,9 +136,9 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   }
 
   void setMonthlyIncome(String? monthlyIncome) {
-    if(monthlyIncome == null) return;
-    final amount = double.tryParse(monthlyIncome.trim());
-    if(amount == null) return;
+    if (monthlyIncome == null || monthlyIncome.trim().isEmpty) return;
+    final amount = CurrencyFormatter.parse(monthlyIncome);
+    if (amount <= 0) return;
     state = state.copyWith(monthlyIncome: amount);
     onChange();
   }

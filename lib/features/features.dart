@@ -5,19 +5,12 @@ export 'expense/widgets/balance_card.dart';
 export 'expense/widgets/categories_tile.dart';
 export 'expense/widgets/manage_expenses.dart';
 
-// Transaction
-export 'transaction/screens/transaction_screen.dart';
-export 'transaction/screens/transaction_overview_screen.dart';
-export 'transaction/transaction_widgets.dart';
-export 'transaction/transaction_provider.dart';
-export 'transaction/transaction_service.dart';
-
 // Add Amount
 export 'add_payment/screens/add_amount_screen.dart';
 export 'add_payment/screens/add_expense_screen.dart';
 export 'add_payment/screens/add_income_screen.dart';
 export 'add_payment/add_payment_widgets.dart';
-export 'add_payment/models/payment_model.dart';
+export 'transaction/data/models/payment_model.dart';
 export 'add_payment/providers/payment_provider.dart';
 
 // Bot

@@ -32,10 +32,7 @@ Future<void> showEditPaymentSheet(
   PaymentModel payment,
 ) async {
   final amountCtrl = TextEditingController(
-    text:
-        payment.amount == payment.amount.roundToDouble()
-            ? payment.amount.toStringAsFixed(0)
-            : payment.amount.toString(),
+    text: CurrencyFormatter.formatAmountForInput(payment.amount),
   );
   final notesCtrl = TextEditingController(text: payment.notes ?? '');
 
@@ -144,7 +141,7 @@ Widget buildExpenseTile(
               ),
               SizedBox(height: 4.w),
               CustomTypography(
-                text: payment.date,
+                text: payment.date.formatDate(),
                 fontType: FontType.label1Light,
               ),
             ],

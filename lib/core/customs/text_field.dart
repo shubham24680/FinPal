@@ -35,6 +35,9 @@ class CustomTextField extends StatelessWidget {
     this.maxLength,
     this.helperText,
     this.helperIcon,
+    this.isUnderLineBorder = false,
+    this.hintStyle,
+    this.style,
   });
 
   final TextFieldType textFieldType;
@@ -51,10 +54,12 @@ class CustomTextField extends StatelessWidget {
   final Color? fillColor;
   final String? hintText;
   final Color? hintColor;
+  final TextStyle? hintStyle;
   final String? labelText;
   final Color? floatingHintColor;
   final String? errorText;
   final Color? errorColor;
+  final TextStyle? style;
   final String? helperText;
   final String? helperIcon;
   final String? initialValue;
@@ -64,10 +69,12 @@ class CustomTextField extends StatelessWidget {
   final Color? focusedBorderColor;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
+  final bool isUnderLineBorder;
 
   @override
   Widget build(BuildContext context) {
-    final hintStyle = _buildHint(context, hintColor).getTextStyle(context);
+    final hintStyle =
+        this.hintStyle ?? _buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
       fillColor: fillColor,
       hintText: hintText ?? _buildHintText(),
@@ -89,8 +96,16 @@ class CustomTextField extends StatelessWidget {
         horizontal: 10.r,
       ),
       suffixIcon: suffixIcon?.padding(all: 10.r),
+      border: buildUnderLineBorder(color: context.colors.outline),
+      enabledBorder: buildUnderLineBorder(color: context.colors.outline),
+      focusedBorder: buildUnderLineBorder(color: context.colors.primary),
+      errorBorder: buildUnderLineBorder(color: context.colors.error),
+      focusedErrorBorder: buildUnderLineBorder(
+        color: context.colors.error,
+        width: 2,
+      ),
     );
-    final textColor = Theme.of(context).colorScheme.onInverseSurface;
+    final textColor = context.colors.onInverseSurface;
 
     final dropDownMenu =
         items
@@ -125,7 +140,7 @@ class CustomTextField extends StatelessWidget {
         textAlign: textAlign,
         decoration: decoration,
         keyboardType: keyboardType ?? _handleKeyboardType(),
-        style: _buildHint(context, textColor).getTextStyle(context),
+        style: style ?? _buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,
         inputFormatters: inputFormatters ?? _buildInputFormatters(),
@@ -201,14 +216,15 @@ class CustomTextField extends StatelessWidget {
   ) {
     if (helperText == null) return null;
     return Row(
-      spacing: 4.spMin,
+      spacing: 8.spMin,
       children: [
-        CustomImage(
-          imageType: ImageType.svgLocal,
-          imageUrl: helperIcon ?? AppSvgs.info,
-          height: 16.spMin,
-          color: AppColors.primary500,
-        ),
+        if (helperIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: helperIcon,
+            height: 16.spMin,
+            color: AppColors.primary500,
+          ),
         _buildHint(
           context,
           Theme.of(context).colorScheme.onSurfaceVariant,
@@ -221,7 +237,7 @@ class CustomTextField extends StatelessWidget {
 
   String? _buildHintText() {
     return switch (inputType) {
-      InputType.amount => "8124.80",
+      InputType.amount => CurrencyFormatter.formatInput("1250.00"),
       InputType.date => "July 11, 2001",
       _ => null,
     };
@@ -246,11 +262,7 @@ class CustomTextField extends StatelessWidget {
 
   List<TextInputFormatter>? _buildInputFormatters() {
     return switch (inputType) {
-      InputType.amount => [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-        LengthLimitingTextInputFormatter(10),
-        AmountInputFormatter(),
-      ],
+      InputType.amount => [AmountInputFormatter()],
       _ => null,
     };
   }
@@ -261,27 +273,112 @@ class CustomTextField extends StatelessWidget {
       borderRadius: BorderRadius.circular(12.r),
     );
   }
+
+  InputBorder? buildUnderLineBorder({
+    Color color = AppColors.primary500,
+    double width = 1,
+  }) {
+    if (!isUnderLineBorder) return null;
+    return UnderlineInputBorder(
+      borderSide: BorderSide(color: color, width: width),
+    );
+  }
 }
 
 class AmountInputFormatter extends TextInputFormatter {
+  AmountInputFormatter({
+    this.currency = CurrencyContants.rupee,
+    this.decimalDigits = 2,
+    this.maxIntegerDigits = 16,
+  });
+
+  final CurrencyContants currency;
+  final int decimalDigits;
+  final int maxIntegerDigits;
+
+  static final _significant = RegExp(r'[0-9.]');
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text;
+    if (newValue.text.isEmpty) return newValue;
 
-    if ('.'.allMatches(text).length > 1) {
-      return oldValue;
+    var raw = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    final firstDot = raw.indexOf('.');
+    if (firstDot != -1) {
+      raw =
+          raw.substring(0, firstDot + 1) +
+          raw.substring(firstDot + 1).replaceAll('.', '');
     }
 
-    if (text.contains('.')) {
-      final parts = text.split('.');
-      if (parts.length > 1 && parts[1].length > 2) {
-        return oldValue;
+    final parts = raw.split('.');
+    var intPart = parts[0];
+    final decPart = parts.length > 1 ? parts[1] : null;
+
+    if (intPart.length > maxIntegerDigits) return oldValue;
+    if (decPart != null && decPart.length > decimalDigits) return oldValue;
+
+    if (intPart.length > 1) {
+      intPart = intPart.replaceFirst(RegExp(r'^0+(?=.)'), '');
+    }
+
+    raw =
+        decPart == null
+            ? (raw.endsWith('.') ? '$intPart.' : intPart)
+            : '$intPart.$decPart';
+
+    if (raw.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    final formatted = CurrencyFormatter.formatInput(
+      raw,
+      currency: currency,
+      decimalDigits: decimalDigits,
+    );
+
+    final selection = newValue.selection;
+    final base = _offsetForSignificantCount(
+      formatted,
+      _countSignificant(newValue.text, selection.baseOffset),
+    );
+    final extent = _offsetForSignificantCount(
+      formatted,
+      _countSignificant(newValue.text, selection.extentOffset),
+    );
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection(baseOffset: base, extentOffset: extent),
+    );
+  }
+
+  /// Counts digits and `.` before [offset], ignoring grouping separators.
+  static int _countSignificant(String text, int offset) {
+    final end = offset.clamp(0, text.length);
+    var count = 0;
+    for (var i = 0; i < end; i++) {
+      if (_significant.hasMatch(text[i])) count++;
+    }
+    return count;
+  }
+
+  /// Finds the cursor index in [text] after [count] significant characters.
+  static int _offsetForSignificantCount(String text, int count) {
+    if (count <= 0) return 0;
+    var seen = 0;
+    for (var i = 0; i < text.length; i++) {
+      if (_significant.hasMatch(text[i])) {
+        seen++;
+        if (seen >= count) return i + 1;
       }
     }
-
-    return newValue;
+    return text.length;
   }
 }

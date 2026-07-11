@@ -16,7 +16,7 @@ class AnimatedFab extends StatelessWidget {
     );
 
     return CustomContainer(
-      onTap: () => context.push(AppRoutesPath.addAmount.path),
+      onTap: () => context.push(AppRoutesPath.editTransaction.path),
       height: 65.spMin,
       width: 65.spMin,
       borderRadius: BorderRadius.circular(1000.r),

@@ -8,9 +8,9 @@ class SettingsScreen extends ConsumerWidget {
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: 180.spMin),
       child: Column(
+        spacing: 16.spMin,
         children: [
           _buildTopWidget(context, ref),
-          SizedBox(height: 16.spMin),
           Column(
             spacing: 16.spMin,
             children: [

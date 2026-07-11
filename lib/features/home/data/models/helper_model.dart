@@ -1,6 +1,5 @@
 import 'package:finpal/app/app.dart';
 
-
 class NavModel {
   String id;
   Widget page;
@@ -16,21 +15,3 @@ class NavModel {
     this.title,
   });
 }
-
-// class HelperModel {
-//   PathType pathType;
-//   String? icon;
-//   String? title;
-//   String? screenPath;
-//   ExtraModel? extra;
-//   ProfileAction action;
-
-//   HelperModel({
-//     this.pathType = PathType.screenPath,
-//     this.icon,
-//     this.title,
-//     this.screenPath,
-//     this.extra,
-//     this.action = ProfileAction.navigate,
-//   });
-// }

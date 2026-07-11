@@ -43,8 +43,47 @@ class CurrencyFormatter {
     return isExpense ? '−$abs' : '+$abs';
   }
 
+  static String formatInput(
+    String raw, {
+    CurrencyContants currency = CurrencyContants.rupee,
+    int decimalDigits = 2,
+  }) {
+    if (raw.isEmpty) return '';
+
+    final endsWithDot = raw.endsWith('.');
+    final parts = raw.split('.');
+    final intPart = parts[0].isEmpty ? '0' : parts[0];
+    final decPart = parts.length > 1 ? parts[1] : null;
+
+    final number = int.tryParse(intPart) ?? 0;
+    final grouped = NumberFormat.currency(locale: currency.locale, symbol: currency.symbol, decimalDigits: 0).format(number);
+
+    if (decPart == null) {
+      return endsWithDot ? '$grouped.' : grouped;
+    }
+
+    final limited =
+        decPart.length > decimalDigits
+            ? decPart.substring(0, decimalDigits)
+            : decPart;
+    return '$grouped.$limited';
+  }
+
+  static String formatAmountForInput(
+    double amount, {
+    CurrencyContants currency = CurrencyContants.rupee,
+    int decimalDigits = 2,
+  }) {
+    final raw =
+        amount == amount.roundToDouble()
+            ? amount.toStringAsFixed(0)
+            : amount.toStringAsFixed(decimalDigits);
+    return formatInput(raw, currency: currency, decimalDigits: decimalDigits);
+  }
+
   static double parse(String value) {
     final cleaned = value.replaceAll(RegExp(r'[^0-9.]'), '');
+    if (cleaned.isEmpty || cleaned == '.') return 0.0;
     return double.tryParse(cleaned) ?? 0.0;
   }
 }

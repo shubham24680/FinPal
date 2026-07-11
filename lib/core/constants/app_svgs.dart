@@ -8,9 +8,11 @@ class AppSvgs {
   static const String add1 = '$_basePath/add_item1.svg';
   static const String add2 = '$_basePath/add_item2.svg';
   static const String arrowDown = '$_basePath/arrow_down.svg';
+  static const String arrowDownSmall = '$_basePath/arrow_down_small.svg';
   static const String arrowLeft = '$_basePath/arrow_left.svg';
   static const String arrowRight = '$_basePath/arrow_right.svg';
   static const String arrowRight1 = '$_basePath/arrow_right_small.svg';
+  static const String arrowUp = '$_basePath/arrow_up.svg';
   static const String backspace = '$_basePath/backspace.svg';
   static const String bin = '$_basePath/bin.svg';
   static const String bot = '$_basePath/bot.svg';

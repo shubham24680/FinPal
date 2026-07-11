@@ -26,6 +26,7 @@ extension ResponsiveContext on BuildContext {
   double get screenHeight => screenSize.height;
   EdgeInsets get viewPadding => MediaQuery.viewPaddingOf(this);
   EdgeInsets get viewInsets => MediaQuery.viewInsetsOf(this);
+  double get bottomPadding => viewInsets.bottom + viewPadding.bottom;
   Orientation get orientation => MediaQuery.orientationOf(this);
   bool get isPortrait => orientation == Orientation.portrait;
   bool get isLandscape => orientation == Orientation.landscape;

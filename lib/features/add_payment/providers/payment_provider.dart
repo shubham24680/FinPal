@@ -63,10 +63,11 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     if (_id != null) {
       final payment = _ref.read(transactionProvider).value?.getPayment(_id);
       if (payment != null) {
-        state.amountController.text = payment.amount.toString();
+        state.amountController.text =
+            CurrencyFormatter.formatAmountForInput(payment.amount);
         state.notesController.text = payment.notes ?? "";
         state.copyWith(
-          date: payment.date,
+          date: payment.date.formatDate(),
           category: _ref
               .read(optionNotifer)
               .value
@@ -94,7 +95,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
   void checkOverspent(String? value) {
     final transactionProv = _ref.read(transactionProvider);
     final available = transactionProv.value?.available ?? 0;
-    final amount = double.tryParse(value?.trim() ?? "") ?? 0;
+    final amount = CurrencyFormatter.parse(value ?? '');
     final totalAmount = available - amount;
     final isOverspent = totalAmount < 0;
     state = state.copyWith(
@@ -106,9 +107,8 @@ class PaymentProvider extends StateNotifier<PaymentState> {
   }
 
   Future<void> addAmount() async {
-    final rawAmount = state.amountController.text.trim();
-    final amount = double.tryParse(rawAmount);
-    if (amount == null || amount <= 0) return;
+    final amount = CurrencyFormatter.parse(state.amountController.text);
+    if (amount <= 0) return;
 
     state = state.copyWith(isSaving: true, isSaved: false);
 
@@ -117,7 +117,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       id: _id,
       paymentType: _type,
       amount: amount,
-      date: state.date,
+      date: DateTime.parse(state.date),
       categoryId: state.category?.id,
       paymentMethodId: state.paymentMethod?.id,
       notes: notes,

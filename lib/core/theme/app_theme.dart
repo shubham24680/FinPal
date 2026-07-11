@@ -76,8 +76,6 @@ abstract final class AppTheme {
           isLight ? AppColors.lightBackground : AppColors.darkBackground,
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        prefixIconColor: colorScheme.onSurfaceVariant,
-        suffixIconColor: colorScheme.onSurfaceVariant,
         fillColor: colorScheme.surfaceContainerHighest,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 16.spMin,

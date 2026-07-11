@@ -31,30 +31,4 @@ class HomeConstants {
       title: 'Settings',
     ),
   ];
-  // static final List<NavModel> nav2 = [
-  //   NavModel(
-  //     selectedIcon: AppSvgs.bot,
-  //     pathType: PathType.screenPath,
-  //     screenPath: '/ai',
-  //     page: const SizedBox.shrink(),
-  //   ),
-  //   NavModel(
-  //     selectedIcon: AppSvgs.add1,
-  //     pathType: PathType.screenPath,
-  //     screenPath: '/add_amount',
-  //     page: const SizedBox.shrink(),
-  //   ),
-  //   NavModel(
-  //     selectedIcon: AppSvgs.add1,
-  //     pathType: PathType.screenPath,
-  //     screenPath: '/add_amount',
-  //     page: const SizedBox.shrink(),
-  //   ),
-  // ];
-
-  // static final List<NavModel> nav1 = [
-  //   NavModel(selectedIcon: AppSvgs.home, page: ExpenseScreen()),
-  //   NavModel(selectedIcon: AppSvgs.bills1, page: TransactionScreen()),
-  //   NavModel(selectedIcon: AppSvgs.user, page: SettingsScreen()),
-  // ];
 }
