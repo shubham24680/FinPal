@@ -48,18 +48,18 @@ class CustomBottomSheet extends StatelessWidget {
     );
   }
 
-  static Future<String> chooseDate(
-    BuildContext context,
-    String date, {
+  static Future<DateTime?> chooseDate(
+    BuildContext context, {
+    DateTime? date,
     DateTime? firstDate,
     DateTime? lastDate,
   }) async {
     final last = lastDate ?? DateTime.now();
-    final picked = await show<String>(
+    final picked = await show<DateTime>(
       context,
       title: "Select date",
       widget: _DatePickerSheet(
-        initialDate: date.isEmpty ? last : date.parseDate(type: DateFormatType.date1),
+        initialDate: date ?? last,
         firstDate: firstDate ?? DateTime(2026),
         lastDate: last,
       ),
@@ -145,7 +145,7 @@ class _DatePickerSheetState extends State<_DatePickerSheet> {
       children: [
         _buildCalendar(context),
         CustomButton(
-          onTap: () => context.pop(_selectedDate.formatDate(type: DateFormatType.date1)),
+          onTap: () => context.pop(_selectedDate),
           prefixIcon: AppSvgs.calendar,
           label: "Save Date",
           buttonType: ButtonType.primary,

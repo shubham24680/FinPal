@@ -11,7 +11,7 @@ export 'add_payment/screens/add_expense_screen.dart';
 export 'add_payment/screens/add_income_screen.dart';
 export 'add_payment/add_payment_widgets.dart';
 export 'transaction/data/models/payment_model.dart';
-export 'add_payment/providers/payment_provider.dart';
+export 'transaction/data/notifiers/payment_provider.dart';
 
 // Bot
 export 'ai/ai_screen.dart';

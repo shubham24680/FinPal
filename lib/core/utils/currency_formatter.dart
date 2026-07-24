@@ -4,26 +4,17 @@ import '../constants/constants.dart';
 class CurrencyFormatter {
   CurrencyFormatter._();
 
+  static const defaultDecimal = 2;
+  static const deafultCompact = false;
+
   static String format(
     double? amount, {
     CurrencyContants currency = CurrencyContants.rupee,
-    int decimalDigits = 2,
-    bool compact = false,
+    int decimalDigits = defaultDecimal,
+    bool compact = deafultCompact,
   }) {
     final symbol = currency.symbol;
     if (amount == null) return '${symbol}0.00';
-
-    if (compact) {
-      if (amount >= 10000000) {
-        return '$symbol${(amount / 10000000).toStringAsFixed(1)}Cr';
-      }
-      if (amount >= 100000) {
-        return '$symbol${(amount / 100000).toStringAsFixed(1)}L';
-      }
-      if (amount >= 1000) {
-        return '$symbol${(amount / 1000).toStringAsFixed(1)}k';
-      }
-    }
 
     final formatter = NumberFormat.currency(
       locale: currency.locale,
@@ -31,6 +22,20 @@ class CurrencyFormatter {
       decimalDigits: decimalDigits,
     );
     return formatter.format(amount);
+  }
+
+  static double parse(String amount, {
+    CurrencyContants currency = CurrencyContants.rupee,
+    int decimalDigits = defaultDecimal,
+    bool compact = deafultCompact,
+  }) {
+    final formatter = NumberFormat.currency(
+      locale: currency.locale,
+      symbol: currency.symbol,
+      decimalDigits: decimalDigits,
+    );
+    final value = formatter.parse(amount);
+    return value as double;
   }
 
   /// Returns '+₹X' for income, '−₹X' for expenses.
@@ -79,11 +84,5 @@ class CurrencyFormatter {
             ? amount.toStringAsFixed(0)
             : amount.toStringAsFixed(decimalDigits);
     return formatInput(raw, currency: currency, decimalDigits: decimalDigits);
-  }
-
-  static double parse(String value) {
-    final cleaned = value.replaceAll(RegExp(r'[^0-9.]'), '');
-    if (cleaned.isEmpty || cleaned == '.') return 0.0;
-    return double.tryParse(cleaned) ?? 0.0;
   }
 }

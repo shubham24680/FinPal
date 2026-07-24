@@ -1,9 +1,4 @@
-import 'package:finpal/core/common/responsive_builder/responsive_breakpoints.dart';
-import 'package:finpal/core/common/responsive_builder/responsive_value.dart';
-import 'package:finpal/core/customs/typography/app_text_styles.dart';
-import 'package:finpal/core/customs/typography/typography.dart';
-import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import 'package:finpal/app/app.dart';
 
 enum ToastType { normal, error, success }
 extension ResponsiveContext on BuildContext {
@@ -26,7 +21,7 @@ extension ResponsiveContext on BuildContext {
   double get screenHeight => screenSize.height;
   EdgeInsets get viewPadding => MediaQuery.viewPaddingOf(this);
   EdgeInsets get viewInsets => MediaQuery.viewInsetsOf(this);
-  double get bottomPadding => viewInsets.bottom + viewPadding.bottom;
+  double get buttonBottomPadding => 8.spMin + viewInsets.bottom;
   Orientation get orientation => MediaQuery.orientationOf(this);
   bool get isPortrait => orientation == Orientation.portrait;
   bool get isLandscape => orientation == Orientation.landscape;

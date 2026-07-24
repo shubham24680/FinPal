@@ -26,3 +26,4 @@ export 'presentation/widgets/profile_tiles.dart';
 export 'presentation/widgets/personal_details_form.dart';
 export 'presentation/widgets/settings_tiles.dart';
 export 'presentation/widgets/option_tiles.dart';
+export 'presentation/widgets/select_image_bottomsheet.dart';

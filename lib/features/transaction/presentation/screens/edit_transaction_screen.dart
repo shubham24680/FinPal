@@ -1,23 +1,27 @@
 import 'package:finpal/app/app.dart';
 
-class EditTransactionScreen extends StatefulWidget {
+class EditTransactionScreen extends ConsumerStatefulWidget {
   const EditTransactionScreen({super.key});
 
   @override
-  State<EditTransactionScreen> createState() => _EditTransactionScreenState();
+  ConsumerState<EditTransactionScreen> createState() =>
+      _EditTransactionScreenState();
 }
 
-class _EditTransactionScreenState extends State<EditTransactionScreen> {
+class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   late TextEditingController amountController;
   late TextEditingController noteController;
-  late String selectedDate;
 
   @override
   void initState() {
     super.initState();
-    amountController = TextEditingController();
-    selectedDate = DateTime.now().formatDate(type: DateFormatType.date1);
-    noteController = TextEditingController();
+    _init();
+  }
+
+  void _init() {
+    final transactionState = ref.read(paymentProvider);
+    amountController = TextEditingController(text: transactionState.amount);
+    noteController = TextEditingController(text: transactionState.notes);
   }
 
   @override
@@ -29,21 +33,42 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final title = "Add Transaction";
-    final bottomPadding = 8.spMin + context.viewInsets.bottom;
+    final transactionState = ref.watch(paymentProvider);
+    final transactionNotifer = ref.read(paymentProvider.notifier);
+    final ctaText = transactionState.id.isNotEmpty ? "Update" : "Add";
+    final title =
+        "${transactionState.id.isNotEmpty ? "Edit" : "Add"} Transaction";
+
+    ref.listen(paymentProvider, (previous, next) {
+      if (next.toastMessage.isNotEmpty) {
+        context.showSnackBar(next.toastMessage, toastType: next.toastType);
+        if(next.toastType != ToastType.error) {
+          context.pop();
+        }
+      }
+    });
 
     return Scaffold(
       extendBody: true,
       appBar: customAppBar(context, title: title),
       bottomNavigationBar: SafeArea(
-        child: CustomButton(label: "Add", onTap: () {}).padding(
+        child: CustomButton(
+          buttonState: transactionState.buttonState,
+          label: ctaText,
+          onTap: () => transactionNotifer.save(),
+        ).padding(
           horizontal: AppConstants.sidePadding,
           top: 8.spMin,
-          bottom: bottomPadding,
+          bottom: context.buttonBottomPadding,
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppConstants.sidePadding),
+        padding: EdgeInsets.only(
+          left: AppConstants.sidePadding,
+          right: AppConstants.sidePadding,
+          top: AppConstants.sidePadding,
+          bottom: 150.spMin + context.viewInsets.bottom,
+        ),
         child: Column(
           spacing: 16.spMin,
           mainAxisSize: MainAxisSize.min,
@@ -53,26 +78,23 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               border: Border.all(color: context.colors.surface),
               padding: EdgeInsets.zero,
               child: Row(
-                children: [
-                  _buildPaymentType(
-                    context,
-                    "Expense",
-                    AppSvgs.arrowDown,
-                    ColorSet.error,
-                    isSelected: true,
-                  ),
-                  _buildPaymentType(
-                    context,
-                    "Income",
-                    AppSvgs.arrowUp,
-                    ColorSet.primary,
-                  ),
-                ],
+                children:
+                    TransactionType.values
+                        .map(
+                          (type) => _buildPaymentType(
+                            context,
+                            type,
+                            transactionState.type,
+                            transactionNotifer,
+                          ),
+                        )
+                        .toList(),
               ),
             ),
-            _buildAmountField(context, amountController),
-            _buildDateField(context),
-            _otherFields(context),
+            _buildAmountField(context, transactionNotifer),
+            _buildDateField(context, transactionState, transactionNotifer),
+            _otherFields(context, transactionState, transactionNotifer),
+            _buildReceiptField(context, transactionState, transactionNotifer),
           ],
         ),
       ),
@@ -81,14 +103,16 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   Widget _buildPaymentType(
     BuildContext context,
-    String title,
-    String icon,
-    ColorSet color, {
-    bool isSelected = false,
-  }) {
+    TransactionType type,
+    TransactionType selectedType,
+    PaymentProvider notifer,
+  ) {
+    final isSelected = selectedType.id == type.id;
     final isDark = context.isDarkMode;
+
     return Expanded(
       child: CustomContainer(
+        onTap: () => notifer.set(type: type),
         backgroundColor:
             isSelected ? context.colors.surface : Colors.transparent,
         child: Row(
@@ -97,22 +121,25 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           spacing: 4.spMin,
           children: [
             CustomTypography(
-              text: title,
+              text: type.name,
               fontType: FontType.label1Bold,
-              color: isSelected ? color.normal : context.colors.inverseSurface,
+              color:
+                  isSelected
+                      ? type.color.normal
+                      : context.colors.inverseSurface,
             ),
             Container(
               width: 16.spMin,
               height: 16.spMin,
               padding: EdgeInsets.all(2.r),
               decoration: BoxDecoration(
-                color: isDark ? color.dimDark : color.light,
+                color: isDark ? type.color.dimDark : type.color.light,
                 shape: BoxShape.circle,
               ),
               child: CustomImage(
                 imageType: ImageType.svgLocal,
-                imageUrl: icon,
-                color: color.normal,
+                imageUrl: type.icon,
+                color: type.color.normal,
               ),
             ),
           ],
@@ -121,10 +148,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     );
   }
 
-  Widget _buildAmountField(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
+  Widget _buildAmountField(BuildContext context, PaymentProvider notifer) {
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +169,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
             ],
           ),
           CustomTextField(
-            controller: controller,
+            onChanged: (value) => notifer.set(amount: value),
+            controller: amountController,
             inputType: InputType.amount,
             helperText: "Change the amount of your transaction",
             isUnderLineBorder: true,
@@ -163,28 +188,41 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     );
   }
 
-  Widget _buildDateField(BuildContext context) {
+  Widget _buildDateField(
+    BuildContext context,
+    PaymentState transactionState,
+    PaymentProvider notifer,
+  ) {
     return CustomContainer(
       child: _buildField(
         context,
         "Date",
         AppSvgs.calendar,
-        selectedDate,
+        transactionState.date,
         () async {
           final picked = await CustomBottomSheet.chooseDate(
             context,
-            selectedDate,
+            date: transactionState.date.parseDate(),
           );
           if (!mounted) return;
-          setState(() => selectedDate = picked);
+          notifer.set(date: picked);
         },
-        isSelected: true,
         isRequired: true,
       ),
     );
   }
 
-  Widget _otherFields(BuildContext context) {
+  Widget _otherFields(
+    BuildContext context,
+    PaymentState state,
+    PaymentProvider notifer,
+  ) {
+    final categories = ref
+        .watch(optionNotifer)
+        .value
+        ?.byType(state.type.optionType.id);
+    final paymentMethod = ref.watch(optionNotifer).value?.paymentMethods;
+
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,21 +230,27 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
           _buildField(
             context,
             "Category",
-            AppSvgs.category,
-            "Select Category",
+            state.category?.icon ?? AppSvgs.category,
+            state.category?.name,
             () async {
-              await CustomBottomSheet.show(context);
+              final picked = await buildTranasactionBS(context, categories);
+              notifer.set(category: picked);
             },
+            hintText: "Select Category",
+            color: state.category?.color.colorSet,
           ),
           SizedBox(height: 20.spMin),
           _buildField(
             context,
             "Payment Method",
-            AppSvgs.upi,
-            "Select Payment Method",
+            state.paymentMethod?.icon ?? AppSvgs.upi,
+            state.paymentMethod?.name,
             () async {
-              await CustomBottomSheet.show(context);
+              final picked = await buildTranasactionBS(context, paymentMethod);
+              notifer.set(paymentMethod: picked);
             },
+            hintText: "Select Payment Method",
+            color: state.category?.color.colorSet,
           ),
           SizedBox(height: 20.spMin),
           CustomTypography(
@@ -220,6 +264,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
             maxLines: 3,
             maxLength: 100,
             hintText: "Add a note...",
+            onChanged: (value) => notifer.set(notes: value),
           ),
         ],
       ),
@@ -230,10 +275,11 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     BuildContext context,
     String title,
     String icon,
-    String value,
+    String? value,
     VoidCallback onTap, {
-    bool isSelected = false,
+    String hintText = "",
     bool isRequired = false,
+    ColorSet? color,
   }) {
     return Column(
       spacing: 8.spMin,
@@ -250,7 +296,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
             if (isRequired)
               CustomTypography(
                 text: '\u002A', // *
-                fontType: FontType.label1Bold,
+                fontType: FontType.label1Medium,
                 color: context.colors.error,
               ),
           ],
@@ -263,13 +309,13 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: icon,
-                color: context.colors.primary,
+                color: color?.normal ?? context.colors.primary,
               ),
               Expanded(
                 child: CustomTypography(
-                  text: value,
+                  text: value ?? hintText,
                   fontType: FontType.body1Medium,
-                  color: isSelected ? null : context.colors.onSurface,
+                  color: (value != null) ? null : context.colors.onSurface,
                 ),
               ),
               CustomImage(
@@ -285,4 +331,206 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       ],
     );
   }
+
+  Widget _buildReceiptField(
+    BuildContext context,
+    PaymentState state,
+    PaymentProvider notifer,
+  ) {
+    final hasReceipt = state.receiptPath.isNotEmpty;
+
+    return CustomContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12.spMin,
+        children: [
+          CustomTypography(
+            text: "Add Receipt",
+            fontType: FontType.label1Bold,
+            color: context.colors.onSurface,
+          ),
+          if (hasReceipt)
+            _buildSelectedReceipt(context, state.receiptPath, notifer)
+          else
+            _buildUploadReceipt(context, notifer),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUploadReceipt(BuildContext context, PaymentProvider notifer) {
+    return AnimatedTap(
+      onTap: () async {
+        final image = await selectImageBottomSheet(context);
+        if (image == null) return;
+        notifer.set(receiptPath: image);
+      },
+      child: CustomPaint(
+        painter: _DashedBorderPainter(
+          color: context.colors.outline,
+          radius: 12.r,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 28.spMin,
+              horizontal: 16.spMin,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: AppSvgs.bills,
+                  color: context.colors.primary,
+                  height: 32.spMin,
+                  width: 32.spMin,
+                ),
+                SizedBox(height: 12.spMin),
+                CustomTypography(
+                  text: "Upload Receipt",
+                  fontType: FontType.body1Medium,
+                  color: context.colors.onSurface,
+                ),
+                SizedBox(height: 4.spMin),
+                CustomTypography(
+                  text: "JPG, PNG or PDF (Max. 5MB)",
+                  fontType: FontType.label1Medium,
+                  color: context.colors.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedReceipt(
+    BuildContext context,
+    String path,
+    PaymentProvider notifer,
+  ) {
+    final fileName = path.replaceAll('\\', '/').split('/').last;
+
+    return CustomContainer(
+      backgroundColor: context.colors.surfaceContainerHighest,
+      padding: EdgeInsets.all(12.r),
+      child: Row(
+        spacing: 12.spMin,
+        children: [
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: AppSvgs.bills,
+            color: context.colors.primary,
+            height: 24.spMin,
+            width: 24.spMin,
+          ),
+          Expanded(
+            child: CustomTypography(
+              text: fileName,
+              fontType: FontType.body2Medium,
+              color: context.colors.onSurface,
+            ),
+          ),
+          AnimatedTap(
+            onTap: () => notifer.set(receiptPath: ''),
+            child: CustomImage(
+              imageType: ImageType.svgLocal,
+              imageUrl: AppSvgs.cross,
+              color: context.colors.onSurfaceVariant,
+              height: 16.spMin,
+              width: 16.spMin,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickReceipt(
+    BuildContext context,
+    PaymentProvider notifer,
+  ) async {
+    final options = ProfileConstants.profileImageOptions;
+    final child = ListView.separated(
+      shrinkWrap: true,
+      itemCount: options.length,
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) {
+        return CustomContainer(
+          onTap: () async {
+            final image = await ImagePicker().pickImage(
+              source:
+                  options[index].id == "camera"
+                      ? ImageSource.camera
+                      : ImageSource.gallery,
+            );
+            if (context.mounted) context.pop();
+            if (image == null) return;
+            notifer.set(receiptPath: image.path);
+          },
+          padding: EdgeInsets.symmetric(vertical: 16.r),
+          child: Row(
+            spacing: 12.spMin,
+            children: [
+              CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: options[index].icon,
+                color: options[index].iconColor,
+              ),
+              CustomTypography(
+                text: options[index].title,
+                fontType: FontType.body2Medium,
+              ),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => const Divider(),
+    );
+
+    await CustomBottomSheet.show(context, title: "Add Receipt", widget: child);
+  }
+}
+
+class _DashedBorderPainter extends CustomPainter {
+  _DashedBorderPainter({required this.color, required this.radius});
+
+  final Color color;
+  final double radius;
+  static const double _strokeWidth = 1.5;
+  static const double _dashLength = 6;
+  static const double _gapLength = 4;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = _strokeWidth
+          ..style = PaintingStyle.stroke;
+
+    final path =
+        Path()..addRRect(
+          RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)),
+        );
+
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = distance + _dashLength;
+        canvas.drawPath(
+          metric.extractPath(distance, next.clamp(0, metric.length)),
+          paint,
+        );
+        distance = next + _gapLength;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) =>
+      color != oldDelegate.color || radius != oldDelegate.radius;
 }

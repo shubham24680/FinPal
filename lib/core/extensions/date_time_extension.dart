@@ -1,12 +1,13 @@
 import 'package:intl/intl.dart';
 
-enum DateFormatType { date, date1, monthYear }
+enum DateFormatType { date, date1, monthYear, fullDate }
 
 extension DateTimeX on DateTime {
   static final Map<DateFormatType, DateFormat> formatters = {
     DateFormatType.monthYear: DateFormat('MMMM yyyy'),
     DateFormatType.date: DateFormat('d MMMM, yyyy'),
     DateFormatType.date1: DateFormat('MMMM d, yyyy'),
+    DateFormatType.fullDate: DateFormat('EEE, MMM d, yyyy'),
   };
 
   String formatDate({DateFormatType type = DateFormatType.date}) =>

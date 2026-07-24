@@ -68,7 +68,10 @@ class PaymentModel extends HiveObject {
 }
 
 String _defaultCategoryId(String paymentType) {
-  return (paymentType == OptionsConstant.income)
-      ? OptionType.income.id
-      : OptionType.expense.id;
+  return OptionType.values
+      .firstWhere(
+        (value) => value.id == paymentType,
+        orElse: () => OptionType.expense,
+      )
+      .id;
 }

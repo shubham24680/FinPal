@@ -96,44 +96,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     ProfileState profileState,
     ProfileProvider profileNotifier,
   ) {
-    final values = ProfileConstants.profileImageOptions;
-    final options = ListView.separated(
-      shrinkWrap: true,
-      itemCount: values.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        return CustomContainer(
-          onTap: () async {
-            final image = await ImagePicker().pickImage(
-              source:
-                  values[index].id == "camera"
-                      ? ImageSource.camera
-                      : ImageSource.gallery,
-            );
-            if (context.mounted) {
-              context.pop();
-            }
-            profileNotifier.setProfileImage(image?.path);
-          },
-          padding: EdgeInsets.symmetric(vertical: 16.r),
-          child: Row(
-            spacing: 12.spMin,
-            children: [
-              CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: values[index].icon,
-                color: values[index].iconColor,
-              ),
-              CustomTypography(
-                text: values[index].title,
-                fontType: FontType.body2Medium,
-              ),
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => Divider(),
-    );
     return Center(
       child: Stack(
         alignment: Alignment.bottomRight,
@@ -145,7 +107,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             enableBorder: true,
           ),
           CustomContainer(
-            onTap: () => CustomBottomSheet.show(context, widget: options),
+            onTap: () async {
+              final image = await selectImageBottomSheet(context);
+              if (image == null) return;
+              profileNotifier.setProfileImage(image);
+            },
             backgroundColor: AppColors.primary500,
             padding: EdgeInsets.all(8.r),
             child: CustomImage(

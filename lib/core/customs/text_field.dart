@@ -170,11 +170,12 @@ class CustomTextField extends StatelessWidget {
         final current = controller?.text ?? '';
         final picked = await CustomBottomSheet.chooseDate(
           context,
-          current,
+          date: current.isEmpty ? null : current.parseDate(type: DateFormatType.fullDate),
           firstDate: DateTime(1900),
         );
-        controller?.text = picked;
-        onChanged?.call(picked);
+        final formattedDate = picked != null ? picked.formatDate(type: DateFormatType.fullDate) : '';
+        controller?.text = formattedDate;
+        onChanged?.call(formattedDate);
         break;
       default:
         onTap?.call();

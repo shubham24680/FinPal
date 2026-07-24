@@ -45,17 +45,36 @@ class TransactionScreen extends ConsumerWidget {
       ],
     );
 
-    final child = Column(
+    final noTransactionsWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
       children: [
         _buildTopWidget(context, ref),
         _buildNoTransactions(context),
-        // _buildTransctionList(context, ref),
       ],
     );
 
-    return child;
+    return transactions.when(
+      data: (data) {
+        final payments = data.payments;
+        if (payments.isEmpty) {
+          return _buildNoTransactions(context);
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16.spMin,
+            children: [
+              _buildTopWidget(context, ref),
+              _buildTransctionList(context, ref),
+            ],
+          ),
+        );
+      },
+      loading: () => noTransactionsWidget,
+      error: (error, stackTrace) => noTransactionsWidget,
+    );
 
     // return SingleChildScrollView(
     //   padding: EdgeInsets.only(bottom: 180.spMin),
