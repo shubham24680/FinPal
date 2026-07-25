@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 class TransactionScreen extends ConsumerWidget {
@@ -7,67 +9,37 @@ class TransactionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = ref.watch(selectedDateProvider);
     final transactions = ref.watch(transactionProvider);
-    final options = ref.watch(optionNotifer).value;
-    final topPadding =
-        AppConstants.sidePadding + MediaQuery.of(context).padding.top;
-    final bottomPadding = 80.w + MediaQuery.of(context).padding.bottom;
-    final padding = EdgeInsets.only(
-      left: AppConstants.sidePadding,
-      right: AppConstants.sidePadding,
-      top: topPadding,
-      bottom: bottomPadding,
-    );
-    final title = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        CustomTypography(text: "Transactions", fontType: FontType.h1Bold),
-        CustomContainer(
-          onTap: () async {
-            final date = await chooseDate(context, selectedDate.formatDate());
-            ref.read(selectedDateProvider.notifier).state = date.parseDate();
-          },
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4.w,
-            children: [
-              CustomTypography(
-                text: selectedDate.formatDate(type: DateFormatType.monthYear),
-                fontType: FontType.label1SemiBold,
-              ),
-              CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: AppSvgs.arrowDownSmall,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
 
     final noTransactionsWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
       children: [
         _buildTopWidget(context, ref),
-        _buildNoTransactions(context),
+        _buildNoTransactions(context, ref),
       ],
     );
 
     return transactions.when(
       data: (data) {
-        final payments = data.payments;
+        final payments = data.getMonthlyTransactions(selectedDate);
         if (payments.isEmpty) {
-          return _buildNoTransactions(context);
+          return noTransactionsWidget;
         }
 
         return SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 180.spMin),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16.spMin,
             children: [
               _buildTopWidget(context, ref),
-              _buildTransctionList(context, ref),
+              CustomTypography(
+                text: selectedDate.formatDate(type: DateFormatType.monthYear),
+                fontType: FontType.body1Semibold,
+              ).padding(horizontal: AppConstants.sidePadding),
+              ...payments.map(
+                (dayGroups) => _buildTransctionList(context, ref, dayGroups),
+              ),
             ],
           ),
         );
@@ -248,7 +220,7 @@ class TransactionScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNoTransactions(BuildContext context) {
+  Widget _buildNoTransactions(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: Column(
         children: [
@@ -272,87 +244,141 @@ class TransactionScreen extends ConsumerWidget {
           CustomButton(
             label: "Add Transaction",
             prefixIcon: AppSvgs.add2,
-            onTap: () => context.push(AppRoutesPath.editTransaction.path),
+            onTap: () {
+              ref.read(selectedTransactionProvider.notifier).state = null;
+              context.push(AppRoutesPath.editTransaction.path);
+            },
           ),
         ],
       ).padding(horizontal: AppConstants.sidePadding),
     );
   }
 
-  Widget _buildTransctionList(BuildContext context, WidgetRef ref) {
+  Widget _buildTransctionList(
+    BuildContext context,
+    WidgetRef ref,
+    List<PaymentModel> dayGroups,
+  ) {
+    if (dayGroups.isEmpty) return const SizedBox.shrink();
+    final date = dayGroups.first.date.getDateLabel(type: DateFormatType.date1);
+    final options = ref.watch(optionNotifer).value;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8.spMin,
       children: [
         CustomTypography(
-          text: "May 2024",
-          fontType: FontType.body1Semibold,
-          color: Colors.white,
+          text: date,
+          fontType: FontType.body2Semibold,
+          color: context.colors.onSurface,
+        ),
+        CustomContainer(
+          backgroundColor: context.colors.surface,
+          padding: EdgeInsets.zero,
+          child: ListView.separated(
+            itemCount: dayGroups.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder:
+                (context, index) => _buildTransactionTile(
+                  context,
+                  ref,
+                  dayGroups[index],
+                  options,
+                ),
+            separatorBuilder: (context, index) => Divider(),
+          ),
         ),
       ],
     ).padding(horizontal: AppConstants.sidePadding);
   }
 
-  Widget _buildError(WidgetRef ref, Widget title) {
-    return Column(
-      children: [
-        Align(alignment: Alignment.centerLeft, child: title),
-        const Spacer(),
-        CustomTypography(
-          text: "Something went wrong",
-          fontType: FontType.body1Medium,
-        ),
-        SizedBox(height: 8.w),
-        CustomButton(
-          label: "Retry",
-          isFull: false,
-          onTap: () => ref.invalidate(transactionProvider),
-        ),
-        const Spacer(),
-      ],
-    );
-  }
-
-  Widget buildDayTransaction(
+  Widget _buildTransactionTile(
     BuildContext context,
     WidgetRef ref,
-    List<PaymentModel> transactions,
+    PaymentModel payment,
     OptionServices? options,
   ) {
-    if (transactions.isEmpty) return const SizedBox.shrink();
+    final isDark = context.isDarkMode;
+    final category = options?.findById(payment.categoryId);
+    final color = category?.color.colorSet ?? ColorSet.primary;
+    final title = payment.notes.isEmpty ? "Other" : payment.notes;
+    final isExpense = payment.paymentType == TransactionType.expense.id;
 
-    final now = DateTime.now();
-    final date = transactions.first.date;
-    String transactionsDate;
-    if (date == now.formatDate()) {
-      transactionsDate = "Today";
-    } else if (date ==
-        DateTime(now.year, now.month, now.day - 1).formatDate()) {
-      transactionsDate = "Yesterday";
-    } else {
-      // transactionsDate = date;
-      transactionsDate = date.formatDate();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8.w,
-      children: [
-        CustomTypography(
-          text: transactionsDate,
-          fontType: FontType.body2Semibold,
-        ),
-        CustomContainer(
-          backgroundColor: BGColors.shade500,
-          padding: EdgeInsets.zero,
-          child: buildExpenses(
-            context,
-            ref,
-            transactions,
-            options,
-            enableSwipe: true,
+    return CustomContainer(
+      onTap: () {
+        ref.read(selectedTransactionProvider.notifier).state = payment;
+        context.push(AppRoutesPath.editTransaction.path);
+      },
+      backgroundColor: Colors.transparent,
+      padding: EdgeInsets.symmetric(horizontal: 16.spMin, vertical: 12.spMin),
+      child: Row(
+        spacing: 12.spMin,
+        children: [
+          if (category != null)
+            CustomContainer(
+              padding: EdgeInsets.all(12.r),
+              backgroundColor: isDark ? color.dimDark : color.light,
+              child: CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: category.icon,
+                color: color.normal,
+                height: 16.spMin,
+                width: 16.spMin,
+              ),
+            ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2.spMin,
+              children: [
+                CustomTypography(
+                  text: title,
+                  fontType: FontType.body2Medium,
+                  maxLines: 1,
+                ),
+                if (category != null)
+                  CustomTypography(
+                    text: category.name,
+                    fontType: FontType.label1Regular,
+                    color: context.colors.onSurfaceVariant,
+                    maxLines: 1,
+                  ),
+              ],
+            ),
           ),
-        ),
-      ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            spacing: 2.spMin,
+            children: [
+              CustomTypography(
+                text: CurrencyFormatter.signed(
+                  payment.amount,
+                  isExpense: isExpense,
+                ),
+                fontType: FontType.body2Semibold,
+                color:
+                    isExpense
+                        ? context.colors.inverseSurface
+                        : context.successColor,
+              ),
+              CustomTypography(
+                text: payment.date.formatDate(type: DateFormatType.time),
+                fontType: FontType.label1Medium,
+                color: context.colors.onSurface,
+              ),
+            ],
+          ),
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: AppSvgs.arrowRight1,
+            color: context.colors.onSurfaceVariant,
+            height: 16.spMin,
+          ),
+        ],
+      ),
     );
   }
 }

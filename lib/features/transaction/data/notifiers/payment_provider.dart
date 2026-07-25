@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'package:finpal/app/app.dart';
 
-final selectedTransactionProvider = StateProvider.autoDispose<PaymentModel?>(
+final selectedTransactionProvider = StateProvider<PaymentModel?>(
   (ref) => null,
 );
 
 class PaymentState {
-  final String id;
+  final String? id;
   final TransactionType type;
   final String amount;
   final String date;
@@ -21,7 +21,7 @@ class PaymentState {
   final String toastMessage;
 
   PaymentState({
-    required this.id,
+    this.id,
     required this.type,
     required this.amount,
     required this.date,
@@ -37,10 +37,9 @@ class PaymentState {
   });
 
   factory PaymentState.initial() => PaymentState(
-    id: '',
     type: TransactionType.expense,
     amount: '',
-    date: DateTime.now().formatDate(),
+    date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
     overspent: '',
     notes: '',
@@ -67,14 +66,14 @@ class PaymentState {
     id: id ?? this.id,
     type: type ?? this.type,
     amount: amount ?? this.amount,
-    date: date?.formatDate() ?? this.date,
+    date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
-        (type == null || type == this.type) ? category ?? this.category : null,
+        (type == null || type == this.type) ? category ?? this.category : category,
     paymentMethod: paymentMethod ?? this.paymentMethod,
     buttonState: buttonState ?? this.buttonState,
     overspent: overspent ?? this.overspent,
-    notes: notes ?? this.notes,
-    receiptPath: receiptPath ?? this.receiptPath,
+    notes: notes?.trim() ?? this.notes,
+    receiptPath: receiptPath?.trim() ?? this.receiptPath,
     createdAt: createdAt ?? this.createdAt,
     toastType: toastType ?? this.toastType,
     toastMessage: toastMessage ?? this.toastMessage,
@@ -136,42 +135,33 @@ class PaymentProvider extends StateNotifier<PaymentState> {
   }
 
   void onChange() {
-    final isValid = state.amount.isNotEmpty && state.date.isNotEmpty;
+    final isValid = state.amount.isNotEmpty && state.date.isNotEmpty && state.category != null;
     state = state.copyWith(
       buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
     );
   }
 
-  void checkOverspent(String? value) {
-    final transactionProv = _ref.read(transactionProvider);
-    final available = transactionProv.value?.available ?? 0;
-    final amount = CurrencyFormatter.parse(value ?? '');
-    final totalAmount = available - amount;
-    final isOverspent = totalAmount < 0;
-    state = state.copyWith(
-      overspent:
-          isOverspent
-              ? "Overspent by ${CurrencyFormatter.format(totalAmount)} "
-              : null,
-    );
-  }
+  // void checkOverspent(String? value) {
+  //   final transactionProv = _ref.read(transactionProvider);
+  //   final available = transactionProv.value?.available ?? 0;
+  //   final amount = CurrencyFormatter.parse(value ?? '');
+  //   final totalAmount = available - amount;
+  //   final isOverspent = totalAmount < 0;
+  //   state = state.copyWith(
+  //     overspent:
+  //         isOverspent
+  //             ? "Overspent by ${CurrencyFormatter.format(totalAmount)} "
+  //             : null,
+  //   );
+  // }
 
   Future<void> save() async {
-    final optionProv = _ref.read(optionNotifer).value;
-    final category =
-        state.category ??
-        optionProv?.findByName('Other', state.type.optionType.id);
-    final paymentMethod =
-        state.paymentMethod ??
-        optionProv?.findByName('Other', OptionType.paymentMethod.id);
-    log(
-      "type: ${state.type}, amount: ${state.amount}, date: ${state.date}, category: ${category?.name}, paymentMethod: ${paymentMethod?.name}, notes: ${state.notes}, receiptPath: ${state.receiptPath}",
-      name: "PaymentProvider",
-    );
+    final category = state.category;
+    final paymentMethod = state.paymentMethod;
 
     try {
       final amount = CurrencyFormatter.parse(state.amount);
-      final date = state.date.parseDate();
+      final date = state.date.parseDate(type: DateFormatType.dateTime);
       final transaction = PaymentModel(
         id: state.id,
         paymentType: state.type.id,
@@ -192,8 +182,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
         toastType: ToastType.error,
         toastMessage: "Failed to save transaction",
       );
-    }
-    finally {
+    } finally {
       state = state.copyWith(toastType: ToastType.normal, toastMessage: '');
     }
   }

@@ -8,9 +8,20 @@ class AppConstants {
   static final tabletBreakpoint = 1100.w;
 }
 
+class UnicodeConstants {
+  // Currency symbols
+  static const String dollar = '\u0024';
+  static const String rupee = '\u20B9';
+
+  static const String dot = '\u2022';
+  static const String pipe = '\u007C';
+  static const String and = '\u0026';
+  static const String colon = '\u003A';
+}
+
 enum CurrencyContants {
-  rupee('INR', '\u20B9', 'en_IN'),
-  dollar('USD', '\$', 'en_US');
+  rupee('INR', UnicodeConstants.rupee, 'en_IN'),
+  dollar('USD', UnicodeConstants.dollar, 'en_US');
 
   const CurrencyContants(this.currency, this.symbol, this.locale);
   final String currency, symbol, locale;

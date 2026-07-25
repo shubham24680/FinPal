@@ -40,17 +40,17 @@ class OptionServices {
   List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
 
   //Filters
-  OptionModel? findById(String id) => _hiveService.getData(id);
+  OptionModel findById(String id) => _hiveService.getData(id) ?? OptionsConstant.otherCategory;
   
-  OptionModel? findByName(String name, String type) {
+  OptionModel findByName(String name, String type) {
     final normalized = name.trim().toLowerCase();
-    if (normalized.isEmpty) return null;
+    if (normalized.isEmpty) return OptionsConstant.otherCategory;
     for (var option in options) {
       if (option.type == type && option.name.toLowerCase() == normalized) {
         return option;
       }
     }
-    return null;
+    return OptionsConstant.otherCategory;
   }
 
   List<OptionModel> byType(String type, {String? excludeId}) => options

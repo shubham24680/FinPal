@@ -35,9 +35,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   Widget build(BuildContext context) {
     final transactionState = ref.watch(paymentProvider);
     final transactionNotifer = ref.read(paymentProvider.notifier);
-    final ctaText = transactionState.id.isNotEmpty ? "Update" : "Add";
+    final ctaText = transactionState.id != null ? "Update" : "Add";
     final title =
-        "${transactionState.id.isNotEmpty ? "Edit" : "Add"} Transaction";
+        "${transactionState.id != null ? "Edit" : "Add"} Transaction";
 
     ref.listen(paymentProvider, (previous, next) {
       if (next.toastMessage.isNotEmpty) {
@@ -202,7 +202,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         () async {
           final picked = await CustomBottomSheet.chooseDate(
             context,
-            date: transactionState.date.parseDate(),
+            date: transactionState.date.parseDate(type: DateFormatType.dateTime),
+            showTime: true,
           );
           if (!mounted) return;
           notifer.set(date: picked);
@@ -238,6 +239,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             },
             hintText: "Select Category",
             color: state.category?.color.colorSet,
+            isRequired: true,
           ),
           SizedBox(height: 20.spMin),
           _buildField(
@@ -447,51 +449,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _pickReceipt(
-    BuildContext context,
-    PaymentProvider notifer,
-  ) async {
-    final options = ProfileConstants.profileImageOptions;
-    final child = ListView.separated(
-      shrinkWrap: true,
-      itemCount: options.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        return CustomContainer(
-          onTap: () async {
-            final image = await ImagePicker().pickImage(
-              source:
-                  options[index].id == "camera"
-                      ? ImageSource.camera
-                      : ImageSource.gallery,
-            );
-            if (context.mounted) context.pop();
-            if (image == null) return;
-            notifer.set(receiptPath: image.path);
-          },
-          padding: EdgeInsets.symmetric(vertical: 16.r),
-          child: Row(
-            spacing: 12.spMin,
-            children: [
-              CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: options[index].icon,
-                color: options[index].iconColor,
-              ),
-              CustomTypography(
-                text: options[index].title,
-                fontType: FontType.body2Medium,
-              ),
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => const Divider(),
-    );
-
-    await CustomBottomSheet.show(context, title: "Add Receipt", widget: child);
   }
 }
 

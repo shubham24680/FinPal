@@ -17,13 +17,13 @@ class PaymentModel extends HiveObject {
   @HiveField(5)
   final String paymentMethodId;
   @HiveField(6)
-  final String? notes;
+  final String notes;
   @HiveField(7)
   final DateTime createdAt;
   @HiveField(8)
   final DateTime updatedAt;
   @HiveField(9)
-  final String? receiptPath;
+  final String receiptPath;
 
   PaymentModel({
     required this.paymentType,
@@ -32,11 +32,11 @@ class PaymentModel extends HiveObject {
     DateTime? date,
     String? categoryId,
     String? paymentMethodId,
-    this.notes,
+    this.notes = "",
     DateTime? createdAt,
     DateTime? updatedAt,
-    this.receiptPath,
-  }) : id = id ?? Uuid().v7(),
+    this.receiptPath = "",
+  }) : id = (id == null || id.isEmpty) ? const Uuid().v7() : id,
        categoryId = categoryId ?? _defaultCategoryId(paymentType),
        paymentMethodId = paymentMethodId ?? OptionType.paymentMethod.id,
        date = date ?? DateTime.now(),

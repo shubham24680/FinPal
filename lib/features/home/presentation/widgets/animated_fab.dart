@@ -1,10 +1,10 @@
 import 'package:finpal/app/app.dart';
 
-class AnimatedFab extends StatelessWidget {
+class AnimatedFab extends ConsumerWidget {
   const AnimatedFab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = context.isDarkMode;
     final borderGradient = SweepGradient(
       colors: [
@@ -16,7 +16,10 @@ class AnimatedFab extends StatelessWidget {
     );
 
     return CustomContainer(
-      onTap: () => context.push(AppRoutesPath.editTransaction.path),
+      onTap: () {
+        ref.read(selectedTransactionProvider.notifier).state = null;
+        context.push(AppRoutesPath.editTransaction.path);
+      },
       height: 65.spMin,
       width: 65.spMin,
       borderRadius: BorderRadius.circular(1000.r),

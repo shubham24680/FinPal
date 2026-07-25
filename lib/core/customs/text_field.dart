@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
     this.inputType = InputType.text,
     this.header,
     this.controller,
+    this.focusNode,
     this.fillColor,
     this.hintText,
     this.hintColor,
@@ -44,6 +45,7 @@ class CustomTextField extends StatelessWidget {
   final InputType inputType;
   final String? header;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final bool readOnly;
   final bool autofocus;
   final TextInputType? keyboardType;
@@ -76,6 +78,7 @@ class CustomTextField extends StatelessWidget {
     final hintStyle =
         this.hintStyle ?? _buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
+      filled: fillColor != null,
       fillColor: fillColor,
       hintText: hintText ?? _buildHintText(),
       hintStyle: hintStyle,
@@ -133,6 +136,7 @@ class CustomTextField extends StatelessWidget {
       ),
       TextFieldType.input => TextFormField(
         controller: controller,
+        focusNode: focusNode,
         onTap: () => _handleTap(context),
         onChanged: onChanged,
         readOnly: _handleReadOnly(),

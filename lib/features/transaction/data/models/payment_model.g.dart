@@ -23,10 +23,10 @@ class PaymentModelAdapter extends TypeAdapter<PaymentModel> {
       date: fields[3] as DateTime?,
       categoryId: fields[4] as String?,
       paymentMethodId: fields[5] as String?,
-      notes: fields[6] as String?,
+      notes: fields[6] as String,
       createdAt: fields[7] as DateTime?,
       updatedAt: fields[8] as DateTime?,
-      receiptPath: fields[9] as String?,
+      receiptPath: fields[9] as String,
     );
   }
 

@@ -108,7 +108,7 @@ Widget buildExpenseTile(
 }) {
   final notes = payment.notes ?? "";
   final category = options?.findById(payment.categoryId);
-  final isIncome = payment.paymentType == OptionsConstant.income;
+  final isIncome = payment.paymentType == TransactionType.income.id;
   final amount = isIncome ? payment.amount : -payment.amount;
 
   final row = ClipRRect(
