@@ -58,7 +58,8 @@ class CustomBottomSheet extends StatelessWidget {
     final last = lastDate ?? DateTime.now();
     final picked = await show<DateTime>(
       context,
-      title: showTime ? "Select date & time" : "Select date",
+      title:
+          showTime ? "Select date ${UnicodeConstants.and} time" : "Select date",
       widget: _DatePickerSheet(
         initialDate: date ?? last,
         firstDate: firstDate ?? DateTime(2026),
@@ -189,6 +190,10 @@ class _DatePickerSheetState extends State<_DatePickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final label =
+        widget.showTime
+            ? "Save Date ${UnicodeConstants.and} Time"
+            : "Save Date";
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -198,7 +203,7 @@ class _DatePickerSheetState extends State<_DatePickerSheet> {
         CustomButton(
           onTap: () => context.pop(_selectedDate),
           prefixIcon: AppSvgs.calendar,
-          label: "Save Date",
+          label: label,
           buttonType: ButtonType.primary,
         ),
       ],

@@ -39,3 +39,9 @@ final transactionProvider =
     );
 
 final selectedDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final transactionTypeFilterProvider = StateProvider<TransactionType?>(
+  (ref) => null,
+);
+final transactionOverviewProvider = StateProvider.family<bool, String>(
+  (ref, id) => false,
+);

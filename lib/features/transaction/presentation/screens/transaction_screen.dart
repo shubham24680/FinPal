@@ -1,102 +1,176 @@
-import 'dart:developer';
-
 import 'package:finpal/app/app.dart';
 
-class TransactionScreen extends ConsumerWidget {
+class TransactionScreen extends ConsumerStatefulWidget {
   const TransactionScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedDate = ref.watch(selectedDateProvider);
+  ConsumerState<TransactionScreen> createState() => _TransactionScreenState();
+}
+
+class _TransactionScreenState extends ConsumerState<TransactionScreen> {
+  final GlobalKey _filtersKey = GlobalKey();
+
+  void _updateAppBarVisibility(GlobalKey key, String id, {double offset = 0}) {
+    final overviewContext = key.currentContext;
+    if (overviewContext == null) return;
+
+    final box = overviewContext.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+
+    final overviewTop = box.localToGlobal(Offset.zero).dy + offset;
+    final statusBarHeight = MediaQuery.paddingOf(context).top;
+    final shouldShow = overviewTop < statusBarHeight;
+    final isVisible = ref.read(transactionOverviewProvider(id));
+    if (shouldShow == isVisible) return;
+    ref.read(transactionOverviewProvider(id).notifier).state = shouldShow;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final transactions = ref.watch(transactionProvider);
+    final selectedDate = ref.watch(selectedDateProvider);
+    final typeFilter = ref.watch(transactionTypeFilterProvider);
+    final isFiltersVisible = ref.watch(transactionOverviewProvider("filters"));
 
     final noTransactionsWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
       children: [
-        _buildTopWidget(context, ref),
+        _buildTopWidget(context, 0, 0),
+        _buildFilters(context, selectedDate, typeFilter),
         _buildNoTransactions(context, ref),
       ],
     );
 
     return transactions.when(
       data: (data) {
-        final payments = data.getMonthlyTransactions(selectedDate);
-        if (payments.isEmpty) {
+        final monthPayments = data.getMonthlyTransactions(selectedDate);
+        final filteredPayments = data.filterTransactions(
+          monthPayments,
+          typeFilter,
+        );
+        if (filteredPayments.isEmpty) {
           return noTransactionsWidget;
         }
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 180.spMin),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16.spMin,
-            children: [
-              _buildTopWidget(context, ref),
-              CustomTypography(
-                text: selectedDate.formatDate(type: DateFormatType.monthYear),
-                fontType: FontType.body1Semibold,
-              ).padding(horizontal: AppConstants.sidePadding),
-              ...payments.map(
-                (dayGroups) => _buildTransctionList(context, ref, dayGroups),
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                _updateAppBarVisibility(
+                  _filtersKey,
+                  "filters",
+                  offset: -20.spMin,
+                );
+                return false;
+              },
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(bottom: 180.spMin),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 16.spMin,
+                  children: [
+                    _buildTopWidget(
+                      context,
+                      data.totalIncome,
+                      data.totalExpense,
+                    ),
+                    KeyedSubtree(
+                      key: _filtersKey,
+                      child: _buildFilters(context, selectedDate, typeFilter),
+                    ),
+                    ...filteredPayments.map(
+                      (dayGroups) =>
+                          _buildTransctionList(context, ref, dayGroups),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+            CustomContainer(
+              padding: EdgeInsets.only(
+                top: AppConstants.sidePadding + context.viewPadding.top,
+                bottom: AppConstants.sidePadding,
+              ),
+              showShadow: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 16.spMin,
+                children: [
+                  if (isFiltersVisible)
+                    _buildFilters(context, selectedDate, typeFilter),
+                ],
+              ),
+            ),
+          ],
         );
       },
       loading: () => noTransactionsWidget,
       error: (error, stackTrace) => noTransactionsWidget,
     );
-
-    // return SingleChildScrollView(
-    //   padding: EdgeInsets.only(bottom: 180.spMin),
-    //   child: child,
-    // );
-
-    // return transactions.when(
-    //   data: (data) {
-    //     final monthlyTransactions = data.getMonthlyTransactions(selectedDate);
-    //     if (monthlyTransactions.isEmpty) {
-    //       return Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         spacing: 16.w,
-    //         children: [
-    //           title,
-    //           Expanded(
-    //             child: Center(
-    //               child: CustomTypography(
-    //                 text: "No transactions yet",
-    //                 fontType: FontType.body1Medium,
-    //                 color: BGColors.shade700,
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ).padding(padding: padding);
-    //     }
-
-    //     return SingleChildScrollView(
-    //       padding: padding,
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         spacing: 16.w,
-    //         children: [
-    //           title,
-    //           ...monthlyTransactions.map(
-    //             (dayTx) => buildDayTransaction(context, ref, dayTx, options),
-    //           ),
-    //         ],
-    //       ),
-    //     );
-    //   },
-    //   loading: () => const Center(child: CircularProgressIndicator()),
-    //   error:
-    //       (error, stackTrace) =>
-    //           _buildError(ref, title).padding(padding: padding),
-    // );
   }
 
-  Widget _buildTopWidget(BuildContext context, WidgetRef ref) {
+  Widget _buildFilters(
+    BuildContext context,
+    DateTime selectedDate,
+    TransactionType? typeFilter,
+  ) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
+      child: Row(
+        spacing: 8.spMin,
+        children: [
+          CustomChip(
+            label: selectedDate.formatDate(type: DateFormatType.monthYear),
+            imageUrl: AppSvgs.calendar,
+            selected: true,
+            outlined: true,
+            onTap: () async {
+              final picked = await CustomBottomSheet.chooseDate(
+                context,
+                date: selectedDate,
+              );
+              if (picked == null || !mounted) return;
+              ref.read(selectedDateProvider.notifier).state = picked;
+            },
+          ),
+          CustomChip(
+            label: "All",
+            selected: typeFilter == null,
+            outlined: true,
+            variant:
+                typeFilter == null ? ChipVariant.primary : ChipVariant.inactive,
+            onTap:
+                () =>
+                    ref.read(transactionTypeFilterProvider.notifier).state =
+                        null,
+          ),
+          ...TransactionType.values.map((type) {
+            final selected = typeFilter == type;
+            return CustomChip(
+              label: type.name,
+              imageUrl: type.icon,
+              selected: selected,
+              outlined: true,
+              variant: selected ? ChipVariant.primary : ChipVariant.inactive,
+              onTap:
+                  () =>
+                      ref.read(transactionTypeFilterProvider.notifier).state =
+                          type,
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopWidget(
+    BuildContext context,
+    double totalIncome,
+    double totalExpense,
+  ) {
     final topPadding = AppConstants.sidePadding + context.viewPadding.top;
 
     return SizedBox(
@@ -121,7 +195,7 @@ class TransactionScreen extends ConsumerWidget {
                 color: context.colors.onSurface,
               ),
               Spacer(),
-              _buildTransactionOverview(context, ref),
+              _buildTransactionOverview(context, totalIncome, totalExpense),
             ],
           ).padding(
             left: AppConstants.sidePadding,
@@ -133,7 +207,11 @@ class TransactionScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransactionOverview(BuildContext context, WidgetRef ref) {
+  Widget _buildTransactionOverview(
+    BuildContext context,
+    double totalIncome,
+    double totalExpense,
+  ) {
     return CustomContainer(
       onTap: () => context.push(AppRoutesPath.profile.path),
       backgroundColor: context.colors.surface,
@@ -157,12 +235,14 @@ class TransactionScreen extends ConsumerWidget {
                 "Total Spendings",
                 AppSvgs.arrowDown,
                 ColorSet.error,
+                amount: totalExpense,
               ),
               _buildTransactionOverviewItem(
                 context,
                 "Total Income",
                 AppSvgs.arrowUp,
                 ColorSet.primary,
+                amount: totalIncome,
               ),
             ],
           ),
@@ -176,7 +256,7 @@ class TransactionScreen extends ConsumerWidget {
     String title,
     String icon,
     ColorSet color, {
-    double? amount,
+    double amount = 0,
   }) {
     final isDark = context.isDarkMode;
     return Expanded(
@@ -211,7 +291,7 @@ class TransactionScreen extends ConsumerWidget {
           ),
           CustomTypography(
             overflow: TextOverflow.ellipsis,
-            text: CurrencyFormatter.format(amount),
+            text: CurrencyFormatter.format(amount, compact: amount.abs() > 1e7),
             fontType: FontType.h4Semibold,
             color: color.normal,
           ),
@@ -224,7 +304,7 @@ class TransactionScreen extends ConsumerWidget {
     return Expanded(
       child: Column(
         children: [
-          SizedBox(height: 40.spMin),
+          SizedBox(height: 20.spMin),
           CustomImage(
             imageUrl: AppImages.noTransactions,
           ).padding(horizontal: 60.spMin),

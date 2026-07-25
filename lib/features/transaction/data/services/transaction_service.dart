@@ -49,12 +49,10 @@ class TransactionService {
     _ensureTotals();
     return _totalIncome;
   }
-
   double get totalExpense {
     _ensureTotals();
     return _totalExpense;
   }
-
   double get available => totalIncome - totalExpense;
 
   List<PaymentModel> get incomeTransactions => payments
@@ -109,6 +107,19 @@ class TransactionService {
         .where((payment) => payment.date.isSameDayAs(date))
         .toList(growable: false)
         .reversed
+        .toList(growable: false);
+  }
+
+  List<List<PaymentModel>> filterTransactions(
+    List<List<PaymentModel>> transactions,
+    TransactionType? typeFilter,
+  ) {
+    if (typeFilter == null) return transactions;
+    return transactions
+        .where(
+          (payments) =>
+              payments.any((payment) => payment.paymentType == typeFilter.id),
+        )
         .toList(growable: false);
   }
 

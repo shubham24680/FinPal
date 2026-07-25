@@ -16,6 +16,14 @@ class CurrencyFormatter {
     final symbol = currency.symbol;
     if (amount == null) return '${symbol}0.00';
 
+    if (compact) {
+      return CurrencyFormatter.compact(
+        amount,
+        currency: currency,
+        decimalDigits: decimalDigits,
+      );
+    }
+
     final formatter = NumberFormat.currency(
       locale: currency.locale,
       symbol: currency.symbol,
@@ -23,8 +31,8 @@ class CurrencyFormatter {
     );
     return formatter.format(amount);
   }
-
-  static double parse(String amount, {
+  static double parse(
+    String amount, {
     CurrencyContants currency = CurrencyContants.rupee,
     int decimalDigits = defaultDecimal,
     bool compact = deafultCompact,
@@ -36,6 +44,21 @@ class CurrencyFormatter {
     );
     final value = formatter.parse(amount);
     return value as double;
+  }
+
+  static String compact(
+    double amount, {
+    CurrencyContants currency = CurrencyContants.rupee,
+    int decimalDigits = defaultDecimal,
+    bool compact = deafultCompact,
+  }) {
+    final formatter = NumberFormat.compactCurrency(
+      locale: currency.locale,
+      symbol: currency.symbol,
+      decimalDigits: decimalDigits,
+    );
+
+    return formatter.format(amount);
   }
 
   /// Returns '+₹X' for income, '−₹X' for expenses.
@@ -61,7 +84,11 @@ class CurrencyFormatter {
     final decPart = parts.length > 1 ? parts[1] : null;
 
     final number = int.tryParse(intPart) ?? 0;
-    final grouped = NumberFormat.currency(locale: currency.locale, symbol: currency.symbol, decimalDigits: 0).format(number);
+    final grouped = NumberFormat.currency(
+      locale: currency.locale,
+      symbol: currency.symbol,
+      decimalDigits: 0,
+    ).format(number);
 
     if (decPart == null) {
       return endsWithDot ? '$grouped.' : grouped;
