@@ -1,4 +1,5 @@
 import 'package:finpal/app/app.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -6,16 +7,26 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navIndex = ref.watch(navProvider);
+    final isDark = context.isDarkMode;
 
-    return Scaffold(
-      extendBody: true,
-      body: IndexedStack(
-        index: navIndex,
-        children: HomeConstants.navigationBar.map((e) => e.page).toList(),
+    return AnnotatedRegion(
+      value: (isDark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light)
+          .copyWith(
+            statusBarColor: context.colors.surface,
+            statusBarIconBrightness:
+                isDark ? Brightness.light : Brightness.dark,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+          ),
+      child: Scaffold(
+        extendBody: true,
+        body: IndexedStack(
+          index: navIndex,
+          children: HomeConstants.navigationBar.map((e) => e.page).toList(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: const AnimatedFab(),
+        bottomNavigationBar: _bottomNavigationBar(context, ref, navIndex),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const AnimatedFab(),
-      bottomNavigationBar: _bottomNavigationBar(context, ref, navIndex),
     );
   }
 

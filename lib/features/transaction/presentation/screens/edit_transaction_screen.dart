@@ -239,7 +239,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             },
             hintText: "Select Category",
             color: state.category?.color.colorSet,
-            isRequired: true,
           ),
           SizedBox(height: 20.spMin),
           _buildField(

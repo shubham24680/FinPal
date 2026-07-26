@@ -135,7 +135,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
   }
 
   void onChange() {
-    final isValid = state.amount.isNotEmpty && state.date.isNotEmpty && state.category != null;
+    final isValid = state.amount.isNotEmpty && state.date.isNotEmpty;
     state = state.copyWith(
       buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
     );

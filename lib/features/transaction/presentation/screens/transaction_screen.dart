@@ -12,7 +12,14 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
 
   void _updateAppBarVisibility(GlobalKey key, String id, {double offset = 0}) {
     final overviewContext = key.currentContext;
-    if (overviewContext == null) return;
+    if (overviewContext == null) {
+      // Filters key is gone (e.g. empty list) — hide sticky app bar.
+      final isVisible = ref.read(transactionOverviewProvider(id));
+      if (isVisible) {
+        ref.read(transactionOverviewProvider(id).notifier).state = false;
+      }
+      return;
+    }
 
     final box = overviewContext.findRenderObject() as RenderBox?;
     if (box == null || !box.hasSize) return;
@@ -23,6 +30,13 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     final isVisible = ref.read(transactionOverviewProvider(id));
     if (shouldShow == isVisible) return;
     ref.read(transactionOverviewProvider(id).notifier).state = shouldShow;
+  }
+
+  void _scheduleAppBarVisibilityCheck() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _updateAppBarVisibility(_filtersKey, "filters", offset: -20.spMin);
+    });
   }
 
   @override
@@ -134,6 +148,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
               );
               if (picked == null || !mounted) return;
               ref.read(selectedDateProvider.notifier).state = picked;
+              _scheduleAppBarVisibilityCheck();
             },
           ),
           CustomChip(
@@ -142,10 +157,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
             outlined: true,
             variant:
                 typeFilter == null ? ChipVariant.primary : ChipVariant.inactive,
-            onTap:
-                () =>
-                    ref.read(transactionTypeFilterProvider.notifier).state =
-                        null,
+            onTap: () {
+              ref.read(transactionTypeFilterProvider.notifier).state = null;
+              _scheduleAppBarVisibilityCheck();
+            },
           ),
           ...TransactionType.values.map((type) {
             final selected = typeFilter == type;
@@ -155,10 +170,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
               selected: selected,
               outlined: true,
               variant: selected ? ChipVariant.primary : ChipVariant.inactive,
-              onTap:
-                  () =>
-                      ref.read(transactionTypeFilterProvider.notifier).state =
-                          type,
+              onTap: () {
+                ref.read(transactionTypeFilterProvider.notifier).state = type;
+                _scheduleAppBarVisibilityCheck();
+              },
             );
           }),
         ],
