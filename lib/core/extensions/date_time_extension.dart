@@ -1,10 +1,12 @@
 import 'package:finpal/app/app.dart';
 import 'package:intl/intl.dart';
 
-enum DateFormatType { date, date1, monthYear, fullDate, time, dateTime }
+enum DateFormatType { date, date1, monthYear, fullDate, time, dateTime, halfMonth, month }
 
 extension DateTimeX on DateTime {
   static final Map<DateFormatType, DateFormat> formatters = {
+    DateFormatType.halfMonth: DateFormat('MMM'),
+    DateFormatType.month: DateFormat('MMMM'),
     DateFormatType.monthYear: DateFormat('MMMM yyyy'),
     DateFormatType.date: DateFormat('d MMMM, yyyy'),
     DateFormatType.date1: DateFormat('MMMM d, yyyy'),

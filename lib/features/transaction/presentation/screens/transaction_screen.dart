@@ -145,6 +145,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
               final picked = await CustomBottomSheet.chooseDate(
                 context,
                 date: selectedDate,
+                onlyMonths: true,
               );
               if (picked == null || !mounted) return;
               ref.read(selectedDateProvider.notifier).state = picked;
