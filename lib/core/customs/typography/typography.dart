@@ -39,7 +39,9 @@ class CustomTypography extends StatelessWidget {
     final typos = this.typos;
     if (typos != null) {
       return RichText(
-        textAlign: TextAlign.center,
+        textAlign: align ?? TextAlign.center,
+        overflow: overflow ?? TextOverflow.clip,
+        maxLines: maxLines,
         text: TextSpan(
           children:
               typos.map(

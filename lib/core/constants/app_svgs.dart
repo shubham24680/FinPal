@@ -26,6 +26,8 @@ class AppSvgs {
   static const String expense = '$_basePath/expense.svg';
   static const String edit = '$_basePath/edit.svg';
   static const String edit1 = '$_basePath/edit1.svg';
+  static const String eyeOpen = '$_basePath/eye_open.svg';
+  static const String eyeClosed = '$_basePath/eye_closed.svg';
   static const String female = '$_basePath/female.svg';
   static const String fingerprint = '$_basePath/fingerprint.svg';
   static const String gallery = '$_basePath/gallery.svg';
@@ -37,6 +39,7 @@ class AppSvgs {
   static const String lock = '$_basePath/lock.svg';
   static const String male = '$_basePath/male.svg';
   static const String money = '$_basePath/money.svg';
+  static const String notification = '$_basePath/notification.svg';
   static const String other = '$_basePath/other.svg';
   static const String category = '$_basePath/categories.svg';
   static const String privacy = '$_basePath/privacy.svg';
@@ -45,6 +48,7 @@ class AppSvgs {
   static const String report1 = '$_basePath/report1.svg';
   static const String settings = '$_basePath/settings.svg';
   static const String settings1 = '$_basePath/settings1.svg';
+  static const String search = '$_basePath/search.svg';
   static const String terms = '$_basePath/terms.svg';
   static const String theme = '$_basePath/theme.svg';
   static const String time = '$_basePath/time.svg';

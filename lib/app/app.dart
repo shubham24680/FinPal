@@ -16,4 +16,5 @@ export '../features/onboarding/onboarding.dart';
 export '../features/home/home.dart';
 export '../features/transaction/transaction.dart';
 export '../features/settings/settings.dart';
+export '../features/analysis/analysis.dart';
 export '../features/features.dart';

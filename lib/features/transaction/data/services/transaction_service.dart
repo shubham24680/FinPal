@@ -55,7 +55,7 @@ class TransactionService {
     return _totalExpense;
   }
 
-  double get available => totalIncome - totalExpense;
+  double get availableBalance => totalIncome - totalExpense;
 
   List<PaymentModel> get incomeTransactions => payments
       .where((p) => p.paymentType == TransactionType.income.id)
@@ -149,6 +149,133 @@ class TransactionService {
     return payments
         .where((payment) => payment.categoryId == option.id)
         .toList(growable: false);
+  }
+
+  /// Payments whose [PaymentModel.date] falls within [start]–[end] (inclusive).
+  List<PaymentModel> paymentsInRange(DateTime start, DateTime end) {
+    return payments
+        .where(
+          (payment) =>
+              !payment.date.isBefore(start) && !payment.date.isAfter(end),
+        )
+        .toList(growable: false);
+  }
+
+  double totalIncomeInRange(DateTime start, DateTime end) {
+    var total = 0.0;
+    for (final payment in paymentsInRange(start, end)) {
+      if (payment.paymentType == TransactionType.income.id) {
+        total += payment.amount;
+      }
+    }
+    return total;
+  }
+
+  double totalExpenseInRange(DateTime start, DateTime end) {
+    var total = 0.0;
+    for (final payment in paymentsInRange(start, end)) {
+      if (payment.paymentType == TransactionType.expense.id) {
+        total += payment.amount;
+      }
+    }
+    return total;
+  }
+
+  /// Expense category totals for a date range, sorted by amount (desc).
+  List<({OptionModel category, double amount, int count})>
+  expensesByCategoryInRange({
+    required DateTime start,
+    required DateTime end,
+    required List<OptionModel> options,
+  }) {
+    final expenses = paymentsInRange(start, end).where(
+      (p) => p.paymentType == TransactionType.expense.id,
+    );
+    final byId = <String, List<PaymentModel>>{};
+    for (final payment in expenses) {
+      (byId[payment.categoryId] ??= []).add(payment);
+    }
+    final optionById = {for (final o in options) o.id: o};
+    final rows = <({OptionModel category, double amount, int count})>[];
+    for (final entry in byId.entries) {
+      final category =
+          optionById[entry.key] ?? OptionsConstant.otherCategory;
+      final amount = entry.value.fold<double>(0, (a, b) => a + b.amount);
+      rows.add((
+        category: category,
+        amount: amount,
+        count: entry.value.length,
+      ));
+    }
+    rows.sort((a, b) => b.amount.compareTo(a.amount));
+    return rows;
+  }
+
+  /// Expense payment-method totals for a date range, sorted by amount (desc).
+  List<({OptionModel method, double amount, int count})>
+  expensesByMethodInRange({
+    required DateTime start,
+    required DateTime end,
+    required List<OptionModel> methods,
+  }) {
+    final expenses = paymentsInRange(start, end).where(
+      (p) => p.paymentType == TransactionType.expense.id,
+    );
+    final byId = <String, List<PaymentModel>>{};
+    for (final payment in expenses) {
+      (byId[payment.paymentMethodId] ??= []).add(payment);
+    }
+    final methodById = {for (final m in methods) m.id: m};
+    final rows = <({OptionModel method, double amount, int count})>[];
+    for (final entry in byId.entries) {
+      final method = methodById[entry.key] ?? OptionsConstant.otherCategory;
+      final amount = entry.value.fold<double>(0, (a, b) => a + b.amount);
+      rows.add((method: method, amount: amount, count: entry.value.length));
+    }
+    rows.sort((a, b) => b.amount.compareTo(a.amount));
+    return rows;
+  }
+
+  /// Daily (or monthly for a full year span) expense totals for trend charts.
+  List<({DateTime date, double amount})> expenseTrendInRange({
+    required DateTime start,
+    required DateTime end,
+    bool byMonth = false,
+  }) {
+    if (byMonth) {
+      final byMonthMap = <DateTime, double>{};
+      for (var year = start.year; year <= end.year; year++) {
+        final monthStart = year == start.year ? start.month : 1;
+        final monthEnd = year == end.year ? end.month : 12;
+        for (var m = monthStart; m <= monthEnd; m++) {
+          byMonthMap[DateTime(year, m)] = 0;
+        }
+      }
+      for (final payment in paymentsInRange(start, end)) {
+        if (payment.paymentType != TransactionType.expense.id) continue;
+        final key = DateTime(payment.date.year, payment.date.month);
+        byMonthMap[key] = (byMonthMap[key] ?? 0) + payment.amount;
+      }
+      return [
+        for (final e in byMonthMap.entries) (date: e.key, amount: e.value),
+      ];
+    }
+
+    final byDay = <DateTime, double>{};
+    var cursor = start.startOfDay;
+    final last = end.startOfDay;
+    while (!cursor.isAfter(last)) {
+      byDay[cursor] = 0;
+      cursor = cursor.add(const Duration(days: 1));
+    }
+    for (final payment in paymentsInRange(start, end)) {
+      if (payment.paymentType != TransactionType.expense.id) continue;
+      final key = payment.date.startOfDay;
+      if (byDay.containsKey(key)) {
+        byDay[key] = byDay[key]! + payment.amount;
+      }
+    }
+    return [for (final e in byDay.entries) (date: e.key, amount: e.value)];
   }
 
   void _ensureTotals() {

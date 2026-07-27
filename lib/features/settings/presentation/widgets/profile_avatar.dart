@@ -12,6 +12,7 @@ Widget buildAvatar(
   bool enableBorder = false,
   Color? borderColor,
   VoidCallback? onTap,
+  bool showShadow = false,
 }) {
   final isDark = context.isDarkMode;
   final initials =
@@ -45,6 +46,7 @@ Widget buildAvatar(
           );
   return CustomContainer(
     onTap: onTap,
+    showShadow: showShadow,
     borderRadius: BorderRadius.circular(1000.r),
     height: size ?? 60.spMin,
     width: size ?? 60.spMin,
