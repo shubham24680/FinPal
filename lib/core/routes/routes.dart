@@ -12,7 +12,6 @@ enum AppRoutesPath {
   theme(path: "/theme", child: ThemeScreen()),
   currency(path: "/currency", child: CurrencyScreen()),
   editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
-  addAmount(path: "/add_amount", child: AddAmountScreen()),
   ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
@@ -73,15 +72,9 @@ class AppRoutes {
           AppRoutesPath.values.length,
           (index) => GoRoute(
             path: AppRoutesPath.values[index].path,
-            pageBuilder: (context, state) {
-              final extra = state.extra as ExtraModel?;
-              final widget = switch (AppRoutesPath.values[index]) {
-                AppRoutesPath.addAmount => AddAmountScreen(extra: extra),
-                _ => AppRoutesPath.values[index].child,
-              };
-
-              return FadeTransitionPage(child: widget);
-            },
+            pageBuilder: (context, state) => FadeTransitionPage(
+              child: AppRoutesPath.values[index].child,
+            ),
           ),
         ),
       ],

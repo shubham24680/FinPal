@@ -251,7 +251,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
               notifer.set(paymentMethod: picked);
             },
             hintText: "Select Payment Method",
-            color: state.category?.color.colorSet,
+            color: state.paymentMethod?.color.colorSet,
           ),
           SizedBox(height: 20.spMin),
           CustomTypography(

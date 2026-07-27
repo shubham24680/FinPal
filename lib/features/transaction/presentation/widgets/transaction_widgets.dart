@@ -7,7 +7,7 @@ Widget buildExpenseTile(
   OptionServices? options, {
   bool enableSwipe = false,
 }) {
-  final notes = payment.notes ?? "";
+  final notes = payment.notes;
   final category = options?.findById(payment.categoryId);
   final isIncome = payment.paymentType == TransactionType.income.id;
   final amount = isIncome ? payment.amount : -payment.amount;

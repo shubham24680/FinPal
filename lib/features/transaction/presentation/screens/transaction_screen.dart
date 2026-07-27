@@ -50,7 +50,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
       spacing: 16.spMin,
       children: [
         _buildTopWidget(context, 0, 0),
-        // _buildFilters(context, selectedDate, typeFilter),
+        _buildFilters(context, selectedDate, typeFilter),
         _buildNoTransactions(context, ref),
       ],
     );
@@ -170,7 +170,6 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     double totalExpense,
   ) {
     return CustomContainer(
-      onTap: () => context.push(AppRoutesPath.profile.path),
       backgroundColor: context.colors.surface,
       showShadow: true,
       child: Column(

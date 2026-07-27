@@ -78,8 +78,8 @@ class CustomTextField extends StatelessWidget {
     final hintStyle =
         this.hintStyle ?? _buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
-      filled: fillColor != null,
-      fillColor: fillColor,
+      filled: true,
+      fillColor: fillColor ?? context.colors.surfaceContainerHighest,
       hintText: hintText ?? _buildHintText(),
       hintStyle: hintStyle,
       labelText: labelText,
