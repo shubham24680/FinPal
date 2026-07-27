@@ -23,17 +23,20 @@ class CustomBottomSheet extends StatelessWidget {
     this.type = BottomSheetType.dismissByCrossOrTapOutside,
     this.title,
     this.widget,
+    this.noPadding = false,
   });
 
   final BottomSheetType type;
   final String? title;
   final Widget? widget;
+  final bool noPadding;
 
   static Future<T?> show<T>(
     BuildContext context, {
     String? title,
     Widget? widget,
     BottomSheetType type = BottomSheetType.dismissByCrossOrTapOutside,
+    bool noPadding = false,
   }) {
     return showModalBottomSheet<T>(
       context: context,
@@ -44,7 +47,7 @@ class CustomBottomSheet extends StatelessWidget {
       showDragHandle: false,
       isDismissible: type.barrierDismissible,
       builder:
-          (_) => CustomBottomSheet(type: type, title: title, widget: widget),
+          (_) => CustomBottomSheet(type: type, title: title, widget: widget, noPadding: noPadding),
     );
   }
 
@@ -95,7 +98,7 @@ class CustomBottomSheet extends StatelessWidget {
       borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       padding: EdgeInsets.zero,
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(
+        padding: noPadding ? EdgeInsets.only(bottom: bottomPadding) : EdgeInsets.only(
           left: 16.r,
           right: 16.r,
           top: 20.r,
@@ -109,7 +112,7 @@ class CustomBottomSheet extends StatelessWidget {
               CustomTypography(text: title, fontType: FontType.body1Medium),
               Divider(color: context.colors.outline),
             ],
-            Flexible(child: widget ?? const SizedBox.shrink()),
+            widget ?? const SizedBox.shrink(),
           ],
         ),
       ),

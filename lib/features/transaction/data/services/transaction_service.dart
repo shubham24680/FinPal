@@ -49,10 +49,12 @@ class TransactionService {
     _ensureTotals();
     return _totalIncome;
   }
+
   double get totalExpense {
     _ensureTotals();
     return _totalExpense;
   }
+
   double get available => totalIncome - totalExpense;
 
   List<PaymentModel> get incomeTransactions => payments
@@ -116,10 +118,12 @@ class TransactionService {
   ) {
     if (typeFilter == null) return transactions;
     return transactions
-        .where(
-          (payments) =>
-              payments.any((payment) => payment.paymentType == typeFilter.id),
+        .map(
+          (payments) => payments
+              .where((payment) => payment.paymentType == typeFilter.id)
+              .toList(growable: false),
         )
+        .where((payments) => payments.isNotEmpty)
         .toList(growable: false);
   }
 

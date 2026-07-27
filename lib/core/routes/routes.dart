@@ -13,10 +13,6 @@ enum AppRoutesPath {
   currency(path: "/currency", child: CurrencyScreen()),
   editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
   addAmount(path: "/add_amount", child: AddAmountScreen()),
-  transactionOverview(
-    path: "/transaction_overview",
-    child: TransactionOverviewScreen(),
-  ),
   ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 

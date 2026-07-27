@@ -46,7 +46,9 @@ class CustomButton extends StatelessWidget {
           CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: prefixIcon,
-            color: foregroundColor,
+            color: buttonVariant == ButtonVariant.secondary
+                  ? backgroundColor
+                  : foregroundColor,
             height: 24.spMin,
           ),
         CustomTypography(
@@ -61,7 +63,9 @@ class CustomButton extends StatelessWidget {
           CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: suffixIcon,
-            color: foregroundColor,
+            color: buttonVariant == ButtonVariant.secondary
+                  ? backgroundColor
+                  : foregroundColor,
             height: 24.spMin,
           ),
       ],

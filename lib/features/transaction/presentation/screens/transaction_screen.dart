@@ -13,10 +13,9 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
   void _updateAppBarVisibility(GlobalKey key, String id, {double offset = 0}) {
     final overviewContext = key.currentContext;
     if (overviewContext == null) {
-      // Filters key is gone (e.g. empty list) — hide sticky app bar.
-      final isVisible = ref.read(transactionOverviewProvider(id));
+      final isVisible = ref.read(transactionAppbarProvider(id));
       if (isVisible) {
-        ref.read(transactionOverviewProvider(id).notifier).state = false;
+        ref.read(transactionAppbarProvider(id).notifier).state = false;
       }
       return;
     }
@@ -27,9 +26,9 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     final overviewTop = box.localToGlobal(Offset.zero).dy + offset;
     final statusBarHeight = MediaQuery.paddingOf(context).top;
     final shouldShow = overviewTop < statusBarHeight;
-    final isVisible = ref.read(transactionOverviewProvider(id));
+    final isVisible = ref.read(transactionAppbarProvider(id));
     if (shouldShow == isVisible) return;
-    ref.read(transactionOverviewProvider(id).notifier).state = shouldShow;
+    ref.read(transactionAppbarProvider(id).notifier).state = shouldShow;
   }
 
   void _scheduleAppBarVisibilityCheck() {
@@ -44,14 +43,14 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     final transactions = ref.watch(transactionProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final typeFilter = ref.watch(transactionTypeFilterProvider);
-    final isFiltersVisible = ref.watch(transactionOverviewProvider("filters"));
+    final isFiltersVisible = ref.watch(transactionAppbarProvider("filters"));
 
     final noTransactionsWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
       children: [
         _buildTopWidget(context, 0, 0),
-        _buildFilters(context, selectedDate, typeFilter),
+        // _buildFilters(context, selectedDate, typeFilter),
         _buildNoTransactions(context, ref),
       ],
     );
@@ -95,8 +94,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                       child: _buildFilters(context, selectedDate, typeFilter),
                     ),
                     ...filteredPayments.map(
-                      (dayGroups) =>
-                          _buildTransctionList(context, ref, dayGroups),
+                      (dayGroups) => TransactionList(payments: dayGroups),
                     ),
                   ],
                 ),
@@ -122,63 +120,6 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
       },
       loading: () => noTransactionsWidget,
       error: (error, stackTrace) => noTransactionsWidget,
-    );
-  }
-
-  Widget _buildFilters(
-    BuildContext context,
-    DateTime selectedDate,
-    TransactionType? typeFilter,
-  ) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
-      child: Row(
-        spacing: 8.spMin,
-        children: [
-          CustomChip(
-            label: selectedDate.formatDate(type: DateFormatType.monthYear),
-            imageUrl: AppSvgs.calendar,
-            selected: true,
-            outlined: true,
-            onTap: () async {
-              final picked = await CustomBottomSheet.chooseDate(
-                context,
-                date: selectedDate,
-                onlyMonths: true,
-              );
-              if (picked == null || !mounted) return;
-              ref.read(selectedDateProvider.notifier).state = picked;
-              _scheduleAppBarVisibilityCheck();
-            },
-          ),
-          CustomChip(
-            label: "All",
-            selected: typeFilter == null,
-            outlined: true,
-            variant:
-                typeFilter == null ? ChipVariant.primary : ChipVariant.inactive,
-            onTap: () {
-              ref.read(transactionTypeFilterProvider.notifier).state = null;
-              _scheduleAppBarVisibilityCheck();
-            },
-          ),
-          ...TransactionType.values.map((type) {
-            final selected = typeFilter == type;
-            return CustomChip(
-              label: type.name,
-              imageUrl: type.icon,
-              selected: selected,
-              outlined: true,
-              variant: selected ? ChipVariant.primary : ChipVariant.inactive,
-              onTap: () {
-                ref.read(transactionTypeFilterProvider.notifier).state = type;
-                _scheduleAppBarVisibilityCheck();
-              },
-            );
-          }),
-        ],
-      ),
     );
   }
 
@@ -249,14 +190,14 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
               _buildTransactionOverviewItem(
                 context,
                 "Total Spendings",
-                AppSvgs.arrowDown,
+                AppSvgs.arrowUp,
                 ColorSet.error,
                 amount: totalExpense,
               ),
               _buildTransactionOverviewItem(
                 context,
                 "Total Income",
-                AppSvgs.arrowUp,
+                AppSvgs.arrowDown,
                 ColorSet.primary,
                 amount: totalIncome,
               ),
@@ -316,6 +257,63 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     );
   }
 
+  Widget _buildFilters(
+    BuildContext context,
+    DateTime selectedDate,
+    TransactionType? typeFilter,
+  ) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
+      child: Row(
+        spacing: 8.spMin,
+        children: [
+          CustomChip(
+            label: selectedDate.formatDate(type: DateFormatType.monthYear),
+            imageUrl: AppSvgs.calendar,
+            selected: true,
+            outlined: true,
+            onTap: () async {
+              final picked = await CustomBottomSheet.chooseDate(
+                context,
+                date: selectedDate,
+                onlyMonths: true,
+              );
+              if (picked == null || !mounted) return;
+              ref.read(selectedDateProvider.notifier).state = picked;
+              _scheduleAppBarVisibilityCheck();
+            },
+          ),
+          CustomChip(
+            label: "All",
+            selected: typeFilter == null,
+            outlined: true,
+            variant:
+                typeFilter == null ? ChipVariant.primary : ChipVariant.inactive,
+            onTap: () {
+              ref.read(transactionTypeFilterProvider.notifier).state = null;
+              _scheduleAppBarVisibilityCheck();
+            },
+          ),
+          ...TransactionType.values.map((type) {
+            final selected = typeFilter == type;
+            return CustomChip(
+              label: type.name,
+              imageUrl: type.icon,
+              selected: selected,
+              outlined: true,
+              variant: selected ? ChipVariant.primary : ChipVariant.inactive,
+              onTap: () {
+                ref.read(transactionTypeFilterProvider.notifier).state = type;
+                _scheduleAppBarVisibilityCheck();
+              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
   Widget _buildNoTransactions(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: Column(
@@ -347,134 +345,6 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           ),
         ],
       ).padding(horizontal: AppConstants.sidePadding),
-    );
-  }
-
-  Widget _buildTransctionList(
-    BuildContext context,
-    WidgetRef ref,
-    List<PaymentModel> dayGroups,
-  ) {
-    if (dayGroups.isEmpty) return const SizedBox.shrink();
-    final date = dayGroups.first.date.getDateLabel(type: DateFormatType.date1);
-    final options = ref.watch(optionNotifer).value;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8.spMin,
-      children: [
-        CustomTypography(
-          text: date,
-          fontType: FontType.body2Semibold,
-          color: context.colors.onSurface,
-        ),
-        CustomContainer(
-          backgroundColor: context.colors.surface,
-          padding: EdgeInsets.zero,
-          child: ListView.separated(
-            itemCount: dayGroups.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemBuilder:
-                (context, index) => _buildTransactionTile(
-                  context,
-                  ref,
-                  dayGroups[index],
-                  options,
-                ),
-            separatorBuilder: (context, index) => Divider(),
-          ),
-        ),
-      ],
-    ).padding(horizontal: AppConstants.sidePadding);
-  }
-
-  Widget _buildTransactionTile(
-    BuildContext context,
-    WidgetRef ref,
-    PaymentModel payment,
-    OptionServices? options,
-  ) {
-    final isDark = context.isDarkMode;
-    final category = options?.findById(payment.categoryId);
-    final color = category?.color.colorSet ?? ColorSet.primary;
-    final title = payment.notes.isEmpty ? "Other" : payment.notes;
-    final isExpense = payment.paymentType == TransactionType.expense.id;
-
-    return CustomContainer(
-      onTap: () {
-        ref.read(selectedTransactionProvider.notifier).state = payment;
-        context.push(AppRoutesPath.editTransaction.path);
-      },
-      backgroundColor: Colors.transparent,
-      padding: EdgeInsets.symmetric(horizontal: 16.spMin, vertical: 12.spMin),
-      child: Row(
-        spacing: 12.spMin,
-        children: [
-          if (category != null)
-            CustomContainer(
-              padding: EdgeInsets.all(12.r),
-              backgroundColor: isDark ? color.dimDark : color.light,
-              child: CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: category.icon,
-                color: color.normal,
-                height: 16.spMin,
-                width: 16.spMin,
-              ),
-            ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2.spMin,
-              children: [
-                CustomTypography(
-                  text: title,
-                  fontType: FontType.body2Medium,
-                  maxLines: 1,
-                ),
-                if (category != null)
-                  CustomTypography(
-                    text: category.name,
-                    fontType: FontType.label1Regular,
-                    color: context.colors.onSurfaceVariant,
-                    maxLines: 1,
-                  ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            spacing: 2.spMin,
-            children: [
-              CustomTypography(
-                text: CurrencyFormatter.signed(
-                  payment.amount,
-                  isExpense: isExpense,
-                ),
-                fontType: FontType.body2Semibold,
-                color:
-                    isExpense
-                        ? context.colors.inverseSurface
-                        : context.successColor,
-              ),
-              CustomTypography(
-                text: payment.date.formatDate(type: DateFormatType.time),
-                fontType: FontType.label1Medium,
-                color: context.colors.onSurface,
-              ),
-            ],
-          ),
-          CustomImage(
-            imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.arrowRight1,
-            color: context.colors.onSurfaceVariant,
-            height: 16.spMin,
-          ),
-        ],
-      ),
     );
   }
 }

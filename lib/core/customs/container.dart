@@ -5,6 +5,7 @@ class CustomContainer extends StatefulWidget {
     super.key,
     this.child,
     this.onTap,
+    this.onLongTap,
     this.padding,
     this.margin,
     this.image,
@@ -23,6 +24,7 @@ class CustomContainer extends StatefulWidget {
 
   final Widget? child;
   final VoidCallback? onTap;
+  final VoidCallback? onLongTap;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final String? image;
@@ -81,6 +83,7 @@ class _CustomContainerState extends State<CustomContainer> {
 
     return AnimatedTap(
       onTap: widget.onTap,
+      onLongTap: widget.onLongTap,
       scaleDownFactor: widget.scaleDownFactor,
       animationDuration: widget.animationDuration,
       child: container,

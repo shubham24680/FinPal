@@ -1,8 +1,8 @@
 import 'package:finpal/app/app.dart';
 
 enum TransactionType {
-  income("income", "Income", AppSvgs.arrowUp, ColorSet.primary, OptionType.income),
-  expense("expense", "Expense", AppSvgs.arrowDown, ColorSet.error, OptionType.expense);
+  income("income", "Income", AppSvgs.arrowDown, ColorSet.primary, OptionType.income),
+  expense("expense", "Expense", AppSvgs.arrowUp, ColorSet.error, OptionType.expense);
 
   const TransactionType(this.id, this.name, this.icon, this.color, this.optionType);
   final String id, name, icon;

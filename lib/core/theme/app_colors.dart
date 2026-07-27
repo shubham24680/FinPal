@@ -1,15 +1,45 @@
 import 'package:flutter/material.dart';
 
 enum ColorSet {
-  primary(AppColors.primary50, AppColors.primary700, AppColors.primary500),
-  neutral(AppColors.neutral50, AppColors.neutral700, AppColors.neutral500),
-  accent(AppColors.accent50, AppColors.accent700, AppColors.accent500),
-  info(AppColors.info50, AppColors.info700, AppColors.info500),
-  purple(AppColors.purple50, AppColors.purple700, AppColors.purple500),
-  error(AppColors.error50, AppColors.error700, AppColors.error500);
-  
-  const ColorSet(this.light, this.dark, this.normal);
-  final Color light, dark, normal;
+  primary(
+    AppColors.primary50,
+    AppColors.primary200,
+    AppColors.primary700,
+    AppColors.primary500,
+  ),
+  neutral(
+    AppColors.neutral50,
+    AppColors.neutral200,
+    AppColors.neutral700,
+    AppColors.neutral500,
+  ),
+  accent(
+    AppColors.accent50,
+    AppColors.accent200,
+    AppColors.accent700,
+    AppColors.accent500,
+  ),
+  info(
+    AppColors.info50,
+    AppColors.info200,
+    AppColors.info700,
+    AppColors.info500,
+  ),
+  purple(
+    AppColors.purple50,
+    AppColors.purple200,
+    AppColors.purple700,
+    AppColors.purple500,
+  ),
+  error(
+    AppColors.error50,
+    AppColors.error200,
+    AppColors.error700,
+    AppColors.error500,
+  );
+
+  const ColorSet(this.light, this.extraLight, this.dark, this.normal);
+  final Color light, extraLight, dark, normal;
 
   Color get dimDark => dark.withAlpha(100);
 }

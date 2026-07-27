@@ -5,6 +5,7 @@ class AnimatedTap extends StatefulWidget {
     super.key,
     required this.child,
     this.onTap,
+    this.onLongTap,
     this.scaleDownFactor = 0.95,
     this.animationDuration = const Duration(milliseconds: 100),
     this.behavior = HitTestBehavior.opaque,
@@ -12,6 +13,7 @@ class AnimatedTap extends StatefulWidget {
 
   final Widget child;
   final VoidCallback? onTap;
+  final VoidCallback? onLongTap;
   final double scaleDownFactor;
   final Duration animationDuration;
   final HitTestBehavior behavior;
@@ -58,22 +60,32 @@ class _AnimatedTapState extends State<AnimatedTap>
     super.dispose();
   }
 
-  Future<void> _handleTap() async {
-    widget.onTap?.call();
+  Future<void> _playAnimation() async {
     await _controller.forward();
     if (mounted) {
       await _controller.reverse();
     }
   }
 
+  Future<void> _handleTap() async {
+    widget.onTap?.call();
+    await _playAnimation();
+  }
+
+  Future<void> _handleLongTap() async {
+    widget.onLongTap?.call();
+    await _playAnimation();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.onTap == null) {
+    if (widget.onTap == null && widget.onLongTap == null) {
       return widget.child;
     }
 
     return GestureDetector(
-      onTap: _handleTap,
+      onTap: widget.onTap == null ? null : _handleTap,
+      onLongPress: widget.onLongTap == null ? null : _handleLongTap,
       behavior: widget.behavior,
       child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
     );

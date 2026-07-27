@@ -47,6 +47,7 @@ class AppSvgs {
   static const String settings1 = '$_basePath/settings1.svg';
   static const String terms = '$_basePath/terms.svg';
   static const String theme = '$_basePath/theme.svg';
+  static const String time = '$_basePath/time.svg';
   static const String user = '$_basePath/user.svg';
   static const String user1 = '$_basePath/user1.svg';
   static const String userId = '$_basePath/user_id.svg';
