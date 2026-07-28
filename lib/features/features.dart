@@ -1,7 +1,5 @@
 // Expense (legacy analytics helpers still used by Analysis)
 export 'expense/expense_screen.dart';
-export 'expense/expense_model.dart';
-export 'expense/widgets/balance_card.dart';
 export 'expense/widgets/categories_tile.dart';
 export 'expense/widgets/manage_expenses.dart';
 

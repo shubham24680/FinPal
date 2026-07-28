@@ -30,81 +30,10 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     return Stack(
       children: [
         _buildTopWidget(context, availableBalance, hideBalance),
-        _buildMainWidget(context),
+        _buildMainWidget(context, transactions, hideBalance),
         _buildAppBar(context, availableBalance, hideBalance),
       ],
     );
-
-    // return transactions.when(
-    //   data: (data) {
-    //     final analysis = AnalysisCalculator.compute(
-    //       payments: data.payments,
-    //       period: period,
-    //       expenseCategories: options?.expenseCategories ?? const [],
-    //       paymentMethods: options?.paymentMethods ?? const [],
-    //       fallbackCategory: OptionsConstant.otherCategory,
-    //       fallbackMethod: OptionsConstant.otherCategory,
-    //       budgetCeiling: budgetCeiling,
-    //       currency: currency,
-    //     );
-
-    //     return SingleChildScrollView(
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           _buildGreeting(context, ref),
-    //           SizedBox(height: 16.w),
-    //           const AnalysisPeriodChips(),
-    //           SizedBox(height: 16.w),
-    //           if (analysis.isEmpty)
-    //             _buildEmptyState(context, ref)
-    //           else ...[
-    //             AnalysisSummaryStrip(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisMixCard(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisBudgetProgress(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisTrendChart(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisCategoryBreakdown(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisMethodBreakdown(
-    //               analysis: analysis,
-    //               hideBalance: hideBalance,
-    //             ),
-    //             SizedBox(height: 16.w),
-    //             AnalysisInsightsRow(insights: analysis.insights),
-    //             SizedBox(height: 16.w),
-    //             AnalysisRecentExpenses(expenses: analysis.recentExpenses),
-    //           ],
-    //         ],
-    //       ),
-    //     );
-    //   },
-    //   loading:
-    //       () => const Center(
-    //         child: CircularProgressIndicator(color: CardColors.shade1000),
-    //       ),
-    //   error:
-    //       (error, stackTrace) =>
-    //           _buildError(context, ref),
-    // );
   }
 
   Widget _buildTopWidget(
@@ -348,11 +277,19 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     );
   }
 
-  Widget _buildMainWidget(BuildContext context) {
+  Widget _buildMainWidget(
+    BuildContext context,
+    AsyncValue<TransactionService> transactions,
+    bool hideBalance,
+  ) {
     final screenHeight = context.screenHeight;
     final collapsedSize = ((screenHeight - _topWidgetHeight.spMin + 24.spMin) /
             screenHeight)
         .clamp(0.35, 0.85);
+    final period = ref.watch(analysisPeriodProvider);
+    final options = ref.watch(optionNotifer).value;
+    final currency = ref.watch(currencyProvider);
+    final budgetCeiling = ref.watch(settingsNotifier).value?.monthlyBudget;
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
@@ -373,6 +310,7 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
             valueListenable: _isSheetExpanded,
             builder: (context, isExpanded, child) {
               return CustomContainer(
+                padding: EdgeInsets.zero,
                 backgroundColor: context.theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(isExpanded ? 0 : 24.r),
@@ -383,62 +321,104 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
             child: ListView(
               controller: scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(
-                AppConstants.sidePadding,
-                8.spMin,
-                AppConstants.sidePadding,
-                180.spMin,
-              ),
+              padding: EdgeInsets.only(top: 8.spMin, bottom: 180.spMin),
               children: [
                 Center(
                   child: CustomContainer(
-                    width: 40.spMin,
+                    width: 48.spMin,
                     height: 4.spMin,
                     borderRadius: BorderRadius.circular(1000.r),
                     backgroundColor: context.colors.onSurface.withAlpha(40),
                   ),
                 ),
                 SizedBox(height: 16.spMin),
-                // AnalysisPeriodChips
-                _blankBlock(context, height: 40.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisSummaryStrip
-                _blankBlock(context, height: 88.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisMixCard
-                _blankBlock(context, height: 180.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisBudgetProgress
-                _blankBlock(context, height: 72.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisTrendChart
-                _blankBlock(context, height: 200.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisCategoryBreakdown
-                _blankBlock(context, height: 160.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisMethodBreakdown
-                _blankBlock(context, height: 140.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisInsightsRow
-                _blankBlock(context, height: 96.spMin),
-                SizedBox(height: 16.spMin),
-                // AnalysisRecentExpenses
-                _blankBlock(context, height: 220.spMin),
+                transactions.when(
+                  data: (data) {
+                    final analysisCompute = AnalysisCalculator.compute(
+                      payments: data.payments,
+                      period: period,
+                      expenseCategories: options?.expenseCategories ?? const [],
+                      paymentMethods: options?.paymentMethods ?? const [],
+                      fallbackCategory: OptionsConstant.otherCategory,
+                      fallbackMethod: OptionsConstant.otherCategory,
+                      budgetCeiling: budgetCeiling,
+                      currency: currency,
+                    );
+                    final analysis = AnalysisCalculator.getAnalysis(
+                      data.totalIncome,
+                      data.totalExpense,
+                      data.availableBalance,
+                    );
+                    final recentTransactions = data.getRecentTransactions();
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // const AnalysisPeriodChips(),
+                        // SizedBox(height: 16.spMin),
+                        AnalysisCard(analysis),
+                        CategoriesCard(),
+                        AnimatedTap(
+                          onTap: () => ref.read(navProvider.notifier).state = 2,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.r),
+                            child: CustomImage(
+                              imageUrl: AppImages.reportPoster,
+                            ),
+                          ),
+                        ).padding(all: AppConstants.sidePadding),
+                        // AnalysisTrendChart(
+                        //   analysis: analysisCompute,
+                        //   hideBalance: hideBalance,
+                        // ),
+                        if (recentTransactions.isNotEmpty) ...[
+                          TransactionList(
+                            payments: recentTransactions,
+                            label: "Recent Transactions",
+                            labelColor: context.colors.onSurface,
+                            moreButtonLabel: "View All",
+                            showDate: true,
+                            onMoreButtonPressed:
+                                () => ref.read(navProvider.notifier).state = 1,
+                          ),
+                        ],
+                        // AnalysisSummaryStrip(
+                        //   analysis: analysis,
+                        //   hideBalance: hideBalance,
+                        // ),
+                        // SizedBox(height: 16.spMin),
+                        // AnalysisBudgetProgress(
+                        //   analysis: analysisCompute,
+                        //   hideBalance: hideBalance,
+                        // ),
+                        // SizedBox(height: 16.spMin),
+                        // SizedBox(height: 16.spMin),
+                        // AnalysisCategoryBreakdown(
+                        //   analysis: analysisCompute,
+                        //   hideBalance: hideBalance,
+                        // ),
+                        // SizedBox(height: 16.spMin),
+                        // AnalysisMethodBreakdown(
+                        //   analysis: analysisCompute,
+                        //   hideBalance: hideBalance,
+                        // ),
+                        // SizedBox(height: 16.spMin),
+                        // AnalysisInsightsRow(insights: analysisCompute.insights),
+                        // SizedBox(height: 16.spMin),
+                        // AnalysisRecentExpenses(
+                        //   expenses: analysisCompute.recentExpenses,
+                        // ),
+                      ],
+                    );
+                  },
+                  error: (error, stackTrace) => const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                ),
               ],
             ),
           );
         },
       ),
-    );
-  }
-
-  Widget _blankBlock(BuildContext context, {required double height}) {
-    return CustomContainer(
-      width: double.infinity,
-      height: height,
-      borderRadius: BorderRadius.circular(16.r),
-      backgroundColor: context.colors.onSurface.withAlpha(12),
     );
   }
 

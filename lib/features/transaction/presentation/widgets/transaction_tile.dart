@@ -3,26 +3,53 @@ import 'package:finpal/app/app.dart';
 enum TransactionAction { edit, delete }
 
 class TransactionList extends ConsumerWidget {
-  const TransactionList({super.key, required this.payments});
+  const TransactionList({
+    super.key,
+    required this.payments,
+    this.label,
+    this.labelColor,
+    this.moreButtonLabel = "",
+    this.onMoreButtonPressed,
+    this.showDate = false,
+  });
 
   final List<PaymentModel> payments;
+  final String? label;
+  final Color? labelColor;
+  final String moreButtonLabel;
+  final VoidCallback? onMoreButtonPressed;
+  final bool showDate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (payments.isEmpty) return const SizedBox.shrink();
-    final label = payments.first.date.getDateLabel(type: DateFormatType.date1);
+    final date =
+        label ?? payments.first.date.getDateLabel(type: DateFormatType.date1);
     final options = ref.watch(optionNotifer).value;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8.spMin,
       children: [
-        if (label.isNotEmpty)
-          CustomTypography(
-            text: label,
-            fontType: FontType.body2Semibold,
-            color: context.colors.onSurface,
-          ),
+        if (date.isNotEmpty)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 8.spMin,
+            children: [
+              CustomTypography(
+                text: date,
+                fontType: FontType.body2Semibold,
+                color: labelColor ?? context.colors.onSurface,
+              ),
+              if (moreButtonLabel.isNotEmpty)
+                CustomTypography(
+                  text: moreButtonLabel,
+                  fontType: FontType.label1Medium,
+                  color: context.colors.primary,
+                  decoration: TextDecoration.underline,
+                ).onTap(event: onMoreButtonPressed),
+            ],
+          ).padding(horizontal: 4.spMin),
         CustomContainer(
           backgroundColor: context.colors.surface,
           padding: EdgeInsets.zero,
@@ -37,6 +64,7 @@ class TransactionList extends ConsumerWidget {
                   ref,
                   payments[index],
                   options,
+                  showDate: showDate,
                 ),
             separatorBuilder: (context, index) => Divider(),
           ),
@@ -49,8 +77,9 @@ class TransactionList extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     PaymentModel payment,
-    OptionServices? options,
-  ) {
+    OptionServices? options, {
+    bool showDate = false,
+  }) {
     final isDark = context.isDarkMode;
     final category = options?.findById(payment.categoryId);
     final color = category?.color.colorSet ?? ColorSet.primary;
@@ -125,18 +154,18 @@ class TransactionList extends ConsumerWidget {
                             : context.successColor,
                   ),
                   CustomTypography(
-                    text: payment.date.formatDate(type: DateFormatType.time),
+                    text: payment.date.formatDate(type: showDate ? DateFormatType.date1 : DateFormatType.time),
                     fontType: FontType.label1Medium,
                     color: context.colors.onSurface,
                   ),
                 ],
               ),
-              CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: AppSvgs.arrowRight1,
-                color: context.colors.onSurfaceVariant,
-                height: 16.spMin,
-              ),
+              // CustomImage(
+              //   imageType: ImageType.svgLocal,
+              //   imageUrl: AppSvgs.arrowRight1,
+              //   color: context.colors.onSurfaceVariant,
+              //   height: 16.spMin,
+              // ),
             ],
           ),
         );

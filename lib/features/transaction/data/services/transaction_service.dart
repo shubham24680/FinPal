@@ -65,26 +65,9 @@ class TransactionService {
       .where((p) => p.paymentType == TransactionType.expense.id)
       .toList(growable: false);
 
-  // Aggregations & filters
-  List<AnalysisModel> getAnalysis() {
-    final income = totalIncome;
-    final expense = totalExpense;
-    final balance = income - expense;
-    final isOverSpent = expense > income;
-
-    return [
-      AnalysisModel(
-        title: "Earned",
-        amount: income,
-        color: PrimaryColors.shade500,
-      ),
-      AnalysisModel(title: "Spent", amount: expense, color: BGColors.shade700),
-      AnalysisModel(
-        title: isOverSpent ? "Over Spent" : "Available",
-        amount: balance,
-        color: isOverSpent ? NegativeColors.shade500 : BGColors.shade500,
-      ),
-    ];
+  List<PaymentModel> getRecentTransactions({int limit = 5}) {
+    payments.sort((a, b) => b.date.compareTo(a.date));
+    return payments.take(limit).toList(growable: false);
   }
 
   // Todo: Optimize this method.
@@ -112,6 +95,7 @@ class TransactionService {
         .toList(growable: false);
   }
 
+  // Filters
   List<List<PaymentModel>> filterTransactions(
     List<List<PaymentModel>> transactions,
     TransactionType? typeFilter,
@@ -151,7 +135,6 @@ class TransactionService {
         .toList(growable: false);
   }
 
-  /// Payments whose [PaymentModel.date] falls within [start]–[end] (inclusive).
   List<PaymentModel> paymentsInRange(DateTime start, DateTime end) {
     return payments
         .where(
@@ -181,16 +164,16 @@ class TransactionService {
     return total;
   }
 
-  /// Expense category totals for a date range, sorted by amount (desc).
   List<({OptionModel category, double amount, int count})>
   expensesByCategoryInRange({
     required DateTime start,
     required DateTime end,
     required List<OptionModel> options,
   }) {
-    final expenses = paymentsInRange(start, end).where(
-      (p) => p.paymentType == TransactionType.expense.id,
-    );
+    final expenses = paymentsInRange(
+      start,
+      end,
+    ).where((p) => p.paymentType == TransactionType.expense.id);
     final byId = <String, List<PaymentModel>>{};
     for (final payment in expenses) {
       (byId[payment.categoryId] ??= []).add(payment);
@@ -198,29 +181,24 @@ class TransactionService {
     final optionById = {for (final o in options) o.id: o};
     final rows = <({OptionModel category, double amount, int count})>[];
     for (final entry in byId.entries) {
-      final category =
-          optionById[entry.key] ?? OptionsConstant.otherCategory;
+      final category = optionById[entry.key] ?? OptionsConstant.otherCategory;
       final amount = entry.value.fold<double>(0, (a, b) => a + b.amount);
-      rows.add((
-        category: category,
-        amount: amount,
-        count: entry.value.length,
-      ));
+      rows.add((category: category, amount: amount, count: entry.value.length));
     }
     rows.sort((a, b) => b.amount.compareTo(a.amount));
     return rows;
   }
 
-  /// Expense payment-method totals for a date range, sorted by amount (desc).
   List<({OptionModel method, double amount, int count})>
   expensesByMethodInRange({
     required DateTime start,
     required DateTime end,
     required List<OptionModel> methods,
   }) {
-    final expenses = paymentsInRange(start, end).where(
-      (p) => p.paymentType == TransactionType.expense.id,
-    );
+    final expenses = paymentsInRange(
+      start,
+      end,
+    ).where((p) => p.paymentType == TransactionType.expense.id);
     final byId = <String, List<PaymentModel>>{};
     for (final payment in expenses) {
       (byId[payment.paymentMethodId] ??= []).add(payment);
@@ -236,7 +214,6 @@ class TransactionService {
     return rows;
   }
 
-  /// Daily (or monthly for a full year span) expense totals for trend charts.
   List<({DateTime date, double amount})> expenseTrendInRange({
     required DateTime start,
     required DateTime end,

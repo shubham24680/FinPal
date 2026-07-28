@@ -73,9 +73,10 @@ class CustomTypography extends StatelessWidget {
 
   TextStyle getTextStyle(BuildContext context) => TextStyle(
     fontFamily: family,
-    color: color ?? Theme.of(context).colorScheme.onInverseSurface,
+    color: color ?? context.colors.onInverseSurface,
     fontStyle: fontStyle ?? FontStyle.normal,
     decoration: decoration ?? TextDecoration.none,
+    decorationColor: color ?? context.colors.onInverseSurface,
     fontSize: size ?? fontType.fontSize,
     fontWeight: weight ?? fontType.fontWeight,
     height: height ?? fontType.height,
