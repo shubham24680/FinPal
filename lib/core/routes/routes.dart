@@ -4,7 +4,7 @@ enum AppRoutesPath {
   splash(path: "/", child: SplashScreen()),
   onboarding(path: "/onboarding", child: OnboardingScreen()),
   lockScreen(path: "/lock", child: LockScreen()),
-  home(path: "/home", child: HomeScreen()),
+  home(path: "/home", child: ScreensWithNavbar()),
   profile(path: "/profile", child: ProfileScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
   options(path: "/options", child: OptionsScreen()),

@@ -32,9 +32,7 @@ class OptionServices {
   void clearCache() => _cache = null;
 
   // Getters
-  List<OptionModel> get options => _cache ??= _hiveService.getAllData();
-  List<OptionModel> get optionsWithoutOthers =>
-      options.where((o) => o.name != "Other").toList();
+  List<OptionModel> get categories => _cache ??= _hiveService.getAllData();
   List<OptionModel> get incomeCategories => byType(OptionType.income.id);
   List<OptionModel> get expenseCategories => byType(OptionType.expense.id);
   List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
@@ -45,7 +43,7 @@ class OptionServices {
   OptionModel findByName(String name, String type) {
     final normalized = name.trim().toLowerCase();
     if (normalized.isEmpty) return OptionsConstant.otherCategory;
-    for (var option in options) {
+    for (var option in categories) {
       if (option.type == type && option.name.toLowerCase() == normalized) {
         return option;
       }
@@ -53,7 +51,7 @@ class OptionServices {
     return OptionsConstant.otherCategory;
   }
 
-  List<OptionModel> byType(String type, {String? excludeId}) => options
+  List<OptionModel> byType(String type, {String? excludeId}) => categories
       .where((o) => o.type == type && o.id != excludeId)
       .toList(growable: false);
 }

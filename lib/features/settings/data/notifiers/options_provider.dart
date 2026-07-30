@@ -16,7 +16,7 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveOption(OptionModel option) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.save(option);
@@ -25,7 +25,7 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveAllOptions(List<OptionModel> newOptions) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.saveAll(newOptions);
@@ -34,7 +34,7 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> deleteOption(String id) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.delete(id);
@@ -112,35 +112,34 @@ class OptionProvider extends StateNotifier<OptionState> {
       icon: selectedOption.icon,
       name: selectedOption.name,
       color: selectedOption.color.colorSet,
-      type: OptionType.values.firstWhere((e) => e.id == selectedOption.type.toLowerCase()),
+      type: OptionType.values.firstWhere(
+        (e) => e.id == selectedOption.type.toLowerCase(),
+      ),
     );
   }
 
-  void setIcon(String icon) {
-    state = state.copyWith(icon: icon);
-    onChange();
-  }
-
-  void setName(String? name) {
-    if (name == null) return;
-    name = name.trim();
-    state = state.copyWith(name: name);
-    onChange();
-  }
-
-  void setType(OptionType? type) {
-    state = state.copyWith(type: type);
-    onChange();
-  }
-
-  void setColor(ColorSet color) {
-    state = state.copyWith(color: color);
+  void set({
+    String? id,
+    String? icon,
+    String? name,
+    ColorSet? color,
+    OptionType? type,
+  }) {
+    state = state.copyWith(
+      id: id ?? state.id,
+      icon: icon ?? state.icon,
+      name: name ?? state.name,
+      color: color ?? state.color,
+      type: type ?? state.type,
+    );
     onChange();
   }
 
   void onChange() {
     final isValid = state.name.isNotEmpty && state.type != null;
-    state = state.copyWith(buttonState: isValid ? ButtonState.enabled : ButtonState.disabled);
+    state = state.copyWith(
+      buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
+    );
   }
 
   Future<void> save() async {
@@ -154,8 +153,11 @@ class OptionProvider extends StateNotifier<OptionState> {
           .value
           ?.findByName(state.name, typeId);
       log("checkOption: ${checkOption?.name}.");
-      if (state.id.isEmpty && checkOption != null) {
-        state = state.copyWith(toastType: ToastType.error, message: "Option already exists");
+      if (state.id.isEmpty && checkOption != OptionsConstant.otherCategory) {
+        state = state.copyWith(
+          toastType: ToastType.error,
+          message: "Option already exists",
+        );
         return;
       }
 
@@ -167,11 +169,14 @@ class OptionProvider extends StateNotifier<OptionState> {
         color: state.color.name,
       );
       await _ref.read(optionNotifer.notifier).saveOption(option);
-      state = state.copyWith(toastType: ToastType.success, message: "Option saved successfully");
+      state = state.copyWith(
+        toastType: ToastType.success,
+        message: "Option saved successfully",
+      );
     } catch (e, stack) {
       log("Failed to save option", error: e, stackTrace: stack);
     } finally {
-        state = state.copyWith(buttonState: ButtonState.enabled);
+      state = state.copyWith(buttonState: ButtonState.enabled);
     }
   }
 
@@ -180,6 +185,7 @@ class OptionProvider extends StateNotifier<OptionState> {
   }
 }
 
-final optionProvider = StateNotifierProvider.autoDispose<OptionProvider, OptionState>(
+final optionProvider =
+    StateNotifierProvider.autoDispose<OptionProvider, OptionState>(
       (ref) => OptionProvider(ref),
     );

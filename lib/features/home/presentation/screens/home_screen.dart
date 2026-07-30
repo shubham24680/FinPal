@@ -1,128 +1,395 @@
 import 'package:finpal/app/app.dart';
-import 'package:flutter/services.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final navIndex = ref.watch(navProvider);
-    final isDark = context.isDarkMode;
+  ConsumerState<HomeScreen> createState() => _AnalysisScreenState();
+}
 
-    return AnnotatedRegion(
-      value: (isDark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light)
-          .copyWith(
-            statusBarColor: context.colors.surface,
-            statusBarIconBrightness:
-                isDark ? Brightness.light : Brightness.dark,
-            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-          ),
-      child: Scaffold(
-        extendBody: true,
-        body: IndexedStack(
-          index: navIndex,
-          children: HomeConstants.navigationBar.map((e) => e.page).toList(),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: const AnimatedFab(),
-        bottomNavigationBar: _bottomNavigationBar(context, ref, navIndex),
-      ),
+class _AnalysisScreenState extends ConsumerState<HomeScreen> {
+  static const _topWidgetHeight = 266.0;
+
+  final ValueNotifier<bool> _isSheetExpanded = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _isSheetExpanded.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = ref.watch(settingsNotifier).value;
+    final transactions = ref.watch(transactionProvider);
+
+    final availableBalance = transactions.value?.availableBalance ?? 0;
+    final hideBalance = settings?.hideBalanceOnHome ?? false;
+
+    return Stack(
+      children: [
+        _buildTopWidget(context, availableBalance, hideBalance),
+        _buildMainWidget(context, transactions, hideBalance),
+        _buildAppBar(context, availableBalance, hideBalance),
+      ],
     );
   }
 
-  Widget _bottomNavigationBar(
+  Widget _buildTopWidget(
     BuildContext context,
-    WidgetRef ref,
-    int navIndex,
+    double availableBalance,
+    bool hideBalance,
   ) {
-    final length = HomeConstants.navigationBar.length;
-    final firstHalfItems = HomeConstants.navigationBar.sublist(0, length ~/ 2);
-    final secondHalfItems = HomeConstants.navigationBar.sublist(length ~/ 2);
+    final topPadding = AppConstants.sidePadding + context.viewPadding.top;
+    final profile = ref.watch(profileNotifier).value;
+    final name = profile?.name.split(' ').first;
+    final title = [
+      TypographyModel(text: "Hello ", fontType: FontType.h1Medium),
+      if (name != null && name.isNotEmpty)
+        TypographyModel(text: "$name!", color: AppColors.primary500),
+    ];
+    final toggleBalance = ref.watch(hideBalanceProvider);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: context.colors.shadow.withAlpha(20),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
+    return CustomContainer(
+      height: _topWidgetHeight.spMin,
+      width: double.infinity,
+      padding: EdgeInsets.only(
+        top: topPadding,
+        left: AppConstants.sidePadding,
+        right: AppConstants.sidePadding,
+        bottom: 32.spMin,
+      ),
+      borderRadius: BorderRadius.zero,
+      image: context.isDarkMode ? AppImages.bannerDark : AppImages.banner,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            spacing: 8.spMin,
+            children: [
+              Expanded(
+                child: CustomTypography(
+                  typos: title,
+                  maxLines: 1,
+                  align: TextAlign.start,
+                ),
+              ),
+              _buildProfileActionButtons(context),
+            ],
           ),
+          SizedBox(height: 8.spMin),
+          CustomTypography(
+            text: "Let's make today\nfinancially rewarding.",
+            fontType: FontType.body2Medium,
+            color: context.colors.onSurface,
+          ),
+          Spacer(),
+          Row(
+            spacing: 8.spMin,
+            crossAxisAlignment:
+                hideBalance
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.end,
+            children: [
+              CustomTypography(
+                text: "Total Balance",
+                fontType: FontType.body2Medium,
+              ),
+              if (hideBalance)
+                CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: toggleBalance ? AppSvgs.eyeOpen : AppSvgs.eyeClosed,
+                  onClick:
+                      () =>
+                          ref.read(hideBalanceProvider.notifier).state =
+                              !toggleBalance,
+                  width: 16.spMin,
+                  height: 16.spMin,
+                ),
+            ],
+          ),
+          SizedBox(height: 4.spMin),
+          (!hideBalance || toggleBalance)
+              ? CustomTypography(
+                text: CurrencyFormatter.format(availableBalance),
+                fontType: FontType.h1Bold,
+              )
+              : Row(
+                spacing: 8.spMin,
+                children: List.generate(
+                  4,
+                  (index) => CustomContainer(
+                    padding: EdgeInsets.all(8.spMin),
+                    borderRadius: BorderRadius.circular(1000.r),
+                    backgroundColor: context.colors.inverseSurface,
+                  ),
+                ),
+              ),
         ],
       ),
-      child: BottomAppBar(
-        color: context.colors.surface,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10.spMin,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ...List.generate(
-              firstHalfItems.length,
-              (index) => _buildBNBItems(
-                context,
-                ref,
-                firstHalfItems[index],
-                index,
-                navIndex,
-              ),
-            ),
-            SizedBox(width: 40.spMin),
-            ...List.generate(
-              secondHalfItems.length,
-              (index) => _buildBNBItems(
-                context,
-                ref,
-                secondHalfItems[index],
-                index + length ~/ 2,
-                navIndex,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildBNBItems(
+  Widget _buildAppBar(
     BuildContext context,
-    WidgetRef ref,
-    NavModel item,
-    int index,
-    int navIndex,
+    double availableBalance,
+    bool hideBalance,
   ) {
-    final isSelected = index == navIndex;
-    final selected = item.selectedIcon ?? item.unselectedIcon;
-    final unselected = item.unselectedIcon ?? item.selectedIcon;
+    final topPadding = AppConstants.sidePadding + context.viewPadding.top;
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isSheetExpanded,
+      builder: (context, isExpanded, _) {
+        return IgnorePointer(
+          ignoring: !isExpanded,
+          child: AnimatedOpacity(
+            opacity: isExpanded ? 1 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: CustomContainer(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(16.r),
+              ),
+              showShadow: true,
+              padding: EdgeInsets.only(
+                top: topPadding,
+                left: AppConstants.sidePadding,
+                right: AppConstants.sidePadding,
+                bottom: 8.spMin,
+              ),
+              child: Row(
+                spacing: 8.spMin,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _buildTotalBalance(
+                      context,
+                      availableBalance,
+                      hideBalance,
+                      smallFont: true,
+                    ),
+                  ),
+                  _buildProfileActionButtons(context),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-    final child = Column(
+  Widget _buildTotalBalance(
+    BuildContext context,
+    double availableBalance,
+    bool hideBalance, {
+    bool smallFont = false,
+  }) {
+    final toggleBalance = ref.watch(hideBalanceProvider);
+
+    return Column(
       mainAxisSize: MainAxisSize.min,
-      spacing: 4.spMin,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomImage(
-          imageUrl: isSelected ? selected : unselected,
-          color:
-              isSelected
-                  ? context.colors.inverseSurface
-                  : context.colors.onSurface,
-          imageType: ImageType.svgLocal,
+        Row(
+          spacing: 8.spMin,
+          crossAxisAlignment:
+              hideBalance ? CrossAxisAlignment.center : CrossAxisAlignment.end,
+          children: [
+            CustomTypography(
+              text: "Total Balance",
+              fontType:
+                  smallFont ? FontType.label2Medium : FontType.body2Medium,
+            ),
+            if (hideBalance)
+              CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: toggleBalance ? AppSvgs.eyeOpen : AppSvgs.eyeClosed,
+                onClick:
+                    () =>
+                        ref.read(hideBalanceProvider.notifier).state =
+                            !toggleBalance,
+                height: smallFont ? 12.spMin : 16.spMin,
+              ),
+          ],
         ),
-        CustomTypography(
-          text: item.title,
-          fontType: FontType.label1Medium,
-          color:
-              isSelected
-                  ? context.colors.inverseSurface
-                  : context.colors.onSurface,
+        SizedBox(height: smallFont ? 2.spMin : 4.spMin),
+        (!hideBalance || toggleBalance)
+            ? CustomTypography(
+              text: CurrencyFormatter.format(availableBalance),
+              fontType: smallFont ? FontType.h4Bold : FontType.h1Bold,
+            )
+            : Row(
+              spacing: smallFont ? 4.spMin : 8.spMin,
+              children: List.generate(
+                4,
+                (index) => CustomContainer(
+                  padding: EdgeInsets.all(smallFont ? 4.spMin : 8.spMin),
+                  borderRadius: BorderRadius.circular(1000.r),
+                  backgroundColor: context.colors.inverseSurface,
+                ),
+              ),
+            ),
+      ],
+    );
+  }
+
+  Widget _buildProfileActionButtons(BuildContext context) {
+    final profile = ref.watch(profileNotifier).value;
+
+    return Row(
+      spacing: 8.spMin,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // CustomContainer(
+        //   padding: EdgeInsets.all(10.spMin),
+        //   borderRadius: BorderRadius.circular(1000.r),
+        //   border: Border.all(color: context.colors.outline),
+        //   showShadow: true,
+        //   child: CustomImage(
+        //     imageType: ImageType.svgLocal,
+        //     imageUrl: AppSvgs.search,
+        //     width: 20.spMin,
+        //     height: 20.spMin,
+        //   ),
+        // ),
+        // CustomContainer(
+        //   showShadow: true,
+        //   borderRadius: BorderRadius.circular(1000.r),
+        //   border: Border.all(color: context.colors.outline),
+        //   padding: EdgeInsets.all(10.spMin),
+        //   child: CustomImage(
+        //     imageType: ImageType.svgLocal,
+        //     imageUrl: AppSvgs.notification,
+        //     width: 20.spMin,
+        //     height: 20.spMin,
+        //   ),
+        // ),
+        buildAvatar(
+          context,
+          showShadow: true,
+          image: profile?.profileImage ?? "",
+          size: 40.spMin,
+          enableBorder: true,
+          onTap: () => context.push(AppRoutesPath.profile.path),
         ),
       ],
     );
+  }
 
-    return AnimatedTap(
-      onTap: () => ref.read(navProvider.notifier).state = index,
-      child: child,
+  Widget _buildMainWidget(
+    BuildContext context,
+    AsyncValue<TransactionService> transactions,
+    bool hideBalance,
+  ) {
+    final isLandscape = context.isLandscape;
+    final screenHeight = context.screenHeight;
+    final fullSheetThreshold = isLandscape ? 0.75 : 0.85;
+    final collapsedSize = ((screenHeight - _topWidgetHeight.spMin + 24.spMin) /
+            screenHeight)
+        .clamp(0.35, fullSheetThreshold);
+
+    return NotificationListener<DraggableScrollableNotification>(
+      onNotification: (notification) {
+        final isExpanded = notification.extent >= fullSheetThreshold;
+        if (_isSheetExpanded.value != isExpanded) {
+          _isSheetExpanded.value = isExpanded;
+        }
+        return false;
+      },
+      child: DraggableScrollableSheet(
+        initialChildSize: collapsedSize,
+        minChildSize: collapsedSize,
+        maxChildSize: isLandscape ? 0.8 : 0.9,
+        snap: true,
+        snapSizes: [collapsedSize],
+        builder: (context, scrollController) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: _isSheetExpanded,
+            builder: (context, isExpanded, child) {
+              return CustomContainer(
+                padding: EdgeInsets.zero,
+                backgroundColor: context.theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(isExpanded ? 0 : 24.r),
+                ),
+                child: child,
+              );
+            },
+            child: ListView(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 8.spMin, bottom: 180.spMin),
+              children: [
+                Center(
+                  child: CustomContainer(
+                    width: 48.spMin,
+                    height: 4.spMin,
+                    borderRadius: BorderRadius.circular(1000.r),
+                    backgroundColor: context.colors.onSurface.withAlpha(40),
+                  ),
+                ),
+                SizedBox(height: 16.spMin),
+                transactions.when(
+                  data: (data) {
+                    final analysis = AnalysisCalculator.getAnalysis(
+                      data.totalIncome,
+                      data.totalExpense,
+                      data.availableBalance,
+                    );
+                    final recentTransactions = data.getRecentTransactions();
+                    final children = [
+                      AnimatedTap(
+                        onTap: () => ref.read(navProvider.notifier).state = 2,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.r),
+                          child: CustomImage(imageUrl: AppImages.reportPoster),
+                        ),
+                      ).padding(horizontal: 16.spMin),
+                      TransactionList(
+                        payments: recentTransactions,
+                        label: "Recent Transactions",
+                        labelColor: context.colors.onSurface,
+                        moreButtonLabel: "View All",
+                        showDate: true,
+                        onMoreButtonPressed:
+                            () => ref.read(navProvider.notifier).state = 1,
+                      ),
+                    ];
+                    final widget =
+                        isLandscape
+                            ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: children.map((e) => Expanded(child: e)).toList(),
+                            )
+                            : Column(
+                              spacing: 16.spMin,
+                              mainAxisSize: MainAxisSize.min,
+                              children: children,
+                            );
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AnalysisCard(
+                          analysis,
+                          title: "Analytics",
+                          onTap: () => ref.read(navProvider.notifier).state = 2,
+                        ),
+                        CategoriesCard(),
+                        SizedBox(height: 16.spMin),
+                        widget,
+                      ],
+                    );
+                  },
+                  error: (error, stackTrace) => const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

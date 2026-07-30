@@ -5,37 +5,10 @@ class CategoriesCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final categories = ref.watch(optionNotifer).value?.expenseCategories ?? [];
-    final categories = [
-      AnalysisModel(
-        id: "food_and_drinks",
-        title: "Food & Drinks",
-        amount: 1048,
-        color: ColorSet.purple,
-        icon: AppSvgs.food,
-      ),
-      AnalysisModel(
-        id: "transportation",
-        title: "Transportation",
-        amount: 1040,
-        color: ColorSet.accent,
-        icon: AppSvgs.transportation,
-      ),
-      AnalysisModel(
-        id: "entertainment",
-        title: "Entertainment",
-        amount: 483,
-        color: ColorSet.neutral,
-        icon: AppSvgs.entertainment,
-      ),
-      AnalysisModel(
-        id: "shopping",
-        title: "Shopping",
-        amount: 1820,
-        color: ColorSet.info,
-        icon: AppSvgs.shopping,
-      ),
-    ];
+    final isLandscape = context.isLandscape;
+    final payments = ref.watch(transactionProvider).value?.payments ?? [];
+    final allCategories = ref.watch(optionNotifer).value?.categories ?? [];
+    final categories = AnalysisCalculator.getCategories(payments, allCategories);
     if (categories.isEmpty) return const SizedBox.shrink();
 
     return Column(
@@ -48,7 +21,7 @@ class CategoriesCard extends ConsumerWidget {
           spacing: 8.spMin,
           children: [
             CustomTypography(
-              text: "Categories",
+              text: "Top Categories",
               fontType: FontType.body2Semibold,
               color: context.colors.onSurface,
             ),
@@ -57,7 +30,7 @@ class CategoriesCard extends ConsumerWidget {
               fontType: FontType.label1Medium,
               color: context.colors.primary,
               decoration: TextDecoration.underline,
-            ).onTap(event: () {}),
+            ).onTap(event: () => context.push(AppRoutesPath.options.path)),
           ],
         ).padding(horizontal: 4.spMin),
         GridView.builder(
@@ -66,7 +39,7 @@ class CategoriesCard extends ConsumerWidget {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+            crossAxisCount: isLandscape ? 4 : 2,
             crossAxisSpacing: 12.spMin,
             mainAxisSpacing: 12.spMin,
           ),

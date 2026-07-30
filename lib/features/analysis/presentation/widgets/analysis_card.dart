@@ -1,21 +1,28 @@
 import 'package:finpal/app/app.dart';
 
 class AnalysisCard extends StatelessWidget {
-  const AnalysisCard(this.analysis, {super.key});
+  const AnalysisCard(this.analysis, {super.key, this.title = '', this.onTap});
 
   final List<AnalysisModel> analysis;
+  final String title;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = context.isLandscape;
+
     return CustomContainer(
+      onTap: onTap,
       margin: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
       showShadow: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTypography(text: 'Analytics', fontType: FontType.body2Semibold),
-          SizedBox(height: 16.spMin),
+          if(title.isNotEmpty) ...[
+            CustomTypography(text: title, fontType: FontType.body2Semibold),
+            SizedBox(height: 16.spMin),
+          ],
           Row(
             children: [
               Expanded(
@@ -43,7 +50,7 @@ class AnalysisCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: isLandscape ? 3 : 2,
                     childAspectRatio: 1.8,
                     crossAxisSpacing: 8.spMin,
                   ),

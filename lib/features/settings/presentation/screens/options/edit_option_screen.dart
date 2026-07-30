@@ -34,12 +34,6 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
   Widget build(BuildContext context) {
     final bottomPadding =
         AppConstants.bottomPadding + context.viewInsets.bottom;
-    final allOptions =
-        ref.watch(optionNotifer).value?.optionsWithoutOthers ?? [];
-    final unselectedOptions =
-        OptionsConstant.allOptions
-            .where((e) => allOptions.any((o) => o.id == e.id))
-            .toList();
     final optionState = ref.watch(optionProvider);
     final optionNotifier = ref.read(optionProvider.notifier);
     final isAdded = optionState.id.isNotEmpty;
@@ -68,7 +62,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
         right: AppConstants.sidePadding,
         bottom: bottomPadding,
       ),
-      body: _buildBody(context, optionState, optionNotifier, unselectedOptions),
+      body: _buildBody(context, optionState, optionNotifier),
     ).onTap(event: () => context.focusNode.unfocus());
   }
 
@@ -76,8 +70,17 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
     BuildContext context,
     OptionState optionState,
     OptionProvider optionNotifier,
-    List<OptionModel> allOptions,
   ) {
+    final allOptions = ref.watch(optionNotifer).value?.categories ?? [];
+    final unselectedOptions =
+        OptionsConstant.allOptions
+            .where(
+              (e) =>
+                  !allOptions.any(
+                    (o) => o.name.toLowerCase() == e.name.toLowerCase(),
+                  ),
+            )
+            .toList();
     final typeIcon = optionState.type?.icon ?? "";
 
     return SingleChildScrollView(
@@ -102,8 +105,10 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                       ),
                     );
                 if (context.mounted) {
-                  optionNotifier.setIcon(selected?["icon"]);
-                  optionNotifier.setColor(selected?["color"]);
+                  optionNotifier.set(
+                    icon: selected?["icon"],
+                    color: selected?["color"],
+                  );
                 }
               },
             ),
@@ -114,7 +119,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
               children: [
                 CustomTextField(
                   controller: nameController,
-                  onChanged: (value) => optionNotifier.setName(value),
+                  onChanged: (value) => optionNotifier.set(name: value),
                   header: "NAME",
                   hintText: "Shopping",
                   maxLength: 20,
@@ -133,7 +138,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                           context,
                           widget: _buildCategoriesBSWidget(),
                         );
-                    optionNotifier.setType(selectedType);
+                    optionNotifier.set(type: selectedType);
                     typeController.text =
                         selectedType?.name ?? optionState.type?.name ?? "";
                   },
@@ -155,15 +160,24 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
             spacing: 8.spMin,
             runSpacing: 8.spMin,
             children:
-                allOptions.map((e) {
-                  // final selected = e[0] == personalDetailsState.gender;
+                unselectedOptions.map((e) {
                   return CustomChip(
                     variant: ChipVariant.inactive,
                     outlined: true,
                     label: e.name,
                     imageUrl: e.icon,
                     // selected: selected,
-                    onTap: () {},
+                    onTap: () {
+                      ref
+                          .read(optionProvider.notifier)
+                          .set(
+                            icon: e.icon,
+                            color: e.color.colorSet,
+                            name: e.name,
+                            type: e.type.byId,
+                          );
+                      _init();
+                    },
                   );
                 }).toList(),
           ),

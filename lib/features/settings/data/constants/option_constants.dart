@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:finpal/app/app.dart';
 
 enum OptionType {
@@ -7,6 +9,10 @@ enum OptionType {
 
   const OptionType(this.id, this.name, this.icon);
   final String id, name, icon;
+}
+
+extension OptionTypeExtension on String {
+  OptionType get byId => OptionType.values.firstWhere((e) => e.id.toLowerCase() == toLowerCase());
 }
 
 class OptionsConstant {
@@ -132,5 +138,8 @@ class OptionsConstant {
     ...paymentMethods,
     ...incomeCategories,
     ...expenseCategories,
-  ];
+  ].map((e) => e.copyWith(color: randomColorSet.name)).toList(growable: false);
 }
+
+ColorSet get randomColorSet =>
+    ColorSet.values.elementAt(Random().nextInt(ColorSet.values.length));

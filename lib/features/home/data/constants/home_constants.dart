@@ -4,7 +4,7 @@ class HomeConstants {
   static final List<NavModel> navigationBar = [
     NavModel(
       id: 'home',
-      page: AnalysisScreen(),
+      page: HomeScreen(),
       selectedIcon: AppSvgs.home1,
       unselectedIcon: AppSvgs.home,
       title: 'Home',
@@ -17,11 +17,11 @@ class HomeConstants {
       title: 'Transactions',
     ),
     NavModel(
-      id: 'reports',
+      id: 'analysis',
       page: AnalysisScreen(),
       selectedIcon: AppSvgs.report,
       unselectedIcon: AppSvgs.report1,
-      title: 'Reports',
+      title: 'Analysis',
     ),
     NavModel(
       id: 'settings',
