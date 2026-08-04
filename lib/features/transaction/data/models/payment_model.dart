@@ -37,8 +37,8 @@ class PaymentModel extends HiveObject {
     DateTime? updatedAt,
     this.receiptPath = "",
   }) : id = (id == null || id.isEmpty) ? const Uuid().v7() : id,
-       categoryId = categoryId ?? _defaultCategoryId(paymentType),
-       paymentMethodId = paymentMethodId ?? OptionType.paymentMethod.id,
+       categoryId = categoryId ?? OptionsConstant.otherCategory.id,
+       paymentMethodId = paymentMethodId ?? OptionsConstant.otherCategory.id,
        date = date ?? DateTime.now(),
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
@@ -65,13 +65,4 @@ class PaymentModel extends HiveObject {
     createdAt: createdAt,
     receiptPath: receiptPath ?? this.receiptPath,
   );
-}
-
-String _defaultCategoryId(String paymentType) {
-  return OptionType.values
-      .firstWhere(
-        (value) => value.id == paymentType,
-        orElse: () => OptionType.expense,
-      )
-      .id;
 }

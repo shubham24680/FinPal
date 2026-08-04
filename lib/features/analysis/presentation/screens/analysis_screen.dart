@@ -10,30 +10,35 @@ class AnalysisScreen extends ConsumerStatefulWidget {
 class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
   @override
   Widget build(BuildContext context) {
+    final period = ref.watch(analysisPeriodProvider);
     final transactions = ref.watch(transactionProvider);
+    final payments = transactions.value?.payments ?? const [];
+    final options = ref.watch(optionNotifer).value;
+    final currency = ref.watch(currencyProvider);
+    final analysis = AnalysisCalculator.compute(
+      period: period,
+      payments: payments,
+      expenseCategories: options?.expenseCategories ?? const [],
+      paymentMethods: options?.paymentMethods ?? const [],
+      currency: currency,
+      fallbackCategory: OptionsConstant.otherCategory,
+      fallbackMethod: OptionsConstant.otherCategory,
+    );
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: 180.spMin),
       child: Column(
         children: [
-          _buildTopWidget(context, transactions),
-          _buildMainWidget(context, transactions),
+          _buildTopWidget(context, analysis),
+          _buildMainWidget(context, analysis),
         ],
       ),
     );
   }
 
-  Widget _buildTopWidget(
-    BuildContext context,
-    AsyncValue<TransactionService> transactions,
-  ) {
+  Widget _buildTopWidget(BuildContext context, PeriodAnalysis analysis) {
     final topPadding = AppConstants.sidePadding + context.viewPadding.top;
-    final data = transactions.value;
-    final analysis = AnalysisCalculator.getAnalysis(
-      data?.totalIncome,
-      data?.totalExpense,
-      data?.availableBalance,
-    );
+    final pieData = analysis.analysisPie;
 
     return SizedBox(
       height: 340.spMin,
@@ -60,7 +65,7 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
                 color: context.colors.onSurface,
               ).padding(horizontal: AppConstants.sidePadding),
               Spacer(),
-              AnalysisCard(analysis),
+              AnalysisCard(pieData),
             ],
           ).padding(top: topPadding),
         ],
@@ -68,120 +73,26 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     );
   }
 
-  Widget _buildMainWidget(
-    BuildContext context,
-    AsyncValue<TransactionService> transactions,
-  ) {
-    final period = ref.watch(analysisPeriodProvider);
-    final options = ref.watch(optionNotifer).value;
-    final currency = ref.watch(currencyProvider);
-    final budgetCeiling = ref.watch(settingsNotifier).value?.monthlyBudget;
-
+  Widget _buildMainWidget(BuildContext context, PeriodAnalysis analysis) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16.spMin,
       children: [
-        transactions.when(
-          data: (data) {
-            final analysisCompute = AnalysisCalculator.compute(
-              payments: data.payments,
-              period: period,
-              expenseCategories: options?.expenseCategories ?? const [],
-              paymentMethods: options?.paymentMethods ?? const [],
-              fallbackCategory: OptionsConstant.otherCategory,
-              fallbackMethod: OptionsConstant.otherCategory,
-              budgetCeiling: budgetCeiling,
-              currency: currency,
-            );
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const AnalysisPeriodChips().padding(top: 16.spMin),
-                AnalysisInsightsRow(
-                  insights: analysisCompute.insights,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-                AnalysisTrendChart(
-                  analysis: analysisCompute,
-                  hideBalance: false,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-                AnalysisSummaryStrip(
-                  analysis: analysisCompute,
-                  hideBalance: false,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-                AnalysisBudgetProgress(
-                  analysis: analysisCompute,
-                  hideBalance: false,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-                AnalysisCategoryBreakdown(
-                  analysis: analysisCompute,
-                  hideBalance: false,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-                AnalysisMethodBreakdown(
-                  analysis: analysisCompute,
-                  hideBalance: false,
-                ).padding(horizontal: AppConstants.sidePadding, top: 16.spMin),
-              ],
-            );
-          },
-          error: (error, stackTrace) => const SizedBox.shrink(),
-          loading: () => const SizedBox.shrink(),
+        const AnalysisPeriodChips(),
+        AnalysisTrendChart(
+          analysis.expenseTrend,
+          analysis.period,
+          title: 'Spending trend',
         ),
+        AnalysisTrendChart(
+          analysis.incomeTrend,
+          analysis.period,
+          title: 'Income trend',
+          color: ColorSet.info,
+        ),
+        AnalysisCategoryBreakdown(analysis),
+        AnalysisMethodBreakdown(analysis),
       ],
-    );
+    ).padding(vertical: AppConstants.sidePadding);
   }
-
-  // Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
-  //   return Column(
-  //     children: [
-  //       SizedBox(height: 24.w),
-  //       CustomImage(
-  //         imageUrl: AppImages.noTransactions,
-  //       ).padding(horizontal: 40.spMin),
-  //       SizedBox(height: 16.w),
-  //       CustomTypography(
-  //         text: 'No transactions this period',
-  //         fontType: FontType.h4Semibold,
-  //       ),
-  //       SizedBox(height: 8.w),
-  //       CustomTypography(
-  //         text:
-  //             'Add income or expenses to see your spending analysis for this period.',
-  //         fontType: FontType.label1Medium,
-  //         color: context.colors.onSurface,
-  //         align: TextAlign.center,
-  //       ),
-  //       SizedBox(height: 16.w),
-  //       CustomButton(
-  //         label: 'Add Transaction',
-  //         prefixIcon: AppSvgs.add2,
-  //         onTap: () {
-  //           ref.read(selectedTransactionProvider.notifier).state = null;
-  //           context.push(AppRoutesPath.editTransaction.path);
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildError(BuildContext context, WidgetRef ref) {
-  //   return Column(
-  //     children: [
-  //       Align(
-  //         alignment: Alignment.centerLeft,
-  //         child: _buildGreeting(context, ref),
-  //       ),
-  //       const Spacer(),
-  //       CustomTypography(
-  //         text: 'Something went wrong',
-  //         fontType: FontType.body1Medium,
-  //       ),
-  //       SizedBox(height: 8.w),
-  //       CustomButton(
-  //         label: 'Retry',
-  //         isFull: false,
-  //         onTap: () => ref.invalidate(transactionProvider),
-  //       ),
-  //       const Spacer(),
-  //     ],
-  //   );
-  // }
 }

@@ -1,18 +1,37 @@
 import 'package:finpal/app/app.dart';
 import 'package:intl/intl.dart';
 
-enum DateFormatType { date, date1, monthYear, fullDate, time, dateTime, halfMonth, month }
+enum DateFormatType {
+  dateTime,
+  fullDate,
+  shortDate,
+  date,
+  date1,
+  shortDateMonth,
+  dateMonth,
+  shortMonth,
+  month,
+  monthYear,
+  time,
+  shortDay,
+}
 
 extension DateTimeX on DateTime {
   static final Map<DateFormatType, DateFormat> formatters = {
-    DateFormatType.halfMonth: DateFormat('MMM'),
-    DateFormatType.month: DateFormat('MMMM'),
-    DateFormatType.monthYear: DateFormat('MMMM yyyy'),
+    DateFormatType.dateTime: DateFormat(
+      'd MMMM, yyyy ${UnicodeConstants.dot} h:mm a',
+    ),
+    DateFormatType.fullDate: DateFormat('EEE, MMM d, yyyy'),
+    DateFormatType.shortDate: DateFormat('d MMM, yy'),
     DateFormatType.date: DateFormat('d MMMM, yyyy'),
     DateFormatType.date1: DateFormat('MMMM d, yyyy'),
-    DateFormatType.fullDate: DateFormat('EEE, MMM d, yyyy'),
+    DateFormatType.shortDateMonth: DateFormat('d MMM'),
+    DateFormatType.dateMonth: DateFormat('d MMMM'),
+    DateFormatType.shortMonth: DateFormat('MMM'),
+    DateFormatType.month: DateFormat('MMMM'),
+    DateFormatType.monthYear: DateFormat('MMMM yyyy'),
     DateFormatType.time: DateFormat('h:mm a'),
-    DateFormatType.dateTime: DateFormat('d MMMM, yyyy ${UnicodeConstants.dot} h:mm a'),
+    DateFormatType.shortDay: DateFormat('EEE'),
   };
 
   String formatDate({DateFormatType type = DateFormatType.date}) =>
@@ -34,5 +53,5 @@ extension DateTimeX on DateTime {
           ? "Today"
           : isYesterday
           ? "Yesterday"
-          : formatDate(type: type);   
+          : formatDate(type: type);
 }
