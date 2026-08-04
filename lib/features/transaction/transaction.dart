@@ -9,6 +9,5 @@ export 'presentation/screens/transaction_screen.dart';
 export 'presentation/screens/transaction_detail_sheet.dart';
 export 'presentation/screens/edit_transaction_screen.dart';
 
-export 'presentation/widgets/transaction_widgets.dart';
 export 'presentation/widgets/transaction_bottomsheet.dart';
 export 'presentation/widgets/transaction_tile.dart';

@@ -1,11 +1,3 @@
-// Expense (legacy analytics helpers still used by Analysis)
-export 'expense/expense_screen.dart';
-export 'expense/widgets/categories_tile.dart';
-export 'expense/widgets/manage_expenses.dart';
-
-// Analysis
-export 'analysis/analysis.dart';
-
 // Bot
 export 'ai/ai_screen.dart';
 export 'ai/ai_provider.dart';
