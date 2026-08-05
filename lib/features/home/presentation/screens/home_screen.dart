@@ -385,6 +385,8 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                   error: (error, stackTrace) => const SizedBox.shrink(),
                   loading: () => const SizedBox.shrink(),
                 ),
+                SizedBox(height: 16.spMin),
+                const ProfileProgressCard()
               ],
             ),
           );

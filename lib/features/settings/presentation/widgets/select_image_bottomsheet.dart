@@ -24,7 +24,7 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
             CustomImage(
               imageType: ImageType.svgLocal,
               imageUrl: options[index].icon,
-              color: options[index].iconColor,
+              color: options[index].color.normal,
             ),
             CustomTypography(
               text: options[index].title,

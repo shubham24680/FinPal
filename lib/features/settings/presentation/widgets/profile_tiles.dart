@@ -37,17 +37,17 @@ Widget profileTiles(
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemBuilder: (_, index) {
-                  final iconDarkColor = contents[index].iconBgDarkColor ?? contents[index].iconBgColor;
+                  final color = contents[index].color;
                   return Row(
                     spacing: 12.spMin,
                     children: [
                       CustomContainer(
                         padding: EdgeInsets.all(12.r),
-                        backgroundColor: isDark ? iconDarkColor : contents[index].iconBgColor,
+                        backgroundColor: isDark ? color.dimDark : color.light,
                         child: CustomImage(
                           imageType: ImageType.svgLocal,
                           imageUrl: contents[index].icon,
-                          color: contents[index].iconColor,
+                          color: color.normal,
                           height: 16.spMin,
                           width: 16.spMin,
                         ),

@@ -5,12 +5,14 @@ export 'data/constants/option_constants.dart';
 export 'data/models/settings_model.dart';
 export 'data/models/option_model.dart';
 export 'data/models/profile_model.dart';
+export 'data/models/profile_helper_model.dart';
 
 export 'data/notifiers/settings_notifier.dart';
 export 'data/notifiers/profile_provider.dart';
 export 'data/notifiers/options_provider.dart';
 
 export 'data/services/option_services.dart';
+export 'data/services/profile_services.dart';
 
 export 'presentation/screens/settings_screen.dart';
 export 'presentation/screens/profile/profile_screen.dart';
@@ -23,6 +25,7 @@ export 'presentation/screens/preferences/currency_screen.dart';
 
 export 'presentation/widgets/profile_avatar.dart';
 export 'presentation/widgets/profile_tiles.dart';
+export 'presentation/widgets/profile_progress_card.dart';
 export 'presentation/widgets/personal_details_form.dart';
 export 'presentation/widgets/settings_tiles.dart';
 export 'presentation/widgets/option_tiles.dart';
