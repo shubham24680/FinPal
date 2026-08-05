@@ -35,29 +35,35 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding =
-        AppConstants.bottomPadding + context.viewInsets.bottom;
     final profileState = ref.watch(profileProvider);
     final profileNotifier = ref.read(profileProvider.notifier);
 
     return Scaffold(
+      extendBody: true,
       appBar: customAppBar(context, title: "Edit Profile"),
-      bottomNavigationBar: CustomButton(
-        buttonState: profileState.buttonState,
-        label: "Save Changes",
-        onTap: () async {
-          final hasSubmitted = await profileNotifier.onSubmit();
-          if (hasSubmitted && context.mounted) {
-            context.pop();
-          }
-        },
-      ).padding(
-        left: AppConstants.sidePadding,
-        right: AppConstants.sidePadding,
-        bottom: bottomPadding,
+      bottomNavigationBar: SafeArea(
+        child: CustomButton(
+          buttonState: profileState.buttonState,
+          label: "Save Changes",
+          onTap: () async {
+            final hasSubmitted = await profileNotifier.onSubmit();
+            if (hasSubmitted && context.mounted) {
+              context.pop();
+            }
+          },
+        ).padding(
+          horizontal: AppConstants.sidePadding,
+          top: 8.spMin,
+          bottom: context.buttonBottomPadding,
+        ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppConstants.sidePadding),
+        padding: EdgeInsets.only(
+          left: AppConstants.sidePadding,
+          right: AppConstants.sidePadding,
+          top: AppConstants.sidePadding,
+          bottom: 180.spMin + context.viewInsets.bottom,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
