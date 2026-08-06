@@ -38,18 +38,27 @@ class OptionServices {
   List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
 
   //Filters
-  OptionModel findById(String id) => _hiveService.getData(id) ?? OptionsConstant.otherCategory;
-  
+  OptionModel findById(String id) =>
+      _hiveService.getData(id) ?? OptionsConstant.otherCategory;
+
   OptionModel findByName(String name, String type) {
+    return findByNameOrNull(name, type) ?? OptionsConstant.otherCategory;
+  }
+
+  OptionModel? findByNameOrNull(String name, String type, {String? excludeId}) {
     final normalized = name.trim().toLowerCase();
-    if (normalized.isEmpty) return OptionsConstant.otherCategory;
-    for (var option in categories) {
+    if (normalized.isEmpty) return null;
+    for (final option in categories) {
+      if (option.id == excludeId) continue;
       if (option.type == type && option.name.toLowerCase() == normalized) {
         return option;
       }
     }
-    return OptionsConstant.otherCategory;
+    return null;
   }
+
+  bool existsByName(String name, String type, {String? excludeId}) =>
+      findByNameOrNull(name, type, excludeId: excludeId) != null;
 
   List<OptionModel> byType(String type, {String? excludeId}) => categories
       .where((o) => o.type == type && o.id != excludeId)

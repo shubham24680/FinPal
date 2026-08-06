@@ -78,7 +78,14 @@ class ProfileScreen extends ConsumerWidget {
             ),
           );
         },
-        error: (e, s) => const SizedBox.shrink(),
+        error:
+            (_, __) => Center(
+              child: CustomTypography(
+                text: "Couldn't load profile",
+                fontType: FontType.body1Medium,
+                color: context.colors.onSurface,
+              ),
+            ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

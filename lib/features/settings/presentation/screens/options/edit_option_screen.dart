@@ -36,7 +36,8 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
         AppConstants.bottomPadding + context.viewInsets.bottom;
     final optionState = ref.watch(optionProvider);
     final optionNotifier = ref.read(optionProvider.notifier);
-    final isAdded = optionState.id.isNotEmpty;
+    final id = optionState.id;
+    final isAdded = id != null && id.isNotEmpty;
 
     ref.listen(optionProvider, (previous, next) {
       if (next.toastType != ToastType.normal) {
@@ -166,7 +167,6 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                     outlined: true,
                     label: e.name,
                     imageUrl: e.icon,
-                    // selected: selected,
                     onTap: () {
                       ref
                           .read(optionProvider.notifier)
@@ -174,9 +174,8 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                             icon: e.icon,
                             color: e.color.colorSet,
                             name: e.name,
-                            type: e.type.byId,
                           );
-                      _init();
+                      nameController.text = e.name;
                     },
                   );
                 }).toList(),

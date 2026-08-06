@@ -80,6 +80,7 @@ class SettingsModel extends HiveObject {
 }
 
 enum ActionType {
+  none,
   toggle,
   navigate,
   launchUrl,
@@ -97,6 +98,7 @@ class SettingsContentModel {
   final Color? iconBgDarkColor;
   final ActionType actionType;
   final String path;
+  final bool value;
 
   SettingsContentModel({
     required this.id,
@@ -109,6 +111,7 @@ class SettingsContentModel {
     this.iconBgDarkColor,
     this.actionType = ActionType.navigate,
     this.path = "",
+    this.value = false,
   });
 
   SettingsContentModel copyWith({
@@ -122,6 +125,7 @@ class SettingsContentModel {
     String? subtitle,
     String? actionText,
     Color? iconBgDarkColor,
+    bool? value,
   }) => SettingsContentModel(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -133,5 +137,6 @@ class SettingsContentModel {
     iconBgDarkColor: iconBgDarkColor ?? this.iconBgDarkColor,
     path: path ?? this.path,
     actionType: actionType ?? this.actionType,
+    value: value ?? this.value,
   );
 }

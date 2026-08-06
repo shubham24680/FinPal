@@ -47,8 +47,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           label: "Save Changes",
           onTap: () async {
             final hasSubmitted = await profileNotifier.onSubmit();
-            if (hasSubmitted && context.mounted) {
+            if (!context.mounted) return;
+            if (hasSubmitted) {
               context.pop();
+            } else {
+              context.showSnackBar(
+                "Failed to save profile",
+                toastType: ToastType.error,
+              );
             }
           },
         ).padding(

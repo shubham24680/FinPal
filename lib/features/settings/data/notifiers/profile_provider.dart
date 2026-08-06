@@ -21,8 +21,8 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     String? dob,
     String? gender,
     double? monthlyIncome,
+    bool clearMonthlyIncome = false,
   }) async {
-    state = const AsyncLoading();
     final profile = state.value ?? ProfileModel();
     state = await AsyncValue.guard(() async {
       final profileModel = profile.copyWith(
@@ -31,6 +31,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
         dob: dob,
         gender: gender,
         monthlyIncome: monthlyIncome,
+        clearMonthlyIncome: clearMonthlyIncome,
       );
 
       await _hiveService.saveData(_key, profileModel);
@@ -39,7 +40,6 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
   }
 
   Future<void> clearData() async {
-    state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await _hiveService.clearData(_key);
       return ProfileModel();
@@ -84,6 +84,7 @@ class ProfileState {
     String? dob,
     String? gender,
     double? monthlyIncome,
+    bool clearMonthlyIncome = false,
     ButtonState? buttonState,
   }) {
     return ProfileState(
@@ -91,7 +92,8 @@ class ProfileState {
       name: name ?? this.name,
       dob: dob ?? this.dob,
       gender: gender ?? this.gender,
-      monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+      monthlyIncome:
+          clearMonthlyIncome ? null : monthlyIncome ?? this.monthlyIncome,
       buttonState: buttonState ?? this.buttonState,
     );
   }
@@ -136,11 +138,22 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   }
 
   void setMonthlyIncome(String? monthlyIncome) {
-    if (monthlyIncome == null || monthlyIncome.trim().isEmpty) return;
-    final amount = CurrencyFormatter.parse(monthlyIncome);
-    if (amount <= 0) return;
-    state = state.copyWith(monthlyIncome: amount);
+    final amount = _parseMonthlyIncome(monthlyIncome);
+    state =
+        amount == null
+            ? state.copyWith(clearMonthlyIncome: true)
+            : state.copyWith(monthlyIncome: amount);
     onChange();
+  }
+
+  double? _parseMonthlyIncome(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return null;
+    try {
+      final amount = CurrencyFormatter.parse(raw);
+      return amount > 0 ? amount : null;
+    } on FormatException {
+      return null;
+    }
   }
 
   void onChange() {
@@ -167,9 +180,10 @@ class ProfileProvider extends StateNotifier<ProfileState> {
             dob: state.dob,
             gender: state.gender,
             monthlyIncome: state.monthlyIncome,
+            clearMonthlyIncome: state.monthlyIncome == null,
           );
       return true;
-    } catch (e) {
+    } catch (_) {
       return false;
     } finally {
       state = state.copyWith(buttonState: ButtonState.enabled);

@@ -6,6 +6,7 @@ class CustomContainer extends StatefulWidget {
     this.child,
     this.onTap,
     this.onLongTap,
+    this.animateOnTap = true,
     this.padding,
     this.margin,
     this.image,
@@ -25,6 +26,7 @@ class CustomContainer extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final VoidCallback? onLongTap;
+  final bool animateOnTap;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final String? image;
@@ -76,10 +78,19 @@ class _CustomContainerState extends State<CustomContainer> {
         borderRadius: defaultBorderRadius,
         border: widget.border,
         boxShadow: widget.showShadow ? defaultShadow : null,
-        gradient: widget.gradient
+        gradient: widget.gradient,
       ),
       child: widget.child,
     );
+
+    if (!widget.animateOnTap) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        onLongPress: widget.onLongTap,
+        behavior: HitTestBehavior.opaque,
+        child: container,
+      );
+    }
 
     return AnimatedTap(
       onTap: widget.onTap,

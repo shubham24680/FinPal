@@ -23,11 +23,13 @@ class ProfileContentModel {
     String? icon,
     ColorSet? color,
     String? value,
+    bool? isCompleted,
   }) => ProfileContentModel(
     id: id ?? this.id,
     title: title ?? this.title,
     icon: icon ?? this.icon,
     color: color ?? this.color,
     value: value ?? this.value,
+    isCompleted: isCompleted ?? this.isCompleted,
   );
 }

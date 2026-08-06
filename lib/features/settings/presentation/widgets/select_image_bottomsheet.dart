@@ -9,13 +9,23 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
     itemBuilder: (context, index) {
       return CustomContainer(
         onTap: () async {
-          final image = await ImagePicker().pickImage(
-            source:
-                options[index].id == "camera"
-                    ? ImageSource.camera
-                    : ImageSource.gallery,
-          );
-          if (context.mounted) context.pop(image?.path);
+          try {
+            final image = await ImagePicker().pickImage(
+              source:
+                  options[index].id == "camera"
+                      ? ImageSource.camera
+                      : ImageSource.gallery,
+            );
+            if (context.mounted) context.pop(image?.path);
+          } catch (_) {
+            if (context.mounted) {
+              context.pop();
+              context.showSnackBar(
+                "Unable to access ${options[index].title.toLowerCase()}",
+                toastType: ToastType.error,
+              );
+            }
+          }
         },
         padding: EdgeInsets.symmetric(vertical: 16.r),
         child: Row(

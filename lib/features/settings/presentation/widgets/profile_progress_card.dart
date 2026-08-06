@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:finpal/app/app.dart';
 
 class ProfileProgressCard extends ConsumerStatefulWidget {
@@ -15,7 +17,7 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
   Widget build(BuildContext context) {
     final profile = ref.watch(profileNotifier).value ?? ProfileModel();
     final isFirstVisit =
-        ref.watch(settingsNotifier).value?.isFirstVisit ?? false;
+        ref.watch(settingsNotifier).value?.isFirstVisit ?? true;
     final steps = ProfileConstants.buildProgressSteps(profile, isFirstVisit);
     final progress = ProfileProgress(steps: steps);
     final isDark = context.isDarkMode;
@@ -24,6 +26,7 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
 
     final status = ProfileConstants.statusLabel(progress.percent);
     final footer = ProfileConstants.message(progress.percent, profile.name);
+    final completedIndex = max(progress.completed - 1, 0);
 
     return CustomContainer(
       showShadow: true,
@@ -36,7 +39,7 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context, steps, progress, isDark),
+              _buildHeader(context, steps, progress, isDark, completedIndex),
               SizedBox(height: 16.spMin),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -47,8 +50,12 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
                     fontType: FontType.h1Bold,
                   ),
                   CustomContainer(
-                    padding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 4.r),
-                    backgroundColor: isDark ? status.color.dimDark : status.color.light,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.r,
+                      vertical: 4.r,
+                    ),
+                    backgroundColor:
+                        isDark ? status.color.dimDark : status.color.light,
                     child: CustomTypography(
                       text: status.title,
                       fontType: FontType.label2SemiBold,
@@ -58,7 +65,7 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
                 ],
               ),
               SizedBox(height: 12.spMin),
-              _buildSegmentedBar(context, progress, steps[progress.completed - 1]),
+              _buildSegmentedBar(context, progress, steps[completedIndex]),
               SizedBox(height: 12.spMin),
               CustomTypography(
                 text: footer,
@@ -86,9 +93,10 @@ class _ProfileProgressCardState extends ConsumerState<ProfileProgressCard> {
     List<ProfileContentModel> steps,
     ProfileProgress progress,
     bool isDark,
+    int completedIndex,
   ) {
     final step = steps[progress.current];
-    final color = steps[progress.completed - 1].color;
+    final color = steps[completedIndex].color;
     return Row(
       spacing: 12.spMin,
       children: [

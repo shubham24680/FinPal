@@ -47,7 +47,7 @@ final optionNotifer = AsyncNotifierProvider<OptionNotifier, OptionServices>(
 );
 
 class OptionState {
-  final String id;
+  final String? id;
   final String icon;
   final String name;
   final ColorSet color;
@@ -57,7 +57,7 @@ class OptionState {
   final String message;
 
   OptionState({
-    required this.id,
+    this.id,
     required this.icon,
     required this.name,
     required this.color,
@@ -68,7 +68,6 @@ class OptionState {
   });
 
   factory OptionState.initial() => OptionState(
-    id: '',
     icon: AppSvgs.add1,
     name: '',
     color: ColorSet.primary,
@@ -108,13 +107,11 @@ class OptionProvider extends StateNotifier<OptionState> {
     final selectedOption = _ref.read(selectedOptionProvider);
     if (selectedOption == null) return;
     state = state.copyWith(
-      id: selectedOption.id,
+      id: selectedOption.id.isNotEmpty ? selectedOption.id : null,
       icon: selectedOption.icon,
       name: selectedOption.name,
       color: selectedOption.color.colorSet,
-      type: OptionType.values.firstWhere(
-        (e) => e.id == selectedOption.type.toLowerCase(),
-      ),
+      type: selectedOption.type.byId,
     );
   }
 
@@ -146,14 +143,21 @@ class OptionProvider extends StateNotifier<OptionState> {
     state = state.copyWith(buttonState: ButtonState.loading);
     try {
       final typeId = state.type?.id;
-      if (typeId == null) return;
+      if (typeId == null) {
+        state = state.copyWith(
+          toastType: ToastType.error,
+          message: "Please select a category type",
+        );
+        return;
+      }
 
-      final checkOption = _ref
-          .read(optionNotifer)
-          .value
-          ?.findByName(state.name, typeId);
-      log("checkOption: ${checkOption?.name}.");
-      if (state.id.isEmpty && checkOption != OptionsConstant.otherCategory) {
+      final isDuplicate =
+          _ref
+              .read(optionNotifer)
+              .value
+              ?.existsByName(state.name, typeId, excludeId: state.id) ??
+          false;
+      if (isDuplicate) {
         state = state.copyWith(
           toastType: ToastType.error,
           message: "Option already exists",
@@ -165,7 +169,7 @@ class OptionProvider extends StateNotifier<OptionState> {
         id: state.id,
         type: typeId,
         icon: state.icon,
-        name: state.name,
+        name: state.name.trim(),
         color: state.color.name,
       );
       await _ref.read(optionNotifer.notifier).saveOption(option);
@@ -175,6 +179,10 @@ class OptionProvider extends StateNotifier<OptionState> {
       );
     } catch (e, stack) {
       log("Failed to save option", error: e, stackTrace: stack);
+      state = state.copyWith(
+        toastType: ToastType.error,
+        message: "Failed to save option",
+      );
     } finally {
       state = state.copyWith(buttonState: ButtonState.enabled);
     }

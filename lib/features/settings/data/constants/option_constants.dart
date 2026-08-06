@@ -12,7 +12,13 @@ enum OptionType {
 }
 
 extension OptionTypeExtension on String {
-  OptionType get byId => OptionType.values.firstWhere((e) => e.id.toLowerCase() == toLowerCase());
+  OptionType? get byId {
+    final normalized = toLowerCase();
+    return OptionType.values.firstWhere(
+      (type) => type.id.toLowerCase() == normalized,
+      orElse: () => OptionType.expense,
+    );
+  }
 }
 
 class OptionsConstant {

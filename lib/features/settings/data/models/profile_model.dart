@@ -33,7 +33,7 @@ class ProfileModel extends HiveObject {
     this.email = "",
     this.phone = "",
     this.monthlyIncome,
-  }) : id = id ?? Uuid().v4(),
+  }) : id = (id == null || id.isEmpty) ? Uuid().v4() : id,
        createdAt = createdAt ?? DateTime.now();
 
   ProfileModel copyWith({
@@ -44,14 +44,17 @@ class ProfileModel extends HiveObject {
     String? email,
     String? phone,
     double? monthlyIncome,
+    bool clearMonthlyIncome = false,
   }) => ProfileModel(
     id: id,
+    createdAt: createdAt,
     name: name ?? this.name,
     profileImage: profileImage ?? this.profileImage,
     dob: dob ?? this.dob,
     gender: gender ?? this.gender,
     email: email ?? this.email,
     phone: phone ?? this.phone,
-    monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+    monthlyIncome:
+        clearMonthlyIncome ? null : monthlyIncome ?? this.monthlyIncome,
   );
 }

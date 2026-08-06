@@ -33,7 +33,7 @@ class SettingsTiles extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemBuilder: (_, index) {
-                  return _settingsTile(context, items[index]);
+                  return _settingsTile(context, items[index], ref);
                 },
                 separatorBuilder:
                     (_, index) =>
@@ -46,12 +46,17 @@ class SettingsTiles extends ConsumerWidget {
     );
   }
 
-  Widget _settingsTile(BuildContext context, SettingsContentModel items) {
+  Widget _settingsTile(
+    BuildContext context,
+    SettingsContentModel items,
+    WidgetRef ref,
+  ) {
     final isDark = context.isDarkMode;
     final iconDarkColor = items.iconBgDarkColor ?? items.iconBgColor;
 
     return CustomContainer(
-      onTap: () => _handleTap(context, items),
+      animateOnTap: items.path.isNotEmpty,
+      onTap: () => handleTap(context, items, ref),
       padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
       child: Row(
         spacing: 12.spMin,
@@ -94,44 +99,93 @@ class SettingsTiles extends ConsumerWidget {
               fontType: FontType.body2Medium,
               color: context.colors.onSurface,
             ),
-          CustomImage(
-            imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.arrowRight1,
-            color: context.colors.onSurfaceVariant,
-            height: 16.spMin,
-          ),
+          buildTrailingIcon(context, items, ref),
         ],
       ),
     );
   }
 
-  void _handleTap(BuildContext context, SettingsContentModel contents) {
+  Future<void> handleTap(
+    BuildContext context,
+    SettingsContentModel contents,
+    WidgetRef ref,
+  ) async {
     switch (contents.actionType) {
       case ActionType.navigate:
-        contents.path.isNotEmpty ? context.push(contents.path) : null;
+        if (contents.path.isNotEmpty) context.push(contents.path);
         break;
       case ActionType.launchUrl:
-        contents.path.isNotEmpty ? launchUrl(Uri.parse(contents.path)) : null;
+        if (contents.path.isEmpty) return;
+        final launched = await hitUrl(contents.path);
+        if (!launched && context.mounted) {
+          context.showSnackBar(
+            "Unable to open link",
+            toastType: ToastType.error,
+          );
+        }
         break;
       case ActionType.toggle:
+        if (contents.id == "hide_balance") {
+          final newValue = !contents.value;
+          ref.read(settingsNotifier.notifier).save(hideBalanceOnHome: newValue);
+        }
         break;
-      case ActionType.bottomSheet:
+      default:
         break;
     }
   }
 
-  List<SettingsContentModel> handleContents(WidgetRef ref, List<SettingsContentModel> contents) {
+  Widget buildTrailingIcon(
+    BuildContext context,
+    SettingsContentModel items,
+    WidgetRef ref,
+  ) {
+    if (items.actionType == ActionType.toggle) {
+      return Switch(
+        value: items.value,
+        onChanged: (value) {
+          if (items.id == "hide_balance") {
+            ref.read(settingsNotifier.notifier).save(hideBalanceOnHome: value);
+          }
+        },
+      );
+    }
+    if (items.actionType == ActionType.none) {
+      return const SizedBox.shrink();
+    }
+    return CustomImage(
+      imageType: ImageType.svgLocal,
+      imageUrl: AppSvgs.arrowRight1,
+      color: context.colors.onSurfaceVariant,
+      height: 16.spMin,
+    );
+  }
+
+  List<SettingsContentModel> handleContents(
+    WidgetRef ref,
+    List<SettingsContentModel> contents,
+  ) {
     return contents.map((e) {
-      if(e.id == "theme") {
+      if (e.id == "theme") {
         final themeMode = ref.watch(themeProvider);
-        return e.copyWith(actionText: themeMode.name);
+        return e.copyWith(actionText: _titleCase(themeMode.name));
       }
-      if(e.id == "currency") {
+      if (e.id == "currency") {
         final currency = ref.watch(currencyProvider);
         return e.copyWith(actionText: currency.currency);
       }
-      
+      if (e.id == "hide_balance") {
+        final value =
+            ref.watch(settingsNotifier).value?.hideBalanceOnHome ?? false;
+        return e.copyWith(value: value);
+      }
+
       return e;
     }).toList();
+  }
+
+  String _titleCase(String value) {
+    if (value.isEmpty) return value;
+    return '${value[0].toUpperCase()}${value.substring(1)}';
   }
 }
