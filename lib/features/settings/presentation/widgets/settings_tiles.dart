@@ -110,6 +110,7 @@ class SettingsTiles extends ConsumerWidget {
     SettingsContentModel contents,
     WidgetRef ref,
   ) async {
+    final isDark = context.isDarkMode;
     switch (contents.actionType) {
       case ActionType.navigate:
         if (contents.path.isNotEmpty) context.push(contents.path);
@@ -130,8 +131,59 @@ class SettingsTiles extends ConsumerWidget {
           ref.read(settingsNotifier.notifier).save(hideBalanceOnHome: newValue);
         }
         break;
+      case ActionType.dialog:
+        if (contents.id == "clear_data") {
+          CustomDialog.show(
+            context,
+            icon: AppSvgs.bin,
+            iconColor: AppColors.error500,
+            iconBgColor:
+                isDark ? AppColors.error700.withAlpha(50) : AppColors.error50,
+            title: "Are you sure?",
+            message:
+                "This will permanently delete all your data including profile, transactions, categories and settings from Finpal. This action cannot be undone.",
+            buttonText: "Clear All Data",
+            buttonColor: AppColors.error500,
+            onPressed: () => _clearData(context, ref),
+          );
+        }
+        break;
       default:
         break;
+    }
+  }
+
+  Future<void> _clearData(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(profileNotifier.notifier).clearData();
+      await ref.read(transactionProvider.notifier).clearData();
+      final options = ref.read(optionNotifer.notifier);
+      await options.clearData();
+      await options.saveAllOptions(OptionsConstant.allOptions);
+      await ref
+          .read(settingsNotifier.notifier)
+          .save(
+            isFirstVisit: false,
+            isFingerprintEnabled: false,
+            isPasscodeEnabled: false,
+            currency: CurrencyContants.rupee,
+            themeMode: ThemeMode.system,
+            hideBalanceOnHome: false,
+            dailyReminderEnabled: false,
+            monthlyBudget: 0,
+            aiInsightsEnabled: false,
+          );
+      if (context.mounted) {
+        context.showSnackBar("Data cleared successfully");
+        context.pop();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        context.showSnackBar(
+          "Failed to clear data",
+          toastType: ToastType.error,
+        );
+      }
     }
   }
 

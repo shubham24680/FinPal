@@ -18,7 +18,7 @@ class ProfileConstants {
       id: "gender",
       title: "Gender",
       icon: AppSvgs.user1,
-      color: ColorSet.accent,
+      color: ColorSet.warning,
     ),
     ProfileContentModel(
       id: "monthly_income",
@@ -33,7 +33,7 @@ class ProfileConstants {
       id: "camera",
       title: "Camera",
       icon: AppSvgs.camera,
-      color: ColorSet.accent,
+      color: ColorSet.warning,
     ),
     ProfileContentModel(
       id: "gallery",
@@ -68,7 +68,7 @@ class ProfileConstants {
         id: "photo",
         title: "Add a profile photo",
         icon: AppSvgs.camera,
-        color: ColorSet.accent,
+        color: ColorSet.warning,
         isCompleted: profile.profileImage.isNotEmpty,
         value: editRoute,
       ),
@@ -105,7 +105,7 @@ class ProfileConstants {
         id: "almost_done",
         title: "Almost done",
         icon: AppSvgs.checkCircle,
-        color: ColorSet.accent,
+        color: ColorSet.warning,
       );
     }
     if (percent >= 40) {

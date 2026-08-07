@@ -12,7 +12,7 @@ class AnalysisConstants {
       id: "spent",
       title: "Spent",
       amount: 0,
-      color: ColorSet.accent,
+      color: ColorSet.warning,
     ),
     AnalysisModel(
       id: "available",

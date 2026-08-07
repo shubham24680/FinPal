@@ -29,6 +29,12 @@ class OptionServices {
     log("Option deleted: $id");
   }
 
+  Future<void> clearData() async {
+    await _hiveService.clearAllData();
+    clearCache();
+    log("All options deleted");
+  }
+
   void clearCache() => _cache = null;
 
   // Getters

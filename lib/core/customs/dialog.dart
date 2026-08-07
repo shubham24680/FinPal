@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:finpal/app/app.dart';
 
-class CustomDialog extends StatelessWidget {
+class CustomDialog extends StatefulWidget {
   const CustomDialog({
     super.key,
     required this.title,
@@ -17,7 +19,7 @@ class CustomDialog extends StatelessWidget {
   final String message;
   final String buttonText;
   final Color buttonColor;
-  final VoidCallback onPressed;
+  final FutureOr<void> Function() onPressed;
   final String? icon;
   final Color? iconColor;
   final Color? iconBgColor;
@@ -27,7 +29,7 @@ class CustomDialog extends StatelessWidget {
     required String title,
     required String message,
     required String buttonText,
-    required VoidCallback onPressed,
+    required FutureOr<void> Function() onPressed,
     Color buttonColor = AppColors.primary500,
     String? icon,
     Color? iconColor,
@@ -51,27 +53,44 @@ class CustomDialog extends StatelessWidget {
   }
 
   @override
+  State<CustomDialog> createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  bool _isLoading = false;
+
+  Future<void> _handlePressed() async {
+    if (_isLoading) return;
+    setState(() => _isLoading = true);
+    try {
+      await widget.onPressed();
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       icon:
-          icon != null
+          widget.icon != null
               ? Center(
                 child: CustomContainer(
                   borderRadius: BorderRadius.circular(1000.r),
-                  backgroundColor: iconBgColor ?? AppColors.primary50,
+                  backgroundColor: widget.iconBgColor ?? AppColors.primary50,
                   child: CustomImage(
                     imageType: ImageType.svgLocal,
-                    imageUrl: icon,
+                    imageUrl: widget.icon,
                     height: 40.spMin,
                     width: 40.spMin,
-                    color: iconColor ?? AppColors.primary500,
+                    color: widget.iconColor ?? AppColors.primary500,
                   ),
                 ),
               )
               : null,
-      title: CustomTypography(text: title, fontType: FontType.body1Bold),
+      title: CustomTypography(text: widget.title, fontType: FontType.body1Bold),
       content: CustomTypography(
-        text: message,
+        text: widget.message,
         fontType: FontType.body2Regular,
         color: context.colors.onSurface,
         align: TextAlign.center,
@@ -83,32 +102,49 @@ class CustomDialog extends StatelessWidget {
         top: 8.r,
       ),
       actions: [
-        Row(
-          spacing: 8.spMin,
-          children: [
-            Expanded(
-              child: CustomTypography(
-                text: "Cancel",
-                fontType: FontType.body1Medium,
-                color: AppColors.neutral500,
-                align: TextAlign.center,
-              ).onTap(event: () => context.pop()),
+        if (_isLoading)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 8.r),
+            child: LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(100.r),
+              minHeight: 4.spMin,
+              color: widget.buttonColor,
+              backgroundColor: widget.buttonColor.withAlpha(40),
             ),
-            Container(
-              width: 1,
-              height: 24.spMin,
-              color: context.colors.outline,
-            ),
-            Expanded(
-              child: CustomTypography(
-                text: buttonText,
-                fontType: FontType.body1Medium,
-                color: buttonColor,
-                align: TextAlign.center,
-              ).onTap(event: () => onPressed()),
-            ),
-          ],
-        ),
+          )
+        else
+          Row(
+            spacing: 8.spMin,
+            children: [
+              Expanded(
+                child: AnimatedTap(
+                  onTap: () => context.pop(),
+                  child: CustomTypography(
+                    text: "Cancel",
+                    fontType: FontType.body1Medium,
+                    color: AppColors.neutral500,
+                    align: TextAlign.center,
+                  ),
+                ),
+              ),
+              Container(
+                width: 1,
+                height: 24.spMin,
+                color: context.colors.outline,
+              ),
+              Expanded(
+                child: AnimatedTap(
+                  onTap: _handlePressed,
+                  child: CustomTypography(
+                    text: widget.buttonText,
+                    fontType: FontType.body1Medium,
+                    color: widget.buttonColor,
+                    align: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }

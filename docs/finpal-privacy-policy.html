@@ -67,6 +67,19 @@
       margin-bottom: 1.75rem;
     }
 
+    .summary {
+      background: var(--primary-light);
+      border: 1px solid #d5e8d5;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .summary p {
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
     section {
       background: var(--card);
       border: 1px solid var(--border);
@@ -122,134 +135,138 @@
   </header>
 
   <main>
-    <span class="updated">Last updated: May 26, 2026</span>
+    <span class="updated">Last updated: August 7, 2026 · Applies to FinPal v1.0.0</span>
+
+    <div class="summary">
+      <p>
+        <strong>In short:</strong> FinPal keeps your data on your phone.
+        We do not create accounts, sync to the cloud, connect to your bank,
+        or sell your information.
+      </p>
+    </div>
 
     <section>
-      <h2>1. Introduction</h2>
+      <h2>1. Who we are</h2>
       <p>
-        FinPal ("we", "our", or "us") is a personal finance companion app that helps you track
-        income, expenses, and spending patterns. This Privacy Policy explains what information
-        FinPal collects, how it is used, and the choices you have.
+        FinPal is a personal finance app that helps you track income and expenses,
+        review spending, and understand your money at a glance.
       </p>
       <p>
-        By using FinPal, you agree to the collection and use of information in accordance with
-        this policy. If you do not agree, please do not use the app.
+        This policy explains what FinPal stores on your device for version 1.0.0,
+        and what we do <em>not</em> collect. By using the app, you agree to this policy.
       </p>
     </section>
 
     <section>
-      <h2>2. Information We Collect</h2>
-      <p>FinPal is designed to store most of your data locally on your device. We may collect or process the following types of information:</p>
+      <h2>2. What FinPal stores</h2>
+      <p>
+        Everything you enter stays on your device. FinPal does not send this
+        information to our servers — FinPal v1.0.0 has no backend account system.
+      </p>
+      <p>On your device, FinPal may store:</p>
       <ul>
-        <li><strong>Profile information</strong> — such as your display name and avatar selection.</li>
-        <li><strong>Financial records</strong> — income and expense entries you create, including amounts, dates, categories, payment methods, and optional notes.</li>
-        <li><strong>Custom settings</strong> — categories, payment methods, and other preferences you configure in the app.</li>
-        <li><strong>AI chat messages</strong> — messages you send to the in-app AI assistant, stored locally on your device and sent to our AI provider when you request a response.</li>
-        <li><strong>App usage data</strong> — basic technical information such as app version and device type, only if required for app functionality or crash diagnostics.</li>
+        <li>
+          <strong>Profile details</strong> — display name, gender, date of birth,
+          and the avatar you choose.
+        </li>
+        <li>
+          <strong>Transactions</strong> — income and expense entries you add,
+          including amount, date, category, payment method, and optional notes.
+        </li>
+        <li>
+          <strong>Preferences</strong> — categories and payment methods you use
+          or customize, plus a first-visit flag for onboarding.
+        </li>
       </ul>
       <p>
-        FinPal does not require you to create an account, and we do not collect passwords,
-        bank login credentials, or direct access to your bank accounts.
+        FinPal does not ask for a password, email login, bank credentials,
+        or permission to access your bank accounts.
       </p>
     </section>
 
     <section>
-      <h2>3. How We Use Your Information</h2>
-      <p>We use the information described above to:</p>
+      <h2>3. How that information is used</h2>
+      <p>Your data is used only to run the app on your device:</p>
       <ul>
-        <li>Provide core app features such as expense tracking, analytics, and transaction history.</li>
-        <li>Personalize your profile and app experience.</li>
-        <li>Generate AI-powered financial guidance when you use the assistant feature.</li>
-        <li>Validate spending against your income and show relevant alerts.</li>
-        <li>Improve app reliability, performance, and user experience.</li>
+        <li>Show balances, history, and spending charts.</li>
+        <li>Personalize your profile and categories.</li>
+        <li>Warn you when spending goes over your recorded income.</li>
+      </ul>
+      <p>
+        We do not use your financial records for advertising, profiling across
+        other apps, or selling lists.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Where your data lives</h2>
+      <p>
+        FinPal stores information locally on your phone using on-device storage.
+        If you clear the app’s data or uninstall FinPal, that local information
+        is removed from the device.
+      </p>
+      <p>
+        Because data stays on your phone, you control it. Keep your device locked
+        and up to date — that is the main protection for your records.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Sharing and third parties</h2>
+      <p>
+        In FinPal v1.0.0, we do not share your profile or transaction data with
+        third-party services. There is no cloud sync, analytics SDK, or ad network
+        built into this version.
+      </p>
+      <p>
+        We do not sell your personal information. We would only disclose data if
+        required by law — and even then, we typically have no remote copy of your
+        FinPal records to hand over.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Your choices</h2>
+      <p>You can:</p>
+      <ul>
+        <li>Edit or delete transactions and profile details inside the app.</li>
+        <li>Clear app data from your phone’s system settings.</li>
+        <li>Uninstall FinPal to remove locally stored information.</li>
       </ul>
     </section>
 
     <section>
-      <h2>4. Local Storage</h2>
+      <h2>7. Children’s privacy</h2>
       <p>
-        Most FinPal data is stored locally on your device using secure on-device storage
-        (including Hive and SharedPreferences). This means your financial records remain on
-        your phone unless you choose to share them elsewhere.
-      </p>
-      <p>
-        You can delete your data at any time by clearing app data from your device settings
-        or uninstalling the app. Uninstalling FinPal will remove locally stored information
-        from your device.
+        FinPal is not directed at children under 13 (or the minimum age in your
+        country). We do not knowingly collect information from children.
+        If you believe a child has used the app in a way that concerns you,
+        contact us and we will help you understand how to remove local data.
       </p>
     </section>
 
     <section>
-      <h2>5. Third-Party Services</h2>
+      <h2>8. Changes</h2>
       <p>
-        FinPal uses third-party services to power certain features. When you use the AI
-        assistant, your chat messages may be transmitted to <strong>Google Gemini</strong>
-        (Google LLC) to generate responses. Google's handling of that data is governed by
-        their own privacy policies.
-      </p>
-      <p>
-        We do not sell your personal information. We only share data with third parties when
-        necessary to operate a feature you actively use, or when required by law.
+        If FinPal’s data practices change in a later version (for example,
+        optional cloud or AI features), we will update this policy and the
+        “Last updated” date. This page describes FinPal v1.0.0.
       </p>
     </section>
 
     <section>
-      <h2>6. Data Security</h2>
+      <h2>9. Contact</h2>
       <p>
-        We take reasonable measures to protect information stored within the app. However,
-        no method of electronic storage or transmission is completely secure. You are
-        responsible for keeping your device secure, including using a screen lock and
-        keeping your operating system up to date.
-      </p>
-    </section>
-
-    <section>
-      <h2>7. Children's Privacy</h2>
-      <p>
-        FinPal is not intended for children under the age of 13 (or the minimum age required
-        in your jurisdiction). We do not knowingly collect personal information from children.
-        If you believe a child has provided us with personal information, please contact us
-        so we can take appropriate action.
-      </p>
-    </section>
-
-    <section>
-      <h2>8. Your Rights and Choices</h2>
-      <p>Depending on your location, you may have rights to:</p>
-      <ul>
-        <li>Access, update, or delete information stored in the app.</li>
-        <li>Withdraw consent for optional features such as the AI assistant.</li>
-        <li>Request information about how your data is processed.</li>
-      </ul>
-      <p>
-        Because most data is stored locally, you can manage or delete it directly within
-        the app or through your device settings.
-      </p>
-    </section>
-
-    <section>
-      <h2>9. Changes to This Policy</h2>
-      <p>
-        We may update this Privacy Policy from time to time. When we do, we will revise the
-        "Last updated" date at the top of this page. Continued use of FinPal after changes
-        are posted constitutes your acceptance of the updated policy.
-      </p>
-    </section>
-
-    <section>
-      <h2>10. Contact Us</h2>
-      <p>
-        If you have questions or concerns about this Privacy Policy or your data, please
-        contact us:
+        Questions about this policy or your data? Reach out on GitHub:
       </p>
       <p>
-        GitHub: <a href="https://github.com/shubham24680/FinPal" target="_blank" rel="noopener noreferrer">github.com/shubham24680/FinPal</a>
+        <a href="https://github.com/shubham24680/FinPal" target="_blank" rel="noopener noreferrer">github.com/shubham24680/FinPal</a>
       </p>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2026 FinPal. <a href="terms-and-conditions.html">Terms and Conditions</a></p>
+    <p>&copy; 2026 FinPal. <a href="finpal-terms-and-conditions.html">Terms and Conditions</a></p>
   </footer>
 </body>
 </html>

@@ -84,6 +84,26 @@ class SettingsConstants {
     ),
   ];
 
+  static List<SettingsContentModel> dataContents = [
+    SettingsContentModel(
+      id: "export_data",
+      title: "Export Data",
+      icon: AppSvgs.expense,
+      iconColor: AppColors.error500,
+      iconBgColor: AppColors.error50,
+      iconBgDarkColor: AppColors.error700.withAlpha(100),
+    ),
+    SettingsContentModel(
+      id: "clear_data",
+      title: "Clear Data",
+      icon: AppSvgs.bin,
+      iconColor: AppColors.error500,
+      iconBgColor: AppColors.error50,
+      iconBgDarkColor: AppColors.error700.withAlpha(100),
+      actionType: ActionType.dialog,
+    ),
+  ];
+
   static List<SettingsContentModel> aboutContents = [
     SettingsContentModel(
       id: "privacy_policy",
@@ -113,7 +133,7 @@ class SettingsConstants {
       iconBgColor: AppColors.neutral50,
       iconBgDarkColor: AppColors.neutral700.withAlpha(100),
       actionType: ActionType.launchUrl,
-      path: "mailto:subhampatel8092@gmail.com",
+      path: "mailto:seven.dev987@gmail.com",
     ),
     SettingsContentModel(
       id: "app_version",

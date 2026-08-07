@@ -8,10 +8,10 @@ class AnimatedFab extends ConsumerWidget {
     final isDark = context.isDarkMode;
     final borderGradient = SweepGradient(
       colors: [
-        isDark ? AppColors.accent700 : AppColors.accent500,
+        isDark ? AppColors.warning700 : AppColors.warning500,
         isDark ? AppColors.error700 : AppColors.error500,
         isDark ? AppColors.purple700 : AppColors.purple500,
-        isDark ? AppColors.accent700 : AppColors.accent500,
+        isDark ? AppColors.warning700 : AppColors.warning500,
       ],
     );
 

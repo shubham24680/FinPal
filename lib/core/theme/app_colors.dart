@@ -13,11 +13,11 @@ enum ColorSet {
     AppColors.neutral700,
     AppColors.neutral500,
   ),
-  accent(
-    AppColors.accent50,
-    AppColors.accent200,
-    AppColors.accent700,
-    AppColors.accent500,
+  warning(
+    AppColors.warning50,
+    AppColors.warning200,
+    AppColors.warning700,
+    AppColors.warning500,
   ),
   info(
     AppColors.info50,
@@ -75,24 +75,6 @@ abstract class AppColors {
   static const Color neutral700 = Color(0xFF46443F);
   static const Color neutral800 = Color(0xFF2E2D2A);
   static const Color neutral900 = Color(0xFF1A1917);
-
-  // ── Accent — Warm Amber ───────────────────────────────────────────────────
-  static const Color accent50 = Color(0xFFFFF8EC);
-  static const Color accent100 = Color(0xFFFFEDC8);
-  static const Color accent200 = Color(0xFFFFD88A);
-  static const Color accent300 = Color(0xFFFFC04C);
-  static const Color accent400 = Color(0xFFFFAB24);
-  static const Color accent500 = Color(0xFFF59000); // ← main accent
-  static const Color accent600 = Color(0xFFD97706);
-  static const Color accent700 = Color(0xFFB45309);
-  static const Color accent800 = Color(0xFF92400E);
-  static const Color accent900 = Color(0xFF78350F);
-
-  // ── Semantic — Success ─────────────────────────────────────────────────────
-  static const Color success50 = Color(0xFFE8F1EB);
-  static const Color success200 = Color(0xFFA1CCAE);
-  static const Color success500 = Color(0xFF428A55);
-  static const Color success700 = Color(0xFF337745);
 
   // ── Semantic — Error ──────────────────────────────────────────────────────
   static const Color error50 = Color(0xFFFEF2F2);

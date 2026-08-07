@@ -36,6 +36,12 @@ class TransactionService {
     log("Payment deleted: $id", name: "TransactionService");
   }
 
+  Future<void> clearData() async {
+    await _hiveService.clearAllData();
+    clearCache();
+    log("All payments deleted", name: "TransactionService");
+  }
+
   void clearCache() {
     _cache = null;
     _totalIncome = 0.0;

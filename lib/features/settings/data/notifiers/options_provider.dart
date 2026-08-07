@@ -40,6 +40,15 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
     await options.delete(id);
     state = AsyncData(options);
   }
+
+  Future<void> clearData() async {
+    final options = state.value;
+    log("${options?.categories.length}");
+    if (options == null) return;
+
+    await options.clearData();
+    state = AsyncData(options);
+  }
 }
 
 final optionNotifer = AsyncNotifierProvider<OptionNotifier, OptionServices>(

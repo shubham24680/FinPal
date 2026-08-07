@@ -27,7 +27,7 @@ extension ResponsiveContext on BuildContext {
   bool get isLandscape => orientation == Orientation.landscape;
   FocusNode get focusNode => FocusScope.of(this);
 
-  Color get successColor => AppColors.success500;
+  Color get successColor => AppColors.primary500;
   Color get errorColor => AppColors.error500;
   Color get warningColor => AppColors.warning500;
   Color get infoColor => AppColors.info500;
@@ -49,7 +49,7 @@ extension ResponsiveContext on BuildContext {
     return switch (toastType) {
       ToastType.normal => colors.surface,
       ToastType.error => AppColors.error500,
-      ToastType.success => AppColors.success500,
+      ToastType.success => AppColors.primary500,
     };
   }
 
@@ -57,7 +57,7 @@ extension ResponsiveContext on BuildContext {
     return switch (toastType) {
       ToastType.normal => colors.inverseSurface,
       ToastType.error => AppColors.error200,
-      ToastType.success => AppColors.success200,
+      ToastType.success => AppColors.primary200,
     };
   }
 }

@@ -17,6 +17,7 @@ class SettingsScreen extends ConsumerWidget {
               SettingsTiles(contents: SettingsConstants.accountContents, title: "ACCOUNT"),
               SettingsTiles(contents: SettingsConstants.appearanceContents, title: "APPEARANCE"),
               SettingsTiles(contents: SettingsConstants.preferencesContents, title: "PREFERENCES"),
+              SettingsTiles(contents: SettingsConstants.dataContents, title: "DATA"),
               SettingsTiles(contents: SettingsConstants.aboutContents, title: "ABOUT & SUPPORT"),
             ],
           ).padding(horizontal: AppConstants.sidePadding)

@@ -31,6 +31,13 @@ class TransactionNotifier extends AsyncNotifier<TransactionService> {
     await stateValue.delete(id);
     state = AsyncData(stateValue);
   }
+
+  Future<void> clearData() async {
+    final stateValue = state.value;
+    if (stateValue == null) return;
+    await stateValue.clearData();
+    state = AsyncData(stateValue);
+  }
 }
 
 final transactionProvider =
