@@ -54,7 +54,7 @@ class IntroScreen extends ConsumerWidget {
         mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
         children: [
           SizedBox(height: 20.spMin),
-          CustomTypography(typos: title,),
+          CustomTypography(typos: title),
           CustomTypography(
             text: "Monitor your spending and make smarter financial decisions.",
             fontType: FontType.label1Regular,

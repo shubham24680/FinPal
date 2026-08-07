@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:finpal/app/app.dart';
 
 enum OptionType {
@@ -9,17 +11,25 @@ enum OptionType {
   final String id, name, icon;
 }
 
+extension OptionTypeExtension on String {
+  OptionType? get byId {
+    final normalized = toLowerCase();
+    return OptionType.values.firstWhere(
+      (type) => type.id.toLowerCase() == normalized,
+      orElse: () => OptionType.expense,
+    );
+  }
+}
+
 class OptionsConstant {
-  static const income = 'income';
-  static const expense = 'expense';
+  static final OptionModel otherCategory = OptionModel(
+    id: "other_category",
+    type: "other_category",
+    name: "Other",
+    icon: AppSvgs.other,
+  );
 
   static final List<OptionModel> paymentMethods = [
-    OptionModel(
-      id: OptionType.paymentMethod.id,
-      type: OptionType.paymentMethod.id,
-      name: "Other",
-      icon: AppSvgs.other,
-    ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "Cash",
@@ -54,12 +64,6 @@ class OptionsConstant {
 
   static final List<OptionModel> incomeCategories = [
     OptionModel(
-      id: OptionType.income.id,
-      type: OptionType.income.id,
-      name: "Other",
-      icon: AppSvgs.add,
-    ),
-    OptionModel(
       type: OptionType.income.id,
       name: "Salary",
       icon: AppSvgs.salary,
@@ -83,12 +87,6 @@ class OptionsConstant {
   ];
 
   static final List<OptionModel> expenseCategories = [
-    OptionModel(
-      id: OptionType.expense.id,
-      type: OptionType.expense.id,
-      name: "Other",
-      icon: AppSvgs.other,
-    ),
     OptionModel(
       type: OptionType.expense.id,
       name: "Food & Dining",
@@ -146,5 +144,8 @@ class OptionsConstant {
     ...paymentMethods,
     ...incomeCategories,
     ...expenseCategories,
-  ];
+  ].map((e) => e.copyWith(color: randomColorSet.name)).toList(growable: false);
 }
+
+ColorSet get randomColorSet =>
+    ColorSet.values.elementAt(Random().nextInt(ColorSet.values.length));

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:finpal/app/app.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -8,7 +7,6 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileNotifier);
     final currency = ref.watch(currencyProvider);
-    final isDark = context.isDarkMode;
 
     return Scaffold(
       appBar: customAppBar(context, title: "Profile"),
@@ -18,9 +16,12 @@ class ProfileScreen extends ConsumerWidget {
             "full_name": profile.name,
             "date_of_birth": profile.dob,
             "gender": profile.gender,
-            "monthly_income": CurrencyFormatter.format(profile.monthlyIncome, currency: currency),
+            "monthly_income": CurrencyFormatter.format(
+              profile.monthlyIncome,
+              currency: currency,
+            ),
           };
-          final isAllEmpty = values.values.every((value) => value.isEmpty);
+
           return SingleChildScrollView(
             padding: EdgeInsets.only(
               left: AppConstants.sidePadding,
@@ -38,55 +39,53 @@ class ProfileScreen extends ConsumerWidget {
                   values,
                   title: "Personal Information",
                 ),
-                if (!isAllEmpty)
-                  CustomButton(
-                    prefixIcon: AppSvgs.bin,
-                    label: "Clear Data",
-                    buttonType: ButtonType.negative,
-                    buttonVariant: ButtonVariant.tertiary,
-                    onTap:
-                        () => CustomDialog.show(
-                          context,
-                          icon: AppSvgs.bin,
-                          iconColor: AppColors.error500,
-                          iconBgColor:
-                              isDark
-                                  ? AppColors.error700.withAlpha(50)
-                                  : AppColors.error50,
-                          title: "Confirm Clear Data",
-                          message:
-                              "This will permanently delete all your data from Finpal. This action cannot be undone.",
-                          buttonText: "Clear All Data",
-                          buttonColor: AppColors.error500,
-                          onPressed: () {
-                            ref.read(profileNotifier.notifier).clearData().then(
-                              (_) {
-                                if (context.mounted) {
-                                  context.showSnackBar(
-                                    "Data cleared successfully",
-                                    toastType: ToastType.success,
-                                  );
-                                  context.pop();
-                                }
-                              },
-                            );
-                          },
-                        ),
-                  ),
+                // if (!isAllEmpty)
+                //   CustomButton(
+                //     prefixIcon: AppSvgs.bin,
+                //     label: "Clear Data",
+                //     buttonType: ButtonType.negative,
+                //     buttonVariant: ButtonVariant.tertiary,
+                //     onTap:
+                //         () => CustomDialog.show(
+                //           context,
+                //           icon: AppSvgs.bin,
+                //           iconColor: AppColors.error500,
+                //           iconBgColor:
+                //               isDark
+                //                   ? AppColors.error700.withAlpha(50)
+                //                   : AppColors.error50,
+                //           title: "Confirm Clear Data",
+                //           message:
+                //               "This will permanently delete all your data from Finpal. This action cannot be undone.",
+                //           buttonText: "Clear All Data",
+                //           buttonColor: AppColors.error500,
+                //           onPressed: () {
+                //             ref.read(profileNotifier.notifier).clearData().then(
+                //               (_) {
+                //                 if (context.mounted) {
+                //                   context.showSnackBar(
+                //                     "Data cleared successfully",
+                //                     toastType: ToastType.success,
+                //                   );
+                //                   context.pop();
+                //                 }
+                //               },
+                //             );
+                //           },
+                //         ),
+                //   ),
               ],
             ),
           );
         },
-        error: (e, s) {
-          log("error: ${e.toString()}");
-          return Center(
-            child: CustomTypography(
-              text: "Something went wrong",
-              fontType: FontType.body2Medium,
-              color: context.colors.onSurface,
+        error:
+            (_, __) => Center(
+              child: CustomTypography(
+                text: "Couldn't load profile",
+                fontType: FontType.body1Medium,
+                color: context.colors.onSurface,
+              ),
             ),
-          );
-        },
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

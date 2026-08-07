@@ -16,7 +16,7 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveOption(OptionModel option) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.save(option);
@@ -25,7 +25,7 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveAllOptions(List<OptionModel> newOptions) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.saveAll(newOptions);
@@ -34,10 +34,19 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> deleteOption(String id) async {
     final options = state.value;
-    log("${options?.options.length}");
+    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.delete(id);
+    state = AsyncData(options);
+  }
+
+  Future<void> clearData() async {
+    final options = state.value;
+    log("${options?.categories.length}");
+    if (options == null) return;
+
+    await options.clearData();
     state = AsyncData(options);
   }
 }
@@ -47,7 +56,7 @@ final optionNotifer = AsyncNotifierProvider<OptionNotifier, OptionServices>(
 );
 
 class OptionState {
-  final String id;
+  final String? id;
   final String icon;
   final String name;
   final ColorSet color;
@@ -57,7 +66,7 @@ class OptionState {
   final String message;
 
   OptionState({
-    required this.id,
+    this.id,
     required this.icon,
     required this.name,
     required this.color,
@@ -68,7 +77,6 @@ class OptionState {
   });
 
   factory OptionState.initial() => OptionState(
-    id: '',
     icon: AppSvgs.add1,
     name: '',
     color: ColorSet.primary,
@@ -108,54 +116,61 @@ class OptionProvider extends StateNotifier<OptionState> {
     final selectedOption = _ref.read(selectedOptionProvider);
     if (selectedOption == null) return;
     state = state.copyWith(
-      id: selectedOption.id,
+      id: selectedOption.id.isNotEmpty ? selectedOption.id : null,
       icon: selectedOption.icon,
       name: selectedOption.name,
       color: selectedOption.color.colorSet,
-      type: OptionType.values.firstWhere((e) => e.id == selectedOption.type.toLowerCase()),
+      type: selectedOption.type.byId,
     );
   }
 
-  void setIcon(String icon) {
-    state = state.copyWith(icon: icon);
-    onChange();
-  }
-
-  void setName(String? name) {
-    if (name == null) return;
-    name = name.trim();
-    state = state.copyWith(name: name);
-    onChange();
-  }
-
-  void setType(OptionType? type) {
-    state = state.copyWith(type: type);
-    onChange();
-  }
-
-  void setColor(ColorSet color) {
-    state = state.copyWith(color: color);
+  void set({
+    String? id,
+    String? icon,
+    String? name,
+    ColorSet? color,
+    OptionType? type,
+  }) {
+    state = state.copyWith(
+      id: id ?? state.id,
+      icon: icon ?? state.icon,
+      name: name ?? state.name,
+      color: color ?? state.color,
+      type: type ?? state.type,
+    );
     onChange();
   }
 
   void onChange() {
     final isValid = state.name.isNotEmpty && state.type != null;
-    state = state.copyWith(buttonState: isValid ? ButtonState.enabled : ButtonState.disabled);
+    state = state.copyWith(
+      buttonState: isValid ? ButtonState.enabled : ButtonState.disabled,
+    );
   }
 
   Future<void> save() async {
     state = state.copyWith(buttonState: ButtonState.loading);
     try {
       final typeId = state.type?.id;
-      if (typeId == null) return;
+      if (typeId == null) {
+        state = state.copyWith(
+          toastType: ToastType.error,
+          message: "Please select a category type",
+        );
+        return;
+      }
 
-      final checkOption = _ref
-          .read(optionNotifer)
-          .value
-          ?.findByName(state.name, typeId);
-      log("checkOption: ${checkOption?.name}.");
-      if (state.id.isEmpty && checkOption != null) {
-        state = state.copyWith(toastType: ToastType.error, message: "Option already exists");
+      final isDuplicate =
+          _ref
+              .read(optionNotifer)
+              .value
+              ?.existsByName(state.name, typeId, excludeId: state.id) ??
+          false;
+      if (isDuplicate) {
+        state = state.copyWith(
+          toastType: ToastType.error,
+          message: "Option already exists",
+        );
         return;
       }
 
@@ -163,15 +178,22 @@ class OptionProvider extends StateNotifier<OptionState> {
         id: state.id,
         type: typeId,
         icon: state.icon,
-        name: state.name,
+        name: state.name.trim(),
         color: state.color.name,
       );
       await _ref.read(optionNotifer.notifier).saveOption(option);
-      state = state.copyWith(toastType: ToastType.success, message: "Option saved successfully");
+      state = state.copyWith(
+        toastType: ToastType.success,
+        message: "Option saved successfully",
+      );
     } catch (e, stack) {
       log("Failed to save option", error: e, stackTrace: stack);
+      state = state.copyWith(
+        toastType: ToastType.error,
+        message: "Failed to save option",
+      );
     } finally {
-        state = state.copyWith(buttonState: ButtonState.enabled);
+      state = state.copyWith(buttonState: ButtonState.enabled);
     }
   }
 
@@ -180,6 +202,7 @@ class OptionProvider extends StateNotifier<OptionState> {
   }
 }
 
-final optionProvider = StateNotifierProvider.autoDispose<OptionProvider, OptionState>(
+final optionProvider =
+    StateNotifierProvider.autoDispose<OptionProvider, OptionState>(
       (ref) => OptionProvider(ref),
     );

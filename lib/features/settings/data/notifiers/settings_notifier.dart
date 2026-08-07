@@ -27,7 +27,6 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
     double? monthlyBudget,
     bool? aiInsightsEnabled,
   }) async {
-    state = const AsyncLoading();
     final settings = state.value ?? SettingsModel();
     state = await AsyncValue.guard(() async {
       final settingsModel = settings.copyWith(
@@ -38,7 +37,7 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
         currencySymbol: currency?.symbol,
         languageCode: currency?.locale,
         themeMode: themeMode?.name,
-          hideBalanceOnHome: hideBalanceOnHome,
+        hideBalanceOnHome: hideBalanceOnHome,
         dailyReminderEnabled: dailyReminderEnabled,
         dailyReminderTime: dailyReminderTime,
         monthlyBudget: monthlyBudget,
@@ -51,7 +50,9 @@ class SettingsNotifier extends AsyncNotifier<SettingsModel> {
   }
 }
 
-final settingsNotifier = AsyncNotifierProvider<SettingsNotifier, SettingsModel>(() => SettingsNotifier());
+final settingsNotifier = AsyncNotifierProvider<SettingsNotifier, SettingsModel>(
+  () => SettingsNotifier(),
+);
 
 // THEME
 ThemeMode _themeModeFromString(String? value) {
@@ -86,4 +87,18 @@ final currencyProvider = Provider<CurrencyContants>((ref) {
     error: (error, stackTrace) => CurrencyContants.rupee,
     loading: () => CurrencyContants.rupee,
   );
+});
+
+final toggleProvider = Provider.family<bool, String>((ref, id) {
+  switch (id) {
+    case "hide_balance":
+      final settings = ref.watch(settingsNotifier);
+      return settings.when(
+        data: (settings) => settings.hideBalanceOnHome,
+        error: (error, stackTrace) => false,
+        loading: () => false,
+      );
+    default:
+      return false;
+  }
 });

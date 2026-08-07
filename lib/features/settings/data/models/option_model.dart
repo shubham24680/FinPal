@@ -21,7 +21,7 @@ class OptionModel extends HiveObject {
     required this.name,
     this.icon = "",
     this.color = "",
-  }) : id = id ?? Uuid().v4();
+  }) : id = (id == null || id.isEmpty) ? Uuid().v4() : id;
 
   OptionModel copyWith({
     String? id,

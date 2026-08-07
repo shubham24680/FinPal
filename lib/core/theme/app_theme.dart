@@ -76,8 +76,6 @@ abstract final class AppTheme {
           isLight ? AppColors.lightBackground : AppColors.darkBackground,
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        prefixIconColor: colorScheme.onSurfaceVariant,
-        suffixIconColor: colorScheme.onSurfaceVariant,
         fillColor: colorScheme.surfaceContainerHighest,
         contentPadding: EdgeInsets.symmetric(
           horizontal: 16.spMin,
@@ -125,28 +123,6 @@ abstract final class AppTheme {
                   systemNavigationBarColor: AppColors.darkSurface,
                 ),
         centerTitle: false,
-      ),
-
-      // ── NavigationBar (bottom) ─────────────────────────────────────────────
-      navigationBarTheme: NavigationBarThemeData(
-        backgroundColor:
-            isLight ? AppColors.lightSurface : AppColors.darkSurface,
-        indicatorColor: AppColors.primary500.withOpacity(0.15),
-        iconTheme: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return IconThemeData(color: AppColors.primary500, size: 24);
-          }
-          return IconThemeData(color: colorScheme.onSurfaceVariant, size: 24);
-        }),
-        // labelTextStyle: WidgetStateProperty.resolveWith((states) {
-        //   final style = AppTextStyles.tabLabel;
-        //   if (states.contains(WidgetState.selected)) {
-        //     return style.copyWith(color: AppColors.primary500);
-        //   }
-        //   return style.copyWith(color: colorScheme.onSurfaceVariant);
-        // }),
-        elevation: 3,
-        height: 64,
       ),
 
       // ── NavigationRail (tablet) ────────────────────────────────────────────

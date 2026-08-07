@@ -1,9 +1,4 @@
-import 'package:finpal/core/common/responsive_builder/responsive_breakpoints.dart';
-import 'package:finpal/core/common/responsive_builder/responsive_value.dart';
-import 'package:finpal/core/customs/typography/app_text_styles.dart';
-import 'package:finpal/core/customs/typography/typography.dart';
-import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import 'package:finpal/app/app.dart';
 
 enum ToastType { normal, error, success }
 extension ResponsiveContext on BuildContext {
@@ -26,12 +21,13 @@ extension ResponsiveContext on BuildContext {
   double get screenHeight => screenSize.height;
   EdgeInsets get viewPadding => MediaQuery.viewPaddingOf(this);
   EdgeInsets get viewInsets => MediaQuery.viewInsetsOf(this);
+  double get buttonBottomPadding => viewPadding.bottom + viewInsets.bottom;
   Orientation get orientation => MediaQuery.orientationOf(this);
   bool get isPortrait => orientation == Orientation.portrait;
   bool get isLandscape => orientation == Orientation.landscape;
   FocusNode get focusNode => FocusScope.of(this);
 
-  Color get successColor => AppColors.success500;
+  Color get successColor => AppColors.primary500;
   Color get errorColor => AppColors.error500;
   Color get warningColor => AppColors.warning500;
   Color get infoColor => AppColors.info500;
@@ -53,7 +49,7 @@ extension ResponsiveContext on BuildContext {
     return switch (toastType) {
       ToastType.normal => colors.surface,
       ToastType.error => AppColors.error500,
-      ToastType.success => AppColors.success500,
+      ToastType.success => AppColors.primary500,
     };
   }
 
@@ -61,7 +57,7 @@ extension ResponsiveContext on BuildContext {
     return switch (toastType) {
       ToastType.normal => colors.inverseSurface,
       ToastType.error => AppColors.error200,
-      ToastType.success => AppColors.success200,
+      ToastType.success => AppColors.primary200,
     };
   }
 }

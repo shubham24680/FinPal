@@ -29,23 +29,33 @@ class OptionServices {
     log("Option deleted: $id");
   }
 
+  Future<void> clearData() async {
+    await _hiveService.clearAllData();
+    clearCache();
+    log("All options deleted");
+  }
+
   void clearCache() => _cache = null;
 
   // Getters
-  List<OptionModel> get options => _cache ??= _hiveService.getAllData();
-  List<OptionModel> get optionsWithoutOthers =>
-      options.where((o) => o.name != "Other").toList();
+  List<OptionModel> get categories => _cache ??= _hiveService.getAllData();
   List<OptionModel> get incomeCategories => byType(OptionType.income.id);
   List<OptionModel> get expenseCategories => byType(OptionType.expense.id);
   List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
 
   //Filters
-  OptionModel? findById(String id) => _hiveService.getData(id);
-  
-  OptionModel? findByName(String name, String type) {
+  OptionModel findById(String id) =>
+      _hiveService.getData(id) ?? OptionsConstant.otherCategory;
+
+  OptionModel findByName(String name, String type) {
+    return findByNameOrNull(name, type) ?? OptionsConstant.otherCategory;
+  }
+
+  OptionModel? findByNameOrNull(String name, String type, {String? excludeId}) {
     final normalized = name.trim().toLowerCase();
     if (normalized.isEmpty) return null;
-    for (var option in options) {
+    for (final option in categories) {
+      if (option.id == excludeId) continue;
       if (option.type == type && option.name.toLowerCase() == normalized) {
         return option;
       }
@@ -53,7 +63,10 @@ class OptionServices {
     return null;
   }
 
-  List<OptionModel> byType(String type, {String? excludeId}) => options
+  bool existsByName(String name, String type, {String? excludeId}) =>
+      findByNameOrNull(name, type, excludeId: excludeId) != null;
+
+  List<OptionModel> byType(String type, {String? excludeId}) => categories
       .where((o) => o.type == type && o.id != excludeId)
       .toList(growable: false);
 }

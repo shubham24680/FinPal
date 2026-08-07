@@ -4,18 +4,14 @@ enum AppRoutesPath {
   splash(path: "/", child: SplashScreen()),
   onboarding(path: "/onboarding", child: OnboardingScreen()),
   lockScreen(path: "/lock", child: LockScreen()),
-  home(path: "/home", child: HomeScreen()),
+  home(path: "/home", child: ScreensWithNavbar()),
   profile(path: "/profile", child: ProfileScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
   options(path: "/options", child: OptionsScreen()),
   editOption(path: "/edit_option", child: EditOptionScreen()),
   theme(path: "/theme", child: ThemeScreen()),
   currency(path: "/currency", child: CurrencyScreen()),
-  addAmount(path: "/add_amount", child: AddAmountScreen()),
-  transactionOverview(
-    path: "/transaction_overview",
-    child: TransactionOverviewScreen(),
-  ),
+  editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
   ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
@@ -76,15 +72,9 @@ class AppRoutes {
           AppRoutesPath.values.length,
           (index) => GoRoute(
             path: AppRoutesPath.values[index].path,
-            pageBuilder: (context, state) {
-              final extra = state.extra as ExtraModel?;
-              final widget = switch (AppRoutesPath.values[index]) {
-                AppRoutesPath.addAmount => AddAmountScreen(extra: extra),
-                _ => AppRoutesPath.values[index].child,
-              };
-
-              return FadeTransitionPage(child: widget);
-            },
+            pageBuilder: (context, state) => FadeTransitionPage(
+              child: AppRoutesPath.values[index].child,
+            ),
           ),
         ),
       ],

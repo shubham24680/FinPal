@@ -1,5 +1,4 @@
 import 'package:finpal/app/app.dart';
-import 'package:intl/intl.dart';
 
 // Bottom Sheet
 Future<T?> customBottomSheet<T>(
@@ -106,14 +105,20 @@ Future<T?> customBottomSheet<T>(
 }
 
 // choose date
-Future<String> chooseDate(BuildContext context, String date, {DateTime? firstDate, DateTime? lastDate}) async {
+Future<String> chooseDate(
+  BuildContext context,
+  String date, {
+  DateTime? firstDate,
+  DateTime? lastDate,
+}) async {
   final textStyle = CustomTypography(
     fontType: FontType.body1Semibold,
   ).getTextStyle(context);
 
   final first = firstDate ?? DateTime(2026);
   final last = lastDate ?? DateTime.now();
-  final initialDate = date.isEmpty ? last : date.parseDate(type: DateFormatType.date1);
+  final initialDate =
+      date.isEmpty ? last : date.parseDate(type: DateFormatType.date1);
 
   DateTime selectedDate = initialDate;
 
@@ -174,11 +179,20 @@ Future<String> chooseDate(BuildContext context, String date, {DateTime? firstDat
     },
   );
 
-  return await CustomBottomSheet.show<String>(context, title: "Select date", widget: child) ?? date;
+  return await CustomBottomSheet.show<String>(
+        context,
+        title: "Select date",
+        widget: child,
+      ) ??
+      date;
 }
 
-Future<void> hitUrl(String url) async {
-  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+Future<bool> hitUrl(String url) async {
+  try {
+    return await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } catch (_) {
+    return false;
+  }
 }
 
 Future<void> showToast(

@@ -73,6 +73,35 @@ class SettingsConstants {
       iconBgDarkColor: AppColors.primary700.withAlpha(100),
       path: AppRoutesPath.currency.path,
     ),
+    SettingsContentModel(
+      id: "hide_balance",
+      title: "Hide Balance",
+      icon: AppSvgs.cash,
+      iconColor: AppColors.primary500,
+      iconBgColor: AppColors.primary50,
+      iconBgDarkColor: AppColors.primary700.withAlpha(100),
+      actionType: ActionType.toggle,
+    ),
+  ];
+
+  static List<SettingsContentModel> dataContents = [
+    SettingsContentModel(
+      id: "export_data",
+      title: "Export Data",
+      icon: AppSvgs.expense,
+      iconColor: AppColors.error500,
+      iconBgColor: AppColors.error50,
+      iconBgDarkColor: AppColors.error700.withAlpha(100),
+    ),
+    SettingsContentModel(
+      id: "clear_data",
+      title: "Clear Data",
+      icon: AppSvgs.bin,
+      iconColor: AppColors.error500,
+      iconBgColor: AppColors.error50,
+      iconBgDarkColor: AppColors.error700.withAlpha(100),
+      actionType: ActionType.dialog,
+    ),
   ];
 
   static List<SettingsContentModel> aboutContents = [
@@ -104,7 +133,7 @@ class SettingsConstants {
       iconBgColor: AppColors.neutral50,
       iconBgDarkColor: AppColors.neutral700.withAlpha(100),
       actionType: ActionType.launchUrl,
-      path: "mailto:subhampatel8092@gmail.com",
+      path: "mailto:seven.dev987@gmail.com",
     ),
     SettingsContentModel(
       id: "app_version",
@@ -113,6 +142,7 @@ class SettingsConstants {
       iconColor: AppColors.neutral500,
       iconBgColor: AppColors.neutral50,
       iconBgDarkColor: AppColors.neutral700.withAlpha(100),
+      actionType: ActionType.none,
       actionText: "1.0.0",
     ),
   ];

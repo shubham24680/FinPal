@@ -6,17 +6,18 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(bottom: 110.spMin),
+      padding: EdgeInsets.only(bottom: 180.spMin),
       child: Column(
+        spacing: 16.spMin,
         children: [
           _buildTopWidget(context, ref),
-          SizedBox(height: 16.spMin),
           Column(
             spacing: 16.spMin,
             children: [
               SettingsTiles(contents: SettingsConstants.accountContents, title: "ACCOUNT"),
               SettingsTiles(contents: SettingsConstants.appearanceContents, title: "APPEARANCE"),
               SettingsTiles(contents: SettingsConstants.preferencesContents, title: "PREFERENCES"),
+              SettingsTiles(contents: SettingsConstants.dataContents, title: "DATA"),
               SettingsTiles(contents: SettingsConstants.aboutContents, title: "ABOUT & SUPPORT"),
             ],
           ).padding(horizontal: AppConstants.sidePadding)

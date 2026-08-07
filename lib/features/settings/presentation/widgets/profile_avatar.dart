@@ -12,6 +12,7 @@ Widget buildAvatar(
   bool enableBorder = false,
   Color? borderColor,
   VoidCallback? onTap,
+  bool showShadow = false,
 }) {
   final isDark = context.isDarkMode;
   final initials =
@@ -21,18 +22,8 @@ Widget buildAvatar(
           .map((e) => e[0])
           .join('')
           .toUpperCase();
-
-  final child =
-      image.isNotEmpty
-          ? ClipOval(
-            child: Image.file(
-              File(image),
-              fit: BoxFit.cover,
-              height: size ?? 60.spMin,
-              width: size ?? 60.spMin,
-            ),
-          )
-          : initials.isNotEmpty
+  final fallback =
+      initials.isNotEmpty
           ? CustomTypography(
             text: initials,
             fontType: FontType.h2Semibold,
@@ -43,8 +34,22 @@ Widget buildAvatar(
             imageUrl: icon,
             color: color.normal,
           );
+
+  final child =
+      image.isNotEmpty
+          ? ClipOval(
+            child: Image.file(
+              File(image),
+              fit: BoxFit.cover,
+              height: size ?? 60.spMin,
+              width: size ?? 60.spMin,
+              errorBuilder: (context, error, stackTrace) => fallback,
+            ),
+          )
+          : fallback;
   return CustomContainer(
     onTap: onTap,
+    showShadow: showShadow,
     borderRadius: BorderRadius.circular(1000.r),
     height: size ?? 60.spMin,
     width: size ?? 60.spMin,

@@ -28,7 +28,7 @@ class SettingsModelAdapter extends TypeAdapter<SettingsModel> {
       hideBalanceOnHome: fields[8] == null ? false : fields[8] as bool,
       dailyReminderEnabled: fields[9] == null ? false : fields[9] as bool,
       dailyReminderTime: fields[10] as DateTime?,
-      monthlyBudget: fields[11] as double?,
+      monthlyBudget: fields[11] == null ? 0 : fields[11] as double,
       aiInsightsEnabled: fields[12] == null ? false : fields[12] as bool,
     );
   }

@@ -26,8 +26,8 @@ class SettingsModel extends HiveObject {
   final bool dailyReminderEnabled;
   @HiveField(10)
   final DateTime? dailyReminderTime;
-  @HiveField(11)
-  final double? monthlyBudget;
+  @HiveField(11, defaultValue: 0)
+  final double monthlyBudget;
   @HiveField(12, defaultValue: false)
   final bool aiInsightsEnabled;
 
@@ -43,9 +43,9 @@ class SettingsModel extends HiveObject {
     this.hideBalanceOnHome = false,
     this.dailyReminderEnabled = false,
     this.dailyReminderTime,
-    this.monthlyBudget,
+    this.monthlyBudget = 0,
     this.aiInsightsEnabled = false,
-  })  : id = id ?? Uuid().v4();
+  }) : id = id ?? Uuid().v4();
 
   SettingsModel copyWith({
     bool? isFirstVisit,
@@ -61,30 +61,26 @@ class SettingsModel extends HiveObject {
     double? monthlyBudget,
     bool? aiInsightsEnabled,
   }) => SettingsModel(
-        id: id,
-        isFirstVisit: isFirstVisit ?? this.isFirstVisit,
-        isFingerprintEnabled:
-            isFingerprintEnabled ?? this.isFingerprintEnabled,
-        isPasscodeEnabled: isPasscodeEnabled ?? this.isPasscodeEnabled,
-        currencyCode: currencyCode ?? this.currencyCode,
-        currencySymbol: currencySymbol ?? this.currencySymbol,
-        languageCode: languageCode ?? this.languageCode,
-        themeMode: themeMode ?? this.themeMode,
-        hideBalanceOnHome: hideBalanceOnHome ?? this.hideBalanceOnHome,
-        dailyReminderEnabled:
-            dailyReminderEnabled ?? this.dailyReminderEnabled,
-        dailyReminderTime: dailyReminderTime ?? this.dailyReminderTime,
-        monthlyBudget: monthlyBudget ?? this.monthlyBudget,
-        aiInsightsEnabled: aiInsightsEnabled ?? this.aiInsightsEnabled,
-      );
+    id: id,
+    isFirstVisit: isFirstVisit ?? this.isFirstVisit,
+    isFingerprintEnabled: isFingerprintEnabled ?? this.isFingerprintEnabled,
+    isPasscodeEnabled: isPasscodeEnabled ?? this.isPasscodeEnabled,
+    currencyCode: currencyCode ?? this.currencyCode,
+    currencySymbol: currencySymbol ?? this.currencySymbol,
+    languageCode: languageCode ?? this.languageCode,
+    themeMode: themeMode ?? this.themeMode,
+    hideBalanceOnHome: hideBalanceOnHome ?? this.hideBalanceOnHome,
+    dailyReminderEnabled: dailyReminderEnabled ?? this.dailyReminderEnabled,
+    dailyReminderTime:
+        dailyReminderEnabled == false
+            ? null
+            : dailyReminderTime ?? this.dailyReminderTime,
+    monthlyBudget: monthlyBudget ?? this.monthlyBudget,
+    aiInsightsEnabled: aiInsightsEnabled ?? this.aiInsightsEnabled,
+  );
 }
 
-enum ActionType {
-  toggle,
-  navigate,
-  launchUrl,
-  bottomSheet,
-}
+enum ActionType { none, toggle, navigate, launchUrl, bottomSheet, dialog }
 
 class SettingsContentModel {
   final String id;
@@ -97,6 +93,7 @@ class SettingsContentModel {
   final Color? iconBgDarkColor;
   final ActionType actionType;
   final String path;
+  final bool value;
 
   SettingsContentModel({
     required this.id,
@@ -109,6 +106,7 @@ class SettingsContentModel {
     this.iconBgDarkColor,
     this.actionType = ActionType.navigate,
     this.path = "",
+    this.value = false,
   });
 
   SettingsContentModel copyWith({
@@ -122,6 +120,7 @@ class SettingsContentModel {
     String? subtitle,
     String? actionText,
     Color? iconBgDarkColor,
+    bool? value,
   }) => SettingsContentModel(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -133,5 +132,6 @@ class SettingsContentModel {
     iconBgDarkColor: iconBgDarkColor ?? this.iconBgDarkColor,
     path: path ?? this.path,
     actionType: actionType ?? this.actionType,
+    value: value ?? this.value,
   );
 }

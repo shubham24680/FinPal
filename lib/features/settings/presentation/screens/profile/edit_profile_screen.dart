@@ -18,7 +18,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   void _init() {
     final profileState = ref.read(profileProvider);
-    monthlyIncomeController = TextEditingController(text: profileState.monthlyIncome?.toString());
+    final monthlyIncome = profileState.monthlyIncome;
+    monthlyIncomeController = TextEditingController(
+      text:
+          monthlyIncome == null
+              ? null
+              : CurrencyFormatter.formatAmountForInput(monthlyIncome),
+    );
   }
 
   @override
@@ -29,28 +35,41 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = AppConstants.bottomPadding + context.viewInsets.bottom;
     final profileState = ref.watch(profileProvider);
     final profileNotifier = ref.read(profileProvider.notifier);
 
     return Scaffold(
+      extendBody: true,
       appBar: customAppBar(context, title: "Edit Profile"),
-      bottomNavigationBar: CustomButton(
-        buttonState: profileState.buttonState,
-        label: "Save Changes",
-        onTap: () async {
-          final hasSubmitted = await profileNotifier.onSubmit();
-          if (hasSubmitted && context.mounted) {
-            context.pop();
-          }
-        },
-      ).padding(
-        left: AppConstants.sidePadding,
-        right: AppConstants.sidePadding,
-        bottom: bottomPadding,
+      bottomNavigationBar: SafeArea(
+        child: CustomButton(
+          buttonState: profileState.buttonState,
+          label: "Save Changes",
+          onTap: () async {
+            final hasSubmitted = await profileNotifier.onSubmit();
+            if (!context.mounted) return;
+            if (hasSubmitted) {
+              context.pop();
+            } else {
+              context.showSnackBar(
+                "Failed to save profile",
+                toastType: ToastType.error,
+              );
+            }
+          },
+        ).padding(
+          horizontal: AppConstants.sidePadding,
+          top: 8.spMin,
+          bottom: context.buttonBottomPadding,
+        ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppConstants.sidePadding),
+        padding: EdgeInsets.only(
+          left: AppConstants.sidePadding,
+          right: AppConstants.sidePadding,
+          top: AppConstants.sidePadding,
+          bottom: 180.spMin + context.viewInsets.bottom,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,21 +80,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               fontType: FontType.body2Medium,
               color: context.colors.onSurface,
             ).padding(left: 8.r, bottom: 4.r),
-            CustomContainer(child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 16.spMin,
-              children: [
-                PersonalDetailsForm(),
-                CustomTextField(
+            CustomContainer(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16.spMin,
+                children: [
+                  PersonalDetailsForm(),
+                  CustomTextField(
                     controller: monthlyIncomeController,
                     onChanged:
                         (value) => profileNotifier.setMonthlyIncome(value),
                     inputType: InputType.amount,
                     header: "MONTHLY INCOME",
-                )
-              ],
-            )),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -87,44 +108,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     ProfileState profileState,
     ProfileProvider profileNotifier,
   ) {
-    final values = ProfileConstants.profileImageOptions;
-    final options = ListView.separated(
-      shrinkWrap: true,
-      itemCount: values.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        return CustomContainer(
-          onTap: () async {
-            final image = await ImagePicker().pickImage(
-              source:
-                  values[index].id == "camera"
-                      ? ImageSource.camera
-                      : ImageSource.gallery,
-            );
-            if (context.mounted) {
-              context.pop();
-            }
-            profileNotifier.setProfileImage(image?.path);
-          },
-          padding: EdgeInsets.symmetric(vertical: 16.r),
-          child: Row(
-            spacing: 12.spMin,
-            children: [
-              CustomImage(
-                imageType: ImageType.svgLocal,
-                imageUrl: values[index].icon,
-                color: values[index].iconColor,
-              ),
-              CustomTypography(
-                text: values[index].title,
-                fontType: FontType.body2Medium,
-              ),
-            ],
-          ),
-        );
-      },
-      separatorBuilder: (context, index) => Divider(),
-    );
     return Center(
       child: Stack(
         alignment: Alignment.bottomRight,
@@ -136,7 +119,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             enableBorder: true,
           ),
           CustomContainer(
-            onTap: () => CustomBottomSheet.show(context, widget: options),
+            onTap: () async {
+              final image = await selectImageBottomSheet(context);
+              if (image == null) return;
+              profileNotifier.setProfileImage(image);
+            },
             backgroundColor: AppColors.primary500,
             padding: EdgeInsets.all(8.r),
             child: CustomImage(
