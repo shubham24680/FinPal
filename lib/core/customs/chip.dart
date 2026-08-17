@@ -1,7 +1,7 @@
 import 'package:finpal/app/app.dart';
 
 enum ChipVariant { primary, inactive }
-
+enum ChipType { primary, secondary, tertiary }
 enum ChipSize { extraSmall, small, medium, large, extraLarge }
 
 class CustomChip extends StatelessWidget {

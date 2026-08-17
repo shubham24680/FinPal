@@ -261,6 +261,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     DateTime selectedDate,
     TransactionType? typeFilter,
   ) {
+    final isDark = context.isDarkMode;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
@@ -272,6 +273,9 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
             imageUrl: AppSvgs.calendar,
             selected: true,
             outlined: true,
+            backgroundColor: isDark ? AppColors.primary700.withAlpha(100) : AppColors.primary50,
+            foregroundColor: AppColors.primary500,
+            borderColor: AppColors.primary700,
             onTap: () async {
               final picked = await CustomBottomSheet.chooseDate(
                 context,
