@@ -91,7 +91,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                         .toList(),
               ),
             ),
-            _buildAmountField(context, transactionNotifer),
+            _buildAmountField(context, transactionState, transactionNotifer),
             _buildDateField(context, transactionState, transactionNotifer),
             _otherFields(context, transactionState, transactionNotifer),
             _buildReceiptField(context, transactionState, transactionNotifer),
@@ -112,7 +112,10 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
     return Expanded(
       child: CustomContainer(
-        onTap: () => notifer.set(type: type),
+        onTap: () {
+          notifer.set(type: type);
+          notifer.checkSpent();
+        },
         backgroundColor:
             isSelected ? context.colors.surface : Colors.transparent,
         child: Row(
@@ -148,7 +151,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _buildAmountField(BuildContext context, PaymentProvider notifer) {
+  Widget _buildAmountField(BuildContext context, PaymentState state, PaymentProvider notifer) {
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,10 +172,14 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             ],
           ),
           CustomTextField(
-            onChanged: (value) => notifer.set(amount: value),
+            onChanged: (value) {
+              notifer.set(amount: value);
+              notifer.checkSpent();
+            },
             controller: amountController,
             inputType: InputType.amount,
-            helperText: "Change the amount of your transaction",
+            helperText: state.helperText,
+            helperTextColor: state.helperTextColor.normal,
             isUnderLineBorder: true,
             fillColor: Colors.transparent,
             hintStyle: CustomTypography(

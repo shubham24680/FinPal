@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 class TransactionDetailBS extends ConsumerWidget {
@@ -312,8 +314,6 @@ class TransactionDetailBS extends ConsumerWidget {
               final result = await confirmDelete(context, ref, payment);
               if (result == true && context.mounted) {
                 context.pop();
-                context.pop();
-                context.showSnackBar("Transaction deleted successfully");
               }
             },
           ),

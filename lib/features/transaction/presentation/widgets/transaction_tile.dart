@@ -154,7 +154,10 @@ class TransactionList extends ConsumerWidget {
                             : context.successColor,
                   ),
                   CustomTypography(
-                    text: payment.date.formatDate(type: showDate ? DateFormatType.date1 : DateFormatType.time),
+                    text: payment.date.formatDate(
+                      type:
+                          showDate ? DateFormatType.date1 : DateFormatType.time,
+                    ),
                     fontType: FontType.label1Medium,
                     color: context.colors.onSurface,
                   ),
@@ -276,9 +279,14 @@ Future<bool?> confirmDelete(
     buttonText: "Yes, Delete",
     buttonColor: AppColors.error500,
     onPressed: () {
-      ref.read(transactionProvider.notifier).deletePayment(payment.id);
-      context.pop();
-      context.showSnackBar("Transaction deleted successfully");
+      ref.read(transactionProvider.notifier).deletePayment(payment.id).then((
+        _,
+      ) {
+        if (context.mounted) {
+          context.pop(true);
+          context.showSnackBar("Transaction deleted successfully");
+        }
+      });
     },
   );
 }

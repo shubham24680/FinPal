@@ -12,7 +12,7 @@ enum AppRoutesPath {
   theme(path: "/theme", child: ThemeScreen()),
   currency(path: "/currency", child: CurrencyScreen()),
   editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
-  ai(path: "/ai", child: AIScreen()),
+  // ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 
   const AppRoutesPath({required this.path, required this.child});

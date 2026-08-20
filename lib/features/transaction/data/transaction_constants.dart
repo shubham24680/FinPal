@@ -16,3 +16,10 @@ extension TransactionTypeX on String {
     orElse: () => TransactionType.expense,
   );
 }
+
+class TransactionConstants {
+  static const String emptyHelperText = "Enter an amount to see what's left.";
+  static const String savingHelperText = "You'll still have ";
+  static const String overspentHelperText = "You'd be short by ";
+  static const String neutralHelperText = "This uses up your remaining balance.";
+}
