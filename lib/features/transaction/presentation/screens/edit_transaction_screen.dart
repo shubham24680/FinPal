@@ -36,13 +36,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     final transactionState = ref.watch(paymentProvider);
     final transactionNotifer = ref.read(paymentProvider.notifier);
     final ctaText = transactionState.id != null ? "Update" : "Add";
-    final title =
-        "${transactionState.id != null ? "Edit" : "Add"} Transaction";
+    final title = "${transactionState.id != null ? "Edit" : "Add"} Transaction";
 
     ref.listen(paymentProvider, (previous, next) {
       if (next.toastMessage.isNotEmpty) {
         context.showSnackBar(next.toastMessage, toastType: next.toastType);
-        if(next.toastType != ToastType.error) {
+        if (next.toastType != ToastType.error) {
           context.pop();
         }
       }
@@ -151,7 +150,11 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _buildAmountField(BuildContext context, PaymentState state, PaymentProvider notifer) {
+  Widget _buildAmountField(
+    BuildContext context,
+    PaymentState state,
+    PaymentProvider notifer,
+  ) {
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,7 +212,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         () async {
           final picked = await CustomBottomSheet.chooseDate(
             context,
-            date: transactionState.date.parseDate(type: DateFormatType.dateTime),
+            date: transactionState.date.parseDate(
+              type: DateFormatType.dateTime,
+            ),
             showTime: true,
           );
           if (!mounted) return;
@@ -241,7 +246,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             state.category?.icon ?? AppSvgs.category,
             state.category?.name,
             () async {
-              final picked = await buildTranasactionBS(context, categories);
+              final picked = await CustomBottomSheet.showOptions(
+                context,
+                categories,
+                title: "Select Category",
+                selectedOption: state.category,
+              );
               notifer.set(category: picked);
             },
             hintText: "Select Category",
@@ -254,7 +264,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             state.paymentMethod?.icon ?? AppSvgs.upi,
             state.paymentMethod?.name,
             () async {
-              final picked = await buildTranasactionBS(context, paymentMethod);
+              final picked = await CustomBottomSheet.showOptions(
+                context,
+                paymentMethod,
+                title: "Select Payment Method",
+                selectedOption: state.paymentMethod,
+              );
               notifer.set(paymentMethod: picked);
             },
             hintText: "Select Payment Method",
@@ -403,7 +418,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
                 SizedBox(height: 4.spMin),
                 CustomTypography(
-                  text: "JPG, PNG or PDF (Max. 5MB)",
+                  text: "JPG, PNG or JPEG (Max. 5MB)",
                   fontType: FontType.label1Medium,
                   color: context.colors.onSurfaceVariant,
                 ),
