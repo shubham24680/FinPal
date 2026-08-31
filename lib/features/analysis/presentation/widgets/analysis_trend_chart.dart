@@ -23,7 +23,7 @@ class AnalysisTrendChart extends ConsumerWidget {
     final range = period.range;
     final startDate = range.start.formatDate(type: DateFormatType.shortDate);
     final endDate = range.end.formatDate(type: DateFormatType.shortDate);
-    final currency = ref.watch(currencyProvider);
+    final currency = ref.selectedCurrency;
     final maxY = trend.fold<double>(0, (m, p) => p.amount > m ? p.amount : m);
     final chartMax = maxY <= 0 ? 1.0 : maxY * 1.15;
     final labelStep = _labelStep(trend.length);

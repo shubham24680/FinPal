@@ -1,14 +1,21 @@
 import 'package:finpal/app/app.dart';
 
-class AnalysisCard extends StatelessWidget {
-  const AnalysisCard(this.analysis, {super.key, this.title = '', this.onTap});
+class AnalysisCard extends ConsumerWidget {
+  const AnalysisCard(
+    this.analysis, {
+    super.key,
+    this.title = '',
+    this.onTap,
+    this.hideBalance = false,
+  });
 
   final List<AnalysisModel> analysis;
   final String title;
   final VoidCallback? onTap;
+  final bool hideBalance;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isLandscape = context.isLandscape;
 
     return CustomContainer(
@@ -19,7 +26,7 @@ class AnalysisCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if(title.isNotEmpty) ...[
+          if (title.isNotEmpty) ...[
             CustomTypography(text: title, fontType: FontType.body2Semibold),
             SizedBox(height: 16.spMin),
           ],
@@ -55,7 +62,12 @@ class AnalysisCard extends StatelessWidget {
                     crossAxisSpacing: 8.spMin,
                   ),
                   itemBuilder:
-                      (context, index) => _buildAnalysisTile(analysis[index]),
+                      (context, index) => _buildAnalysisTile(
+                        context,
+                        ref,
+                        analysis[index],
+                        hideBalance,
+                      ),
                 ),
               ),
             ],
@@ -65,8 +77,13 @@ class AnalysisCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAnalysisTile(AnalysisModel item) {
-    final amountText = CurrencyFormatter.format(item.amount);
+  Widget _buildAnalysisTile(
+    BuildContext context,
+    WidgetRef ref,
+    AnalysisModel item,
+    bool hideBalance,
+  ) {
+    final amountText = ref.formatCurrency(item.amount);
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 8.w,
@@ -87,11 +104,23 @@ class AnalysisCard extends StatelessWidget {
                 text: item.title,
                 fontType: FontType.label1SemiBold,
               ),
-              CustomTypography(
-                text: amountText,
-                fontType: FontType.label1Regular,
-                overflow: TextOverflow.ellipsis,
-              ),
+              hideBalance
+                  ? Row(
+                    spacing: 4.spMin,
+                    children: List.generate(
+                      4,
+                      (index) => CustomContainer(
+                        padding: EdgeInsets.all(4.spMin),
+                        borderRadius: BorderRadius.circular(1000.r),
+                        backgroundColor: context.colors.inverseSurface,
+                      ),
+                    ),
+                  )
+                  : CustomTypography(
+                    text: amountText,
+                    fontType: FontType.label1Regular,
+                    overflow: TextOverflow.ellipsis,
+                  ),
             ],
           ),
         ),

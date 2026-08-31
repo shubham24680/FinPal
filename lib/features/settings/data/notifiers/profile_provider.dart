@@ -149,7 +149,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   double? _parseMonthlyIncome(String? raw) {
     if (raw == null || raw.trim().isEmpty) return null;
     try {
-      final amount = CurrencyFormatter.parse(raw);
+      final amount = ref.parseCurrency(raw);
       return amount > 0 ? amount : null;
     } on FormatException {
       return null;

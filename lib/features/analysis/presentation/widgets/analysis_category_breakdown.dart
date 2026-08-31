@@ -14,7 +14,6 @@ class AnalysisCategoryBreakdown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currency = ref.watch(currencyProvider);
     final categories = analysis.categories;
     if (categories.isEmpty) return const SizedBox.shrink();
 
@@ -41,7 +40,7 @@ class AnalysisCategoryBreakdown extends ConsumerWidget {
               ),
             ],
           ),
-          ...visible.map((row) => _buildCategoryRow(context, row, currency)),
+          ...visible.map((row) => _buildCategoryRow(context, ref, row)),
         ],
       ),
     );
@@ -49,15 +48,12 @@ class AnalysisCategoryBreakdown extends ConsumerWidget {
 
   Widget _buildCategoryRow(
     BuildContext context,
+    WidgetRef ref,
     AnalysisModel category,
-    CurrencyContants currency,
   ) {
     final icon = category.icon ?? AppSvgs.bin;
     final color = category.color;
-    final amount = CurrencyFormatter.format(
-      category.amount,
-      currency: currency,
-    );
+    final amount = ref.formatCurrency(category.amount);
     final percentage = '${category.percentage.toStringAsFixed(0)}%';
 
     return Row(

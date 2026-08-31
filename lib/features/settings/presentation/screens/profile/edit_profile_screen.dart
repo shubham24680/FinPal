@@ -23,7 +23,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       text:
           monthlyIncome == null
               ? null
-              : CurrencyFormatter.formatAmountForInput(monthlyIncome),
+              : ref.formatAmountForInput(monthlyIncome),
     );
   }
 

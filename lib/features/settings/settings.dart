@@ -7,6 +7,7 @@ export 'data/models/option_model.dart';
 export 'data/models/profile_model.dart';
 export 'data/models/profile_helper_model.dart';
 
+export 'data/extensions/currency_format_extension.dart';
 export 'data/notifiers/settings_notifier.dart';
 export 'data/notifiers/profile_provider.dart';
 export 'data/notifiers/options_provider.dart';

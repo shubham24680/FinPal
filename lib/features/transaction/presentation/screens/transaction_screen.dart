@@ -247,7 +247,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           ),
           CustomTypography(
             overflow: TextOverflow.ellipsis,
-            text: CurrencyFormatter.format(amount, compact: amount.abs() > 1e7),
+            text: ref.formatCurrency(
+              amount,
+              compact: amount.abs() > 1e7,
+            ),
             fontType: FontType.h4Semibold,
             color: color.normal,
           ),

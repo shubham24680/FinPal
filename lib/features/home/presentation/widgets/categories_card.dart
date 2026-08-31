@@ -45,7 +45,7 @@ class CategoriesCard extends ConsumerWidget {
           ),
           itemBuilder:
               (context, index) =>
-                  _buildCategoryTile(context, categories[index]),
+                  _buildCategoryTile(context, ref, categories[index]),
         ),
       ],
     ).padding(
@@ -54,10 +54,14 @@ class CategoriesCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildCategoryTile(BuildContext context, AnalysisModel category) {
+  Widget _buildCategoryTile(
+    BuildContext context,
+    WidgetRef ref,
+    AnalysisModel category,
+  ) {
     final isDark = context.isDarkMode;
     final color = category.color;
-    final amount = CurrencyFormatter.format(category.amount);
+    final amount = ref.formatCurrency(category.amount);
 
     return CustomContainer(
       gradient: RadialGradient(
