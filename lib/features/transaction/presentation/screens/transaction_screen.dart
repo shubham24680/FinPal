@@ -63,15 +63,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           typeFilter,
         );
         if (filteredPayments.isEmpty) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16.spMin,
-            children: [
-              _buildTopWidget(context, 0, 0),
-              _buildFilters(context, selectedDate, typeFilter),
-              _buildNoTransactions(context, ref, title: "No matching transactions"),
-            ],
-          );
+          return noTransactionsWidget;
         }
 
         return Stack(

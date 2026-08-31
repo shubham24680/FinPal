@@ -123,7 +123,7 @@ class CustomBottomSheet extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: switch (layout) {
         SheetLayout.typeB => typeBLayout(context),
-        SheetLayout.typeA => defaultLayout(context),
+        _ => defaultLayout(context),
       },
     );
   }
