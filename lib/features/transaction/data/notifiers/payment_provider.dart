@@ -6,6 +6,7 @@ final selectedTransactionProvider = StateProvider<PaymentModel?>((ref) => null);
 class PaymentState {
   final String? id;
   final TransactionType type;
+  final double initialAmount;
   final String amount;
   final String date;
   final OptionModel? category;
@@ -23,6 +24,7 @@ class PaymentState {
   PaymentState({
     this.id,
     required this.type,
+    required this.initialAmount,
     required this.amount,
     required this.date,
     this.category,
@@ -40,6 +42,7 @@ class PaymentState {
 
   factory PaymentState.initial() => PaymentState(
     type: TransactionType.expense,
+    initialAmount: 0,
     amount: '',
     date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
@@ -55,6 +58,7 @@ class PaymentState {
   PaymentState copyWith({
     String? id,
     TransactionType? type,
+    double? initialAmount,
     String? amount,
     DateTime? date,
     OptionModel? category,
@@ -71,6 +75,7 @@ class PaymentState {
   }) => PaymentState(
     id: id ?? this.id,
     type: type ?? this.type,
+    initialAmount: initialAmount ?? this.initialAmount,
     amount: amount ?? this.amount,
     date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
@@ -101,6 +106,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     final selectedTransaction = _ref.read(selectedTransactionProvider);
     if (selectedTransaction == null) return;
 
+    final type = selectedTransaction.paymentType.type;
     final amount = CurrencyFormatter.formatAmountForInput(
       selectedTransaction.amount,
     );
@@ -112,7 +118,11 @@ class PaymentProvider extends StateNotifier<PaymentState> {
 
     state = state.copyWith(
       id: selectedTransaction.id,
-      type: selectedTransaction.paymentType.type,
+      type: type,
+      initialAmount:
+          type == TransactionType.expense
+              ? -selectedTransaction.amount
+              : selectedTransaction.amount,
       amount: amount,
       date: selectedTransaction.date,
       category: category,
@@ -132,6 +142,14 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     String? notes,
     String? receiptPath,
   }) {
+    if (receiptPath != null && receiptPath.isNotEmpty) {
+      final receiptError = ReceiptUtils.validateReceipt(receiptPath);
+      if (receiptError != null) {
+        _showError(receiptError);
+        return;
+      }
+    }
+
     state = state.copyWith(
       type: type,
       amount: amount,
@@ -142,6 +160,9 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       receiptPath: receiptPath,
     );
     onChange();
+    if (amount != null || type != null) {
+      checkSpent();
+    }
   }
 
   void onChange() {
@@ -161,7 +182,8 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     }
 
     final transactionProv = _ref.read(transactionProvider);
-    final available = transactionProv.value?.availableBalance ?? 0;
+    final available =
+        (transactionProv.value?.availableBalance ?? 0) - state.initialAmount;
     final amount = CurrencyFormatter.parse(state.amount);
     final totalAmount =
         state.type == TransactionType.expense
@@ -186,6 +208,17 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     );
   }
 
+  void clearToast() {
+    if (state.toastMessage.isEmpty && state.toastType == ToastType.normal) {
+      return;
+    }
+    state = state.copyWith(toastType: ToastType.normal, toastMessage: '');
+  }
+
+  void _showError(String message) {
+    state = state.copyWith(toastType: ToastType.error, toastMessage: message);
+  }
+
   Future<void> save() async {
     final category = state.category;
     final paymentMethod = state.paymentMethod;
@@ -206,15 +239,16 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       );
 
       await _ref.read(transactionProvider.notifier).save(transaction);
-      state = state.copyWith(toastMessage: "Transaction saved successfully");
-    } catch (e) {
-      log(e.toString(), name: "PaymentProvider");
       state = state.copyWith(
-        toastType: ToastType.error,
-        toastMessage: "Failed to save transaction",
+        toastType: ToastType.success,
+        toastMessage: TransactionConstants.saveSuccessMessage,
       );
-    } finally {
-      state = state.copyWith(toastType: ToastType.normal, toastMessage: '');
+    } on FormatException catch (e, stackTrace) {
+      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      _showError(TransactionConstants.amountInvalidMessage);
+    } catch (e, stackTrace) {
+      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      _showError(TransactionConstants.saveFailureMessage);
     }
   }
 }

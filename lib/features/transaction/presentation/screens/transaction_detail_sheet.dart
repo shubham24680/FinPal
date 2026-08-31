@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:finpal/app/app.dart';
 
@@ -46,6 +46,8 @@ class TransactionDetailBS extends ConsumerWidget {
             note: payment.notes.isEmpty ? "—" : payment.notes,
             accent: accent,
           ),
+          if (payment.receiptPath.isNotEmpty)
+            _buildReceipt(context, payment.receiptPath),
           _buildActions(context, ref),
         ],
       ),
@@ -286,6 +288,60 @@ class TransactionDetailBS extends ConsumerWidget {
         ),
       ],
     ).padding(horizontal: 16.spMin, vertical: 12.spMin);
+  }
+
+  Widget _buildReceipt(BuildContext context, String receiptPath) {
+    return CustomContainer(
+      backgroundColor: context.colors.surfaceContainerHighest,
+      border: Border.all(color: context.colors.outlineVariant),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12.spMin,
+        children: [
+          _sectionHeader(
+            context,
+            "Receipt",
+            icon: AppSvgs.bills,
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Image.file(
+                File(receiptPath),
+                fit: BoxFit.cover,
+                height: 160.spMin,
+                width: double.infinity,
+                errorBuilder:
+                    (_, _, _) => CustomTypography(
+                    text: ReceiptUtils.fileName(receiptPath),
+                    fontType: FontType.body2Medium,
+                  )
+              ),
+              CustomContainer(
+                onTap: () => showReceiptPreview(context, receiptPath),
+                margin: EdgeInsets.all(4.r),
+                padding: EdgeInsets.all(4.r),
+                borderRadius: BorderRadius.circular(8.r),
+                backgroundColor: context.colors.inverseSurface.withAlpha(100),
+                child: CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: AppSvgs.fullScreen,
+                  color: context.colors.surface,
+                ),
+              ),
+            ],
+          ),
+          ),
+          CustomTypography(
+            text: ReceiptUtils.fileName(receiptPath),
+            fontType: FontType.label1Medium,
+            color: context.colors.onSurfaceVariant,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildActions(BuildContext context, WidgetRef ref) {

@@ -30,6 +30,7 @@ class AppSvgs {
   static const String eyeClosed = '$_basePath/eye_closed.svg';
   static const String female = '$_basePath/female.svg';
   static const String fingerprint = '$_basePath/fingerprint.svg';
+  static const String fullScreen = '$_basePath/full_screen.svg';
   static const String gallery = '$_basePath/gallery.svg';
   static const String home = '$_basePath/home.svg';
   static const String home1 = '$_basePath/home1.svg';

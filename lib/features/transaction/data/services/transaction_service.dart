@@ -72,8 +72,8 @@ class TransactionService {
       .toList(growable: false);
 
   List<PaymentModel> getRecentTransactions({int limit = 5}) {
-    payments.sort((a, b) => b.date.compareTo(a.date));
-    return payments.take(limit).toList(growable: false);
+    final recentPayments = [...payments]..sort((a, b) => b.date.compareTo(a.date));
+    return recentPayments.take(limit).toList(growable: false);
   }
 
   // Todo: Optimize this method.
