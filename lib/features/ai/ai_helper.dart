@@ -51,7 +51,7 @@ class Message extends ConsumerWidget {
             height: 16.w,
           ).onTap(
             event: () {
-              ref.read(aiProvider.notifier).retryMessage(message);
+              // ref.read(aiProvider.notifier).retryMessage(message);
             },
           ),
         ],
@@ -181,7 +181,7 @@ class Message extends ConsumerWidget {
     WidgetRef ref,
     ChatMessage message,
   ) {
-    ref.read(aiProvider.notifier).update(message);
+    // ref.read(aiProvider.notifier).update(message);
   }
 
   Widget wrapContainer(

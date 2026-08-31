@@ -35,6 +35,7 @@ class CustomTextField extends StatelessWidget {
     this.inputFormatters,
     this.maxLength,
     this.helperText,
+    this.helperTextColor,
     this.helperIcon,
     this.isUnderLineBorder = false,
     this.hintStyle,
@@ -63,6 +64,7 @@ class CustomTextField extends StatelessWidget {
   final Color? errorColor;
   final TextStyle? style;
   final String? helperText;
+  final Color? helperTextColor;
   final String? helperIcon;
   final String? initialValue;
   final List<String> items;
@@ -94,7 +96,7 @@ class CustomTextField extends StatelessWidget {
         AppColors.error500,
         fontType: FontType.label1Regular,
       ).getTextStyle(context),
-      helper: _buildHelperText(context, helperText, helperIcon),
+      helper: _buildHelperText(context, helperText, helperIcon, helperTextColor),
       prefixIcon: (perfixIcon ?? _buildPrefixIcon(context))?.padding(
         horizontal: 10.r,
       ),
@@ -218,6 +220,7 @@ class CustomTextField extends StatelessWidget {
     BuildContext context,
     String? helperText,
     String? helperIcon,
+    Color? helperTextColor,
   ) {
     if (helperText == null) return null;
     return Row(
@@ -232,7 +235,7 @@ class CustomTextField extends StatelessWidget {
           ),
         _buildHint(
           context,
-          Theme.of(context).colorScheme.onSurfaceVariant,
+          helperTextColor ?? context.colors.onSurfaceVariant,
           text: helperText,
           fontType: FontType.label1Medium,
         ),

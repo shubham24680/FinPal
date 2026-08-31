@@ -43,7 +43,7 @@ class AppInitializer {
         profileBoxProvider.overrideWithValue(results[2] as Box<ProfileModel>),
         optionBoxProvider.overrideWithValue(results[3] as Box<OptionModel>),
         paymentBoxProvider.overrideWithValue(results[4] as Box<PaymentModel>),
-        aiBoxProvider.overrideWithValue(results[5] as Box<ChatMessage>),
+        // aiBoxProvider.overrideWithValue(results[5] as Box<ChatMessage>),
       ];
     } catch (error, stackTrace) {
       developer.log(

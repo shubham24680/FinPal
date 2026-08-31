@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:finpal/app/app.dart';
 
 class EditTransactionScreen extends ConsumerStatefulWidget {
@@ -36,16 +38,16 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     final transactionState = ref.watch(paymentProvider);
     final transactionNotifer = ref.read(paymentProvider.notifier);
     final ctaText = transactionState.id != null ? "Update" : "Add";
-    final title =
-        "${transactionState.id != null ? "Edit" : "Add"} Transaction";
+    final title = "${transactionState.id != null ? "Edit" : "Add"} Transaction";
 
     ref.listen(paymentProvider, (previous, next) {
-      if (next.toastMessage.isNotEmpty) {
-        context.showSnackBar(next.toastMessage, toastType: next.toastType);
-        if(next.toastType != ToastType.error) {
-          context.pop();
-        }
+      if (next.toastMessage.isEmpty) return;
+
+      context.showSnackBar(next.toastMessage, toastType: next.toastType);
+      if (next.toastType != ToastType.error) {
+        context.pop();
       }
+      ref.read(paymentProvider.notifier).clearToast();
     });
 
     return Scaffold(
@@ -91,7 +93,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                         .toList(),
               ),
             ),
-            _buildAmountField(context, transactionNotifer),
+            _buildAmountField(context, transactionState, transactionNotifer),
             _buildDateField(context, transactionState, transactionNotifer),
             _otherFields(context, transactionState, transactionNotifer),
             _buildReceiptField(context, transactionState, transactionNotifer),
@@ -148,7 +150,11 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _buildAmountField(BuildContext context, PaymentProvider notifer) {
+  Widget _buildAmountField(
+    BuildContext context,
+    PaymentState state,
+    PaymentProvider notifer,
+  ) {
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +178,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             onChanged: (value) => notifer.set(amount: value),
             controller: amountController,
             inputType: InputType.amount,
-            helperText: "Change the amount of your transaction",
+            helperText: state.helperText,
+            helperTextColor: state.helperTextColor.normal,
             isUnderLineBorder: true,
             fillColor: Colors.transparent,
             hintStyle: CustomTypography(
@@ -202,7 +209,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         () async {
           final picked = await CustomBottomSheet.chooseDate(
             context,
-            date: transactionState.date.parseDate(type: DateFormatType.dateTime),
+            date: transactionState.date.parseDate(
+              type: DateFormatType.dateTime,
+            ),
             showTime: true,
           );
           if (!mounted) return;
@@ -234,7 +243,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             state.category?.icon ?? AppSvgs.category,
             state.category?.name,
             () async {
-              final picked = await buildTranasactionBS(context, categories);
+              final picked = await CustomBottomSheet.showOptions(
+                context,
+                categories,
+                title: "Select Category",
+                selectedOption: state.category,
+              );
               notifer.set(category: picked);
             },
             hintText: "Select Category",
@@ -247,7 +261,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             state.paymentMethod?.icon ?? AppSvgs.upi,
             state.paymentMethod?.name,
             () async {
-              final picked = await buildTranasactionBS(context, paymentMethod);
+              final picked = await CustomBottomSheet.showOptions(
+                context,
+                paymentMethod,
+                title: "Select Payment Method",
+                selectedOption: state.paymentMethod,
+              );
               notifer.set(paymentMethod: picked);
             },
             hintText: "Select Payment Method",
@@ -363,11 +382,18 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     return AnimatedTap(
       onTap: () async {
         final image = await selectImageBottomSheet(context);
-        if (image == null) return;
+        if (image == null || !mounted) return;
+
+        final receiptError = ReceiptUtils.validateReceipt(image);
+        if (receiptError != null && context.mounted) {
+          context.showSnackBar(receiptError, toastType: ToastType.error);
+          return;
+        }
+
         notifer.set(receiptPath: image);
       },
       child: CustomPaint(
-        painter: _DashedBorderPainter(
+        painter: DashedBorderPainter(
           color: context.colors.outline,
           radius: 12.r,
         ),
@@ -396,7 +422,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
                 SizedBox(height: 4.spMin),
                 CustomTypography(
-                  text: "JPG, PNG or PDF (Max. 5MB)",
+                  text: "JPG, PNG or JPEG (Max. 5MB)",
                   fontType: FontType.label1Medium,
                   color: context.colors.onSurfaceVariant,
                 ),
@@ -413,80 +439,82 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     String path,
     PaymentProvider notifer,
   ) {
-    final fileName = path.replaceAll('\\', '/').split('/').last;
+    final fileName = ReceiptUtils.fileName(path);
 
-    return CustomContainer(
-      backgroundColor: context.colors.surfaceContainerHighest,
-      padding: EdgeInsets.all(12.r),
-      child: Row(
-        spacing: 12.spMin,
-        children: [
-          CustomImage(
-            imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.bills,
-            color: context.colors.primary,
-            height: 24.spMin,
-            width: 24.spMin,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 12.spMin,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Image.file(
+                File(path),
+                fit: BoxFit.cover,
+                height: 160.spMin,
+                width: double.infinity,
+                errorBuilder:
+                    (_, _, _) => CustomContainer(
+                      backgroundColor: context.colors.surfaceContainerHighest,
+                      padding: EdgeInsets.all(24.r),
+                      child: CustomTypography(
+                        text: "Unable to preview receipt",
+                        fontType: FontType.body2Medium,
+                        align: TextAlign.center,
+                      ),
+                    ),
+              ),
+              CustomContainer(
+                onTap: () => showReceiptPreview(context, path),
+                margin: EdgeInsets.all(4.r),
+                padding: EdgeInsets.all(4.r),
+                borderRadius: BorderRadius.circular(8.r),
+                backgroundColor: context.colors.inverseSurface.withAlpha(100),
+                child: CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: AppSvgs.fullScreen,
+                  color: context.colors.surface,
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: CustomTypography(
-              text: fileName,
-              fontType: FontType.body2Medium,
-              color: context.colors.onSurface,
-            ),
+        ),
+        CustomContainer(
+          backgroundColor: context.colors.surfaceContainerHighest,
+          padding: EdgeInsets.all(12.r),
+          child: Row(
+            spacing: 12.spMin,
+            children: [
+              CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: AppSvgs.bills,
+                color: context.colors.primary,
+                height: 24.spMin,
+                width: 24.spMin,
+              ),
+              Expanded(
+                child: CustomTypography(
+                  text: fileName,
+                  fontType: FontType.body2Medium,
+                  color: context.colors.onSurface,
+                ),
+              ),
+              AnimatedTap(
+                onTap: () => notifer.set(receiptPath: ''),
+                child: CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: AppSvgs.cross,
+                  color: context.colors.onSurfaceVariant,
+                  height: 16.spMin,
+                  width: 16.spMin,
+                ),
+              ),
+            ],
           ),
-          AnimatedTap(
-            onTap: () => notifer.set(receiptPath: ''),
-            child: CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: AppSvgs.cross,
-              color: context.colors.onSurfaceVariant,
-              height: 16.spMin,
-              width: 16.spMin,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-}
-
-class _DashedBorderPainter extends CustomPainter {
-  _DashedBorderPainter({required this.color, required this.radius});
-
-  final Color color;
-  final double radius;
-  static const double _strokeWidth = 1.5;
-  static const double _dashLength = 6;
-  static const double _gapLength = 4;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color
-          ..strokeWidth = _strokeWidth
-          ..style = PaintingStyle.stroke;
-
-    final path =
-        Path()..addRRect(
-          RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)),
-        );
-
-    for (final metric in path.computeMetrics()) {
-      var distance = 0.0;
-      while (distance < metric.length) {
-        final next = distance + _dashLength;
-        canvas.drawPath(
-          metric.extractPath(distance, next.clamp(0, metric.length)),
-          paint,
-        );
-        distance = next + _gapLength;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) =>
-      color != oldDelegate.color || radius != oldDelegate.radius;
 }

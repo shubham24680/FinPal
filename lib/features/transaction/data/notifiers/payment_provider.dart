@@ -1,13 +1,12 @@
 import 'dart:developer';
 import 'package:finpal/app/app.dart';
 
-final selectedTransactionProvider = StateProvider<PaymentModel?>(
-  (ref) => null,
-);
+final selectedTransactionProvider = StateProvider<PaymentModel?>((ref) => null);
 
 class PaymentState {
   final String? id;
   final TransactionType type;
+  final double initialAmount;
   final String amount;
   final String date;
   final OptionModel? category;
@@ -19,10 +18,13 @@ class PaymentState {
   final DateTime? createdAt;
   final ToastType toastType;
   final String toastMessage;
+  final String helperText;
+  final ColorSet helperTextColor;
 
   PaymentState({
     this.id,
     required this.type,
+    required this.initialAmount,
     required this.amount,
     required this.date,
     this.category,
@@ -34,10 +36,13 @@ class PaymentState {
     this.createdAt,
     required this.toastType,
     required this.toastMessage,
+    required this.helperText,
+    required this.helperTextColor,
   });
 
   factory PaymentState.initial() => PaymentState(
     type: TransactionType.expense,
+    initialAmount: 0,
     amount: '',
     date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
@@ -46,11 +51,14 @@ class PaymentState {
     receiptPath: '',
     toastType: ToastType.normal,
     toastMessage: '',
+    helperText: TransactionConstants.emptyHelperText,
+    helperTextColor: ColorSet.neutral,
   );
 
   PaymentState copyWith({
     String? id,
     TransactionType? type,
+    double? initialAmount,
     String? amount,
     DateTime? date,
     OptionModel? category,
@@ -62,13 +70,18 @@ class PaymentState {
     DateTime? createdAt,
     ToastType? toastType,
     String? toastMessage,
+    String? helperText,
+    ColorSet? helperTextColor,
   }) => PaymentState(
     id: id ?? this.id,
     type: type ?? this.type,
+    initialAmount: initialAmount ?? this.initialAmount,
     amount: amount ?? this.amount,
     date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
-        (type == null || type == this.type) ? category ?? this.category : category,
+        (type == null || type == this.type)
+            ? category ?? this.category
+            : category,
     paymentMethod: paymentMethod ?? this.paymentMethod,
     buttonState: buttonState ?? this.buttonState,
     overspent: overspent ?? this.overspent,
@@ -77,6 +90,8 @@ class PaymentState {
     createdAt: createdAt ?? this.createdAt,
     toastType: toastType ?? this.toastType,
     toastMessage: toastMessage ?? this.toastMessage,
+    helperText: helperText ?? this.helperText,
+    helperTextColor: helperTextColor ?? this.helperTextColor,
   );
 }
 
@@ -91,6 +106,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     final selectedTransaction = _ref.read(selectedTransactionProvider);
     if (selectedTransaction == null) return;
 
+    final type = selectedTransaction.paymentType.type;
     final amount = CurrencyFormatter.formatAmountForInput(
       selectedTransaction.amount,
     );
@@ -102,7 +118,11 @@ class PaymentProvider extends StateNotifier<PaymentState> {
 
     state = state.copyWith(
       id: selectedTransaction.id,
-      type: selectedTransaction.paymentType.type,
+      type: type,
+      initialAmount:
+          type == TransactionType.expense
+              ? -selectedTransaction.amount
+              : selectedTransaction.amount,
       amount: amount,
       date: selectedTransaction.date,
       category: category,
@@ -122,6 +142,14 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     String? notes,
     String? receiptPath,
   }) {
+    if (receiptPath != null && receiptPath.isNotEmpty) {
+      final receiptError = ReceiptUtils.validateReceipt(receiptPath);
+      if (receiptError != null) {
+        _showError(receiptError);
+        return;
+      }
+    }
+
     state = state.copyWith(
       type: type,
       amount: amount,
@@ -132,6 +160,9 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       receiptPath: receiptPath,
     );
     onChange();
+    if (amount != null || type != null) {
+      checkSpent();
+    }
   }
 
   void onChange() {
@@ -141,19 +172,52 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     );
   }
 
-  // void checkOverspent(String? value) {
-  //   final transactionProv = _ref.read(transactionProvider);
-  //   final available = transactionProv.value?.available ?? 0;
-  //   final amount = CurrencyFormatter.parse(value ?? '');
-  //   final totalAmount = available - amount;
-  //   final isOverspent = totalAmount < 0;
-  //   state = state.copyWith(
-  //     overspent:
-  //         isOverspent
-  //             ? "Overspent by ${CurrencyFormatter.format(totalAmount)} "
-  //             : null,
-  //   );
-  // }
+  void checkSpent() {
+    if (state.amount.isEmpty) {
+      state = state.copyWith(
+        helperText: TransactionConstants.emptyHelperText,
+        helperTextColor: ColorSet.neutral,
+      );
+      return;
+    }
+
+    final transactionProv = _ref.read(transactionProvider);
+    final available =
+        (transactionProv.value?.availableBalance ?? 0) - state.initialAmount;
+    final amount = CurrencyFormatter.parse(state.amount);
+    final totalAmount =
+        state.type == TransactionType.expense
+            ? available - amount
+            : available + amount;
+    final amountInText = CurrencyFormatter.format(totalAmount.abs());
+    final helperText =
+        totalAmount < 0
+            ? "${TransactionConstants.overspentHelperText}$amountInText"
+            : totalAmount > 0
+            ? "${TransactionConstants.savingHelperText}$amountInText"
+            : TransactionConstants.neutralHelperText;
+    final helperTextColor =
+        totalAmount < 0
+            ? ColorSet.error
+            : totalAmount > 0
+            ? ColorSet.primary
+            : ColorSet.neutral;
+    state = state.copyWith(
+      helperText: helperText,
+      helperTextColor: helperTextColor,
+    );
+  }
+
+  void clearToast() {
+    if (state.toastMessage.isEmpty && state.toastType == ToastType.normal) {
+      return;
+    }
+    state = state.copyWith(toastType: ToastType.normal, toastMessage: '');
+  }
+
+  void _showError(String message) {
+    state = state.copyWith(toastType: ToastType.error, toastMessage: message);
+  }
 
   Future<void> save() async {
     final category = state.category;
@@ -175,15 +239,16 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       );
 
       await _ref.read(transactionProvider.notifier).save(transaction);
-      state = state.copyWith(toastMessage: "Transaction saved successfully");
-    } catch (e) {
-      log(e.toString(), name: "PaymentProvider");
       state = state.copyWith(
-        toastType: ToastType.error,
-        toastMessage: "Failed to save transaction",
+        toastType: ToastType.success,
+        toastMessage: TransactionConstants.saveSuccessMessage,
       );
-    } finally {
-      state = state.copyWith(toastType: ToastType.normal, toastMessage: '');
+    } on FormatException catch (e, stackTrace) {
+      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      _showError(TransactionConstants.amountInvalidMessage);
+    } catch (e, stackTrace) {
+      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      _showError(TransactionConstants.saveFailureMessage);
     }
   }
 }

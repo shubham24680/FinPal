@@ -261,6 +261,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     DateTime selectedDate,
     TransactionType? typeFilter,
   ) {
+    final isDark = context.isDarkMode;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
@@ -272,6 +273,12 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
             imageUrl: AppSvgs.calendar,
             selected: true,
             outlined: true,
+            backgroundColor:
+                isDark
+                    ? AppColors.primary700.withAlpha(100)
+                    : AppColors.primary50,
+            foregroundColor: AppColors.primary500,
+            borderColor: AppColors.primary700,
             onTap: () async {
               final picked = await CustomBottomSheet.chooseDate(
                 context,
@@ -313,7 +320,13 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     );
   }
 
-  Widget _buildNoTransactions(BuildContext context, WidgetRef ref) {
+  Widget _buildNoTransactions(
+    BuildContext context,
+    WidgetRef ref, {
+    String title = "No transactions yet",
+    String description =
+        "You haven't made any transactions yet.\nStart by adding income or expenses to track your spending.",
+  }) {
     return Expanded(
       child: Column(
         children: [
@@ -321,14 +334,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           CustomImage(
             imageUrl: AppImages.noTransactions,
           ).padding(horizontal: 60.spMin),
-          CustomTypography(
-            text: "No transactions yet",
-            fontType: FontType.h4Semibold,
-          ),
+          CustomTypography(text: title, fontType: FontType.h4Semibold),
           SizedBox(height: 8.spMin),
           CustomTypography(
-            text:
-                "You haven't made any transactions yet.\nStart by adding income or expenses to track your spending.",
+            text: description,
             fontType: FontType.label1Medium,
             color: context.colors.onSurface,
             align: TextAlign.center,
