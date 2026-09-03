@@ -6,7 +6,7 @@ class AnalysisCard extends ConsumerWidget {
     super.key,
     this.title = '',
     this.onTap,
-    this.hideBalance = false,
+    this.hideBalance = true,
   });
 
   final List<AnalysisModel> analysis;
@@ -105,7 +105,12 @@ class AnalysisCard extends ConsumerWidget {
                 fontType: FontType.label1SemiBold,
               ),
               hideBalance
-                  ? Row(
+                  ? CustomTypography(
+                    text: amountText,
+                    fontType: FontType.label1Regular,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                  : Row(
                     spacing: 4.spMin,
                     children: List.generate(
                       4,
@@ -115,11 +120,6 @@ class AnalysisCard extends ConsumerWidget {
                         backgroundColor: context.colors.inverseSurface,
                       ),
                     ),
-                  )
-                  : CustomTypography(
-                    text: amountText,
-                    fontType: FontType.label1Regular,
-                    overflow: TextOverflow.ellipsis,
                   ),
             ],
           ),

@@ -29,7 +29,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
     return Stack(
       children: [
         _buildTopWidget(context, availableBalance, hideBalance),
-        _buildMainWidget(context, transactions),
+        _buildMainWidget(context, transactions, hideBalance),
         _buildAppBar(context, availableBalance, hideBalance),
       ],
     );
@@ -229,6 +229,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
   Widget _buildMainWidget(
     BuildContext context,
     AsyncValue<TransactionService> transactions,
+    bool hideBalance,
   ) {
     final isLandscape = context.isLandscape;
     final screenHeight = context.screenHeight;
@@ -236,7 +237,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
     final collapsedSize = ((screenHeight - _topWidgetHeight.spMin + 24.spMin) /
             screenHeight)
         .clamp(0.35, fullSheetThreshold);
-    final hideBalance = ref.watch(hideBalanceProvider);
+    final toggleBalance = ref.watch(hideBalanceProvider);
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
@@ -326,7 +327,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                       children: [
                         AnalysisCard(
                           analysis,
-                          hideBalance: !hideBalance,
+                          hideBalance: !hideBalance || toggleBalance,
                           title: "Analytics",
                           onTap: () => ref.read(navProvider.notifier).state = 2,
                         ),
