@@ -12,6 +12,8 @@ enum AppRoutesPath {
   theme(path: "/theme", child: ThemeScreen()),
   currency(path: "/currency", child: CurrencyScreen()),
   editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
+  categories(path: "/categories", child: CategoriesListScreen()),
+  categoryDetail(path: "/category_detail", child: CategoryDetailScreen()),
   // ai(path: "/ai", child: AIScreen()),
   pinAuth(path: "/pin_auth", child: PinAuthScreen());
 

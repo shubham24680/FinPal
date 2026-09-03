@@ -37,7 +37,7 @@ class AnalysisCategoryBreakdown extends ConsumerWidget {
                 imageType: ImageType.svgLocal,
                 imageUrl: AppSvgs.arrowRight,
                 color: context.colors.onSurface,
-              ),
+              ).onTap(event: () => openCategoriesList(context)),
             ],
           ),
           ...visible.map((row) => _buildCategoryRow(context, ref, row)),
@@ -56,43 +56,48 @@ class AnalysisCategoryBreakdown extends ConsumerWidget {
     final amount = ref.formatCurrency(category.amount);
     final percentage = '${category.percentage.toStringAsFixed(0)}%';
 
-    return Row(
-      spacing: 12.w,
-      children: [
-        CustomContainer(
-          height: 36.w,
-          width: 36.w,
-          padding: EdgeInsets.all(8.w),
-          backgroundColor: context.isDarkMode ? color.dimDark : color.light,
-          child:
-              icon.isEmpty
-                  ? null
-                  : CustomImage(
-                    imageType: ImageType.svgLocal,
-                    imageUrl: icon,
-                    color: color.normal,
-                  ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 2.w,
-            children: [
-              CustomTypography(
-                text: category.title,
-                fontType: FontType.label1Medium,
-              ),
-              CustomTypography(
-                text:
-                    '${category.count} items ${UnicodeConstants.dot} $percentage',
-                fontType: FontType.label2Regular,
-                color: context.colors.onSurface,
-              ),
-            ],
+    return CustomContainer(
+      padding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      onTap: () => openCategoryDetail(ref, context, category.id),
+      child: Row(
+        spacing: 12.w,
+        children: [
+          CustomContainer(
+            height: 36.w,
+            width: 36.w,
+            padding: EdgeInsets.all(8.w),
+            backgroundColor: context.isDarkMode ? color.dimDark : color.light,
+            child:
+                icon.isEmpty
+                    ? null
+                    : CustomImage(
+                      imageType: ImageType.svgLocal,
+                      imageUrl: icon,
+                      color: color.normal,
+                    ),
           ),
-        ),
-        CustomTypography(text: amount, fontType: FontType.label1SemiBold),
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2.w,
+              children: [
+                CustomTypography(
+                  text: category.title,
+                  fontType: FontType.label1Medium,
+                ),
+                CustomTypography(
+                  text:
+                      '${category.count} items ${UnicodeConstants.dot} $percentage',
+                  fontType: FontType.label2Regular,
+                  color: context.colors.onSurface,
+                ),
+              ],
+            ),
+          ),
+          CustomTypography(text: amount, fontType: FontType.label1SemiBold),
+        ],
+      ),
     );
   }
 }

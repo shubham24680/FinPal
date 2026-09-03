@@ -7,30 +7,84 @@ class AnalysisCalculator {
   static List<AnalysisModel> getCategories(
     List<PaymentModel> payments,
     List<OptionModel> allCategories, {
-    int limit = 4,
+    int? limit = 4,
+    bool onlyWithSpend = false,
+    DateTime? month,
   }) {
     final expenseId = TransactionType.expense.id;
     final categoryType = OptionType.expense.id;
-    Map<String, double> amountByCategory = {};
-    payments.where((payment) => payment.paymentType == expenseId).forEach((
-      element,
-    ) {
-      amountByCategory[element.categoryId] =
-          (amountByCategory[element.categoryId] ?? 0) + element.amount;
-    });
-    final categories = allCategories
-      .where((category) => category.type == categoryType)
-      .map(
-        (category) => AnalysisModel(
-          id: category.id,
-          title: category.name,
-          amount: amountByCategory[category.id] ?? 0,
-          color: category.color.colorSet,
-          icon: category.icon,
-        ),
-      )
-      .toList(growable: false)..sort((a, b) => b.amount.compareTo(a.amount));
+    final amountByCategory = <String, double>{};
+    final countByCategory = <String, int>{};
+    for (final payment in payments) {
+      if (payment.paymentType != expenseId) continue;
+      if (month != null && !payment.date.isSameMonthAs(month)) continue;
+      amountByCategory[payment.categoryId] =
+          (amountByCategory[payment.categoryId] ?? 0) + payment.amount;
+      countByCategory[payment.categoryId] =
+          (countByCategory[payment.categoryId] ?? 0) + 1;
+    }
+    var categories =
+        allCategories
+            .where((category) => category.type == categoryType)
+            .map(
+              (category) => AnalysisModel(
+                id: category.id,
+                title: category.name,
+                amount: amountByCategory[category.id] ?? 0,
+                count: countByCategory[category.id] ?? 0,
+                color: category.color.colorSet,
+                icon: category.icon,
+              ),
+            )
+            .toList();
+    if (onlyWithSpend) {
+      categories = categories.where((c) => c.amount > 0).toList();
+    }
+    categories.sort((a, b) => b.amount.compareTo(a.amount));
+    if (limit == null) return List.unmodifiable(categories);
     return categories.take(limit).toList(growable: false);
+  }
+
+  static CategoryMonthAnalysis categoryMonthAnalysis({
+    required String categoryId,
+    required DateTime month,
+    required List<PaymentModel> payments,
+    required OptionModel category,
+    List<OptionModel> paymentMethods = const [],
+  }) {
+    final range = DateTimeRange(
+      start: month.startOfMonth,
+      end: month.endOfMonth,
+    );
+    final monthPayments = payments
+        .where((p) => inRange(p.date, range))
+        .toList(growable: false);
+    final monthExpenses = monthPayments
+        .where((p) => p.paymentType == TransactionType.expense.id)
+        .toList(growable: false);
+    final monthExpenseTotal = sumByType(monthPayments, TransactionType.expense);
+    final categoryPayments = monthExpenses
+        .where((p) => p.categoryId == categoryId)
+        .toList(growable: false);
+    final amount = categoryPayments.fold<double>(0, (a, b) => a + b.amount);
+    final count = categoryPayments.length;
+    final percentage =
+        monthExpenseTotal > 0 ? (amount / monthExpenseTotal) * 100 : 0.0;
+    return CategoryMonthAnalysis(
+      summary: AnalysisModel(
+        id: category.id,
+        title: category.name,
+        amount: amount,
+        count: count,
+        percentage: percentage,
+        color: category.color.colorSet,
+        icon: category.icon,
+      ),
+      monthExpenseTotal: monthExpenseTotal,
+      trend: getTrend(categoryPayments, AnalysisPeriod.thisMonth, range),
+      methods: methodBreakdown(categoryPayments, paymentMethods, amount),
+      range: range,
+    );
   }
 
   static PeriodAnalysis compute({

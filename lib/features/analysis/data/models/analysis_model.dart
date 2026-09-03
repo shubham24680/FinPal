@@ -63,3 +63,18 @@ class PeriodAnalysis {
      this.methods = const [],
   });
 }
+
+class CategoryMonthAnalysis {
+  final AnalysisModel summary;
+  final double monthExpenseTotal;
+  final List<AnalysisModel> trend;
+  final List<AnalysisModel> methods;
+  final DateTimeRange range;
+  const CategoryMonthAnalysis({
+    required this.summary,
+    this.monthExpenseTotal = 0,
+    this.trend = const [],
+    this.methods = const [],
+    required this.range,
+  });
+}
