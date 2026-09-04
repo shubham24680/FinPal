@@ -8,7 +8,11 @@ class CategoriesCard extends ConsumerWidget {
     final isLandscape = context.isLandscape;
     final payments = ref.watch(transactionProvider).value?.payments ?? [];
     final allCategories = ref.watch(optionNotifer).value?.categories ?? [];
-    final categories = AnalysisCalculator.getCategories(payments, allCategories);
+    final categories = AnalysisCalculator.getCategories(
+      payments,
+      allCategories,
+      month: DateTime.now(),
+    );
     if (categories.isEmpty) return const SizedBox.shrink();
 
     return Column(
