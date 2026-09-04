@@ -30,7 +30,7 @@ class CategoriesCard extends ConsumerWidget {
               fontType: FontType.label1Medium,
               color: context.colors.primary,
               decoration: TextDecoration.underline,
-            ).onTap(event: () => context.push(AppRoutesPath.options.path)),
+            ).onTap(event: () => openCategoriesList(context)),
           ],
         ).padding(horizontal: 4.spMin),
         GridView.builder(
@@ -45,7 +45,7 @@ class CategoriesCard extends ConsumerWidget {
           ),
           itemBuilder:
               (context, index) =>
-                  _buildCategoryTile(context, categories[index]),
+                  _buildCategoryTile(context, ref, categories[index]),
         ),
       ],
     ).padding(
@@ -54,16 +54,21 @@ class CategoriesCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildCategoryTile(BuildContext context, AnalysisModel category) {
+  Widget _buildCategoryTile(
+    BuildContext context,
+    WidgetRef ref,
+    AnalysisModel category,
+  ) {
     final isDark = context.isDarkMode;
     final color = category.color;
-    final amount = CurrencyFormatter.format(category.amount);
+    final amount = ref.formatCurrency(category.amount);
 
     return CustomContainer(
       gradient: RadialGradient(
         center: Alignment.bottomRight,
         colors: [color.normal, isDark ? color.dimDark : color.light],
       ),
+      onTap: () => openCategoryDetail(ref, context, category.id),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 4.spMin,

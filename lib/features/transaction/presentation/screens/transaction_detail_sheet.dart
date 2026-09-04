@@ -37,7 +37,7 @@ class TransactionDetailBS extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 20.spMin,
         children: [
-          _buildHeader(context, color, type, title, accent: accent),
+          _buildHeader(context, ref, color, type, title, accent: accent),
           _buildSummary(context, category, paymentMethod, accent: accent),
           _buildDetails(
             context,
@@ -56,6 +56,7 @@ class TransactionDetailBS extends ConsumerWidget {
 
   Widget _buildHeader(
     BuildContext context,
+    WidgetRef ref,
     ColorSet color,
     TransactionType type,
     String title, {
@@ -92,7 +93,10 @@ class TransactionDetailBS extends ConsumerWidget {
           align: TextAlign.center,
         ),
         CustomTypography(
-          text: CurrencyFormatter.signed(payment.amount, isExpense: isExpense),
+          text: ref.formatSignedCurrency(
+            payment.amount,
+            isExpense: isExpense,
+          ),
           fontType: FontType.h1Bold,
           align: TextAlign.center,
         ),

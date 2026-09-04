@@ -143,7 +143,7 @@ class TransactionList extends ConsumerWidget {
                 spacing: 2.spMin,
                 children: [
                   CustomTypography(
-                    text: CurrencyFormatter.signed(
+                    text: ref.formatSignedCurrency(
                       payment.amount,
                       isExpense: isExpense,
                     ),

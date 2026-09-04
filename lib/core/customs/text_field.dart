@@ -5,7 +5,7 @@ enum TextFieldType { input, dropdown }
 
 enum InputType { text, amount, date }
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends ConsumerWidget {
   const CustomTextField({
     super.key,
     this.textFieldType = TextFieldType.input,
@@ -76,13 +76,13 @@ class CustomTextField extends StatelessWidget {
   final bool isUnderLineBorder;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hintStyle =
         this.hintStyle ?? _buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
       filled: true,
       fillColor: fillColor ?? context.colors.surfaceContainerHighest,
-      hintText: hintText ?? _buildHintText(),
+      hintText: hintText ?? _buildHintText(ref),
       hintStyle: hintStyle,
       labelText: labelText,
       labelStyle: hintStyle,
@@ -149,7 +149,7 @@ class CustomTextField extends StatelessWidget {
         style: style ?? _buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,
-        inputFormatters: inputFormatters ?? _buildInputFormatters(),
+        inputFormatters: inputFormatters ?? _buildInputFormatters(ref),
         cursorColor: AppColors.primary500,
         cursorErrorColor: AppColors.error500,
       ),
@@ -243,9 +243,9 @@ class CustomTextField extends StatelessWidget {
     );
   }
 
-  String? _buildHintText() {
+  String? _buildHintText(WidgetRef ref) {
     return switch (inputType) {
-      InputType.amount => CurrencyFormatter.formatInput("1250.00"),
+      InputType.amount => ref.formatCurrencyInput("1250.00"),
       InputType.date => "July 11, 2001",
       _ => null,
     };
@@ -268,9 +268,11 @@ class CustomTextField extends StatelessWidget {
         : null;
   }
 
-  List<TextInputFormatter>? _buildInputFormatters() {
+  List<TextInputFormatter>? _buildInputFormatters(WidgetRef ref) {
     return switch (inputType) {
-      InputType.amount => [AmountInputFormatter()],
+      InputType.amount => [
+        AmountInputFormatter(currency: ref.selectedCurrency),
+      ],
       _ => null,
     };
   }

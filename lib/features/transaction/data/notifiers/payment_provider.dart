@@ -107,7 +107,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     if (selectedTransaction == null) return;
 
     final type = selectedTransaction.paymentType.type;
-    final amount = CurrencyFormatter.formatAmountForInput(
+    final amount = _ref.formatAmountForInput(
       selectedTransaction.amount,
     );
     final options = _ref.read(optionNotifer).value;
@@ -184,12 +184,12 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     final transactionProv = _ref.read(transactionProvider);
     final available =
         (transactionProv.value?.availableBalance ?? 0) - state.initialAmount;
-    final amount = CurrencyFormatter.parse(state.amount);
+    final amount = _ref.parseCurrency(state.amount);
     final totalAmount =
         state.type == TransactionType.expense
             ? available - amount
             : available + amount;
-    final amountInText = CurrencyFormatter.format(totalAmount.abs());
+    final amountInText = _ref.formatCurrency(totalAmount.abs());
     final helperText =
         totalAmount < 0
             ? "${TransactionConstants.overspentHelperText}$amountInText"
@@ -224,7 +224,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     final paymentMethod = state.paymentMethod;
 
     try {
-      final amount = CurrencyFormatter.parse(state.amount);
+      final amount = _ref.parseCurrency(state.amount);
       final date = state.date.parseDate(type: DateFormatType.dateTime);
       final transaction = PaymentModel(
         id: state.id,

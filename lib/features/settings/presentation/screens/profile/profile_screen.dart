@@ -6,7 +6,6 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileNotifier);
-    final currency = ref.watch(currencyProvider);
 
     return Scaffold(
       appBar: customAppBar(context, title: "Profile"),
@@ -16,10 +15,7 @@ class ProfileScreen extends ConsumerWidget {
             "full_name": profile.name,
             "date_of_birth": profile.dob,
             "gender": profile.gender,
-            "monthly_income": CurrencyFormatter.format(
-              profile.monthlyIncome,
-              currency: currency,
-            ),
+            "monthly_income": ref.formatCurrency(profile.monthlyIncome),
           };
 
           return SingleChildScrollView(
@@ -39,41 +35,6 @@ class ProfileScreen extends ConsumerWidget {
                   values,
                   title: "Personal Information",
                 ),
-                // if (!isAllEmpty)
-                //   CustomButton(
-                //     prefixIcon: AppSvgs.bin,
-                //     label: "Clear Data",
-                //     buttonType: ButtonType.negative,
-                //     buttonVariant: ButtonVariant.tertiary,
-                //     onTap:
-                //         () => CustomDialog.show(
-                //           context,
-                //           icon: AppSvgs.bin,
-                //           iconColor: AppColors.error500,
-                //           iconBgColor:
-                //               isDark
-                //                   ? AppColors.error700.withAlpha(50)
-                //                   : AppColors.error50,
-                //           title: "Confirm Clear Data",
-                //           message:
-                //               "This will permanently delete all your data from Finpal. This action cannot be undone.",
-                //           buttonText: "Clear All Data",
-                //           buttonColor: AppColors.error500,
-                //           onPressed: () {
-                //             ref.read(profileNotifier.notifier).clearData().then(
-                //               (_) {
-                //                 if (context.mounted) {
-                //                   context.showSnackBar(
-                //                     "Data cleared successfully",
-                //                     toastType: ToastType.success,
-                //                   );
-                //                   context.pop();
-                //                 }
-                //               },
-                //             );
-                //           },
-                //         ),
-                //   ),
               ],
             ),
           );

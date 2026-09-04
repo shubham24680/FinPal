@@ -42,13 +42,13 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
   ) {
     final topPadding = AppConstants.sidePadding + context.viewPadding.top;
     final profile = ref.watch(profileNotifier).value;
-    final name = profile?.name.split(' ').first;
+    final firstName = profile?.name.split(' ').first;
+    final name =
+        (firstName != null && firstName.isNotEmpty) ? firstName : "\u{1F44B}";
     final title = [
       TypographyModel(text: "Hello ", fontType: FontType.h1Medium),
-      if (name != null && name.isNotEmpty)
-        TypographyModel(text: "$name!", color: AppColors.primary500),
+      TypographyModel(text: name, color: AppColors.primary500),
     ];
-    final toggleBalance = ref.watch(hideBalanceProvider);
 
     return CustomContainer(
       height: _topWidgetHeight.spMin,
@@ -85,47 +85,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
             color: context.colors.onSurface,
           ),
           Spacer(),
-          Row(
-            spacing: 8.spMin,
-            crossAxisAlignment:
-                hideBalance
-                    ? CrossAxisAlignment.center
-                    : CrossAxisAlignment.end,
-            children: [
-              CustomTypography(
-                text: "Total Balance",
-                fontType: FontType.body2Medium,
-              ),
-              if (hideBalance)
-                CustomImage(
-                  imageType: ImageType.svgLocal,
-                  imageUrl: toggleBalance ? AppSvgs.eyeOpen : AppSvgs.eyeClosed,
-                  onClick:
-                      () =>
-                          ref.read(hideBalanceProvider.notifier).state =
-                              !toggleBalance,
-                  width: 16.spMin,
-                  height: 16.spMin,
-                ),
-            ],
-          ),
-          SizedBox(height: 4.spMin),
-          (!hideBalance || toggleBalance)
-              ? CustomTypography(
-                text: CurrencyFormatter.format(availableBalance),
-                fontType: FontType.h1Bold,
-              )
-              : Row(
-                spacing: 8.spMin,
-                children: List.generate(
-                  4,
-                  (index) => CustomContainer(
-                    padding: EdgeInsets.all(8.spMin),
-                    borderRadius: BorderRadius.circular(1000.r),
-                    backgroundColor: context.colors.inverseSurface,
-                  ),
-                ),
-              ),
+          _buildTotalBalance(context, availableBalance, hideBalance),
         ],
       ),
     );
@@ -191,12 +151,13 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           spacing: 8.spMin,
           crossAxisAlignment:
               hideBalance ? CrossAxisAlignment.center : CrossAxisAlignment.end,
           children: [
             CustomTypography(
-              text: "Total Balance",
+              text: "Available Balance",
               fontType:
                   smallFont ? FontType.label2Medium : FontType.body2Medium,
             ),
@@ -204,10 +165,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
               CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: toggleBalance ? AppSvgs.eyeOpen : AppSvgs.eyeClosed,
-                onClick:
-                    () =>
-                        ref.read(hideBalanceProvider.notifier).state =
-                            !toggleBalance,
+                width: smallFont ? 12.spMin : 16.spMin,
                 height: smallFont ? 12.spMin : 16.spMin,
               ),
           ],
@@ -215,7 +173,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
         SizedBox(height: smallFont ? 2.spMin : 4.spMin),
         (!hideBalance || toggleBalance)
             ? CustomTypography(
-              text: CurrencyFormatter.format(availableBalance),
+              text: ref.formatCurrency(availableBalance),
               fontType: smallFont ? FontType.h4Bold : FontType.h1Bold,
             )
             : Row(
@@ -230,36 +188,28 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
       ],
+    ).onTap(
+      event: () => ref.read(hideBalanceProvider.notifier).state = !toggleBalance,
     );
   }
 
   Widget _buildProfileActionButtons(BuildContext context) {
     final profile = ref.watch(profileNotifier).value;
+    // final toggleBalance = ref.watch(hideBalanceProvider);
 
     return Row(
       spacing: 8.spMin,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // CustomContainer(
-        //   padding: EdgeInsets.all(10.spMin),
-        //   borderRadius: BorderRadius.circular(1000.r),
-        //   border: Border.all(color: context.colors.outline),
-        //   showShadow: true,
-        //   child: CustomImage(
-        //     imageType: ImageType.svgLocal,
-        //     imageUrl: AppSvgs.search,
-        //     width: 20.spMin,
-        //     height: 20.spMin,
-        //   ),
-        // ),
-        // CustomContainer(
         //   showShadow: true,
         //   borderRadius: BorderRadius.circular(1000.r),
         //   border: Border.all(color: context.colors.outline),
         //   padding: EdgeInsets.all(10.spMin),
+        //   onTap: () => ref.read(hideBalanceProvider.notifier).state = !toggleBalance,
         //   child: CustomImage(
         //     imageType: ImageType.svgLocal,
-        //     imageUrl: AppSvgs.notification,
+        //     imageUrl: toggleBalance ? AppSvgs.eyeOpen : AppSvgs.eyeClosed,
         //     width: 20.spMin,
         //     height: 20.spMin,
         //   ),
@@ -287,6 +237,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
     final collapsedSize = ((screenHeight - _topWidgetHeight.spMin + 24.spMin) /
             screenHeight)
         .clamp(0.35, fullSheetThreshold);
+    final toggleBalance = ref.watch(hideBalanceProvider);
 
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
@@ -360,7 +311,10 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                             ? Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: children.map((e) => Expanded(child: e)).toList(),
+                              children:
+                                  children
+                                      .map((e) => Expanded(child: e))
+                                      .toList(),
                             )
                             : Column(
                               spacing: 16.spMin,
@@ -373,6 +327,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                       children: [
                         AnalysisCard(
                           analysis,
+                          hideBalance: !hideBalance || toggleBalance,
                           title: "Analytics",
                           onTap: () => ref.read(navProvider.notifier).state = 2,
                         ),
@@ -386,7 +341,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                   loading: () => const SizedBox.shrink(),
                 ),
                 SizedBox(height: 16.spMin),
-                const ProfileProgressCard()
+                const ProfileProgressCard(),
               ],
             ),
           );
