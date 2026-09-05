@@ -18,23 +18,19 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.example.finpal"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId = "com.example.finpal"
-        // flutter.minSdkVersion comes from the Flutter Gradle Plugin (FlutterExtension);
-        // default is 21, bumped here for local_auth / biometrics (API 23+).
-        minSdk = maxOf(flutter.minSdkVersion, 23)
-        targetSdk = flutter.targetSdkVersion
+        minSdk = flutter.minSdkVersion
+        // Pinned rather than tracking flutter.targetSdkVersion: Google Play requires
+        // API 36 for new submissions as of 2026-08-31.
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -77,6 +73,12 @@ android {
                 "proguard-rules.pro",
             )
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 

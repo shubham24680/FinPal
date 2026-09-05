@@ -1,4 +1,5 @@
 import 'package:finpal/app/app.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/services.dart';
 
 abstract final class AppTheme {
@@ -137,7 +138,7 @@ abstract final class AppTheme {
           color: colorScheme.onSurfaceVariant,
           size: 24,
         ),
-        indicatorColor: AppColors.primary500.withOpacity(0.15),
+        indicatorColor: AppColors.primary500.withValues(alpha: 0.15),
         // selectedLabelTextStyle: AppTextStyles.labelSmall.copyWith(
         //   color: AppColors.primary500,
         // ),
@@ -148,7 +149,7 @@ abstract final class AppTheme {
       ),
 
       // ── Card ──────────────────────────────────────────────────────────────
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: isLight ? AppColors.lightSurface : AppColors.darkSurface,
         surfaceTintColor: AppColors.transparent,
         elevation: 0,
@@ -225,7 +226,7 @@ abstract final class AppTheme {
       ),
 
       // ── Dialog ────────────────────────────────────────────────────────────
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor:
             isLight ? AppColors.lightSurface : AppColors.darkSurface,
         surfaceTintColor: AppColors.transparent,
@@ -293,7 +294,7 @@ abstract final class AppTheme {
         activeTrackColor: AppColors.primary500,
         inactiveTrackColor: AppColors.primary100,
         thumbColor: AppColors.primary500,
-        overlayColor: AppColors.primary500.withOpacity(0.12),
+        overlayColor: AppColors.primary500.withValues(alpha: 0.12),
         valueIndicatorColor: AppColors.primary600,
         // valueIndicatorTextStyle: AppTextStyles.labelSmall.copyWith(
         //   color: AppColors.white,

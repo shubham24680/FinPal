@@ -125,7 +125,7 @@ class CustomTextField extends ConsumerWidget {
     Widget field = switch (textFieldType) {
       TextFieldType.dropdown => DropdownButtonFormField(
         items: dropDownMenu,
-        value: initialValue,
+        initialValue: initialValue,
         onChanged: onChanged,
         decoration: decoration.copyWith(suffixIcon: suffixIcon),
         style: _buildHint(
