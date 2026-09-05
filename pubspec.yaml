@@ -48,6 +48,16 @@ dependencies:
   shimmer: ^3.0.0
   image_picker: ^1.2.1
 
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: false
+  # Sources live in tool/icon/ so they are not bundled into the app.
+  image_path: "tool/icon/icon_legacy.png"
+  adaptive_icon_background: "tool/icon/icon_background.png"
+  adaptive_icon_foreground: "tool/icon/icon_foreground.png"
+  adaptive_icon_monochrome: "tool/icon/icon_monochrome.png"
+  min_sdk_android: 24
+
 flutter_native_splash:
   android: true
   ios: true
@@ -63,6 +73,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -75,7 +86,9 @@ flutter:
     - assets/svgs/income_category/
     - assets/svgs/payment_method/
     - assets/lotties/
-    - assets/res/
+    # Only the splash logo is loaded at runtime; the rest of assets/res/ is
+    # README screenshots and icon/splash build inputs.
+    - assets/res/logo_512.png
 
   fonts:
     - family: Poppins

@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.finpal"
+    namespace = "com.seven.finpal"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -26,7 +26,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.finpal"
+        applicationId = "com.seven.finpal"
         minSdk = flutter.minSdkVersion
         // Pinned rather than tracking flutter.targetSdkVersion: Google Play requires
         // API 36 for new submissions as of 2026-08-31.
@@ -60,12 +60,11 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            signingConfig = if (keystorePropertiesFile.exists()) {
-                signingConfigs.getByName("release")
-            } else {
-                // Fallback so `flutter run --release` works before key.properties exists.
-                signingConfigs.getByName("debug")
-            }
+            // The debug fallback keeps configuration working on a fresh clone; the
+            // taskGraph check below hard-fails before any release artifact is produced,
+            // so a debug-signed AAB can never reach Play.
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -73,6 +72,21 @@ android {
                 "proguard-rules.pro",
             )
         }
+    }
+}
+
+// Refuse to produce a release artifact signed with the debug key.
+gradle.taskGraph.whenReady {
+    val buildingRelease = allTasks.any {
+        it.name.contains("Release") &&
+            (it.name.startsWith("assemble") || it.name.startsWith("bundle") || it.name.startsWith("package"))
+    }
+    if (buildingRelease && !keystorePropertiesFile.exists()) {
+        throw GradleException(
+            "Release signing is not configured: android/key.properties is missing. " +
+                "Create it from the upload keystore before building a release artifact. " +
+                "See https://docs.flutter.dev/deployment/android#signing-the-app",
+        )
     }
 }
 
