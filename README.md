@@ -1,6 +1,6 @@
 # FinPal 💰
 
-FinPal is a modern, intuitive personal finance companion built with Flutter. Track income and expenses, visualize spending, review transaction history, protect your data with passcode and biometrics, and get AI-powered financial guidance — all with a clean, premium interface.
+FinPal is a modern, intuitive personal finance companion built with Flutter. Track income and expenses, visualize spending, review transaction history, and get AI-powered financial guidance — all with a clean, premium interface.
 
 <p align="center">
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter"></a>
@@ -46,8 +46,6 @@ Download the latest Android APK from the releases page:
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/profile.png" width="200" alt="Profile" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/add_payment.png" width="200" alt="Add Payment" />
   <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/ai_screen.png" width="200" alt="FinPal AI" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/biometric.png" width="200" alt="Biometric" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/pin.png" width="200" alt="Pin" />
 </p>
 
 ---
@@ -68,15 +66,6 @@ Download the latest Android APK from the releases page:
 - **Profile** — Set a display name and choose from built-in avatars.
 - **Smooth Onboarding** — Guided first-run experience with loading states for a polished setup flow.
 
-### Security
-- **6-Digit Passcode** — Create and confirm a passcode from Profile to lock the app.
-- **Lock Screen** — When passcode is enabled, FinPal requires verification on launch before you can access your finances.
-- **Change Passcode** — Update your passcode anytime from Profile settings.
-- **Fingerprint / Biometric Unlock** — Optionally enable fingerprint authentication (requires passcode first) for faster access from the lock screen keypad.
-- **Secure PIN Storage** — Passcodes are salted and hashed (SHA-256); they are never stored in plain text.
-- **Encrypted Local Vault** — PIN metadata lives in an AES-encrypted Hive box; the encryption key is stored in the device secure keystore via `flutter_secure_storage`.
-- **App Resume Protection** — Biometric unlock can be triggered automatically when returning to the app from the background.
-
 ### FinPal AI
 - **AI Finance Assistant** — Chat with FinPal AI powered by Google Gemini for budgeting tips, spending insights, and financial literacy.
 - **Markdown Responses** — Rich, readable AI replies with copy and retry actions.
@@ -93,14 +82,10 @@ FinPal is designed with a **local-first** approach:
 |------|---------|
 | Profile, transactions, categories, payment methods | On-device (Hive) |
 | AI chat history | On-device (Hive) |
-| Passcode hash & salt | On-device (encrypted Hive box) |
-| Hive encryption key | Device secure storage (`flutter_secure_storage`) |
 | AI responses | Sent to Google Gemini only when you use the assistant |
-| Biometric templates | Managed by the OS — FinPal does not store fingerprint data |
 
 - No account or sign-up required
 - No bank login or credential collection
-- Optional passcode and biometrics add a device-level lock on top of local data
 - Uninstalling the app removes locally stored data from your device
 
 See the hosted [Privacy Policy](https://shubham24680.github.io/policy/finpal-privacy-policy.html) and [Terms & Conditions](https://shubham24680.github.io/policy/finpal-terms-and-conditions.html) for full details. Source copies live in the `docs/` folder.
@@ -114,13 +99,11 @@ See the hosted [Privacy Policy](https://shubham24680.github.io/policy/finpal-pri
 | **Framework** | [Flutter](https://flutter.dev) |
 | **State Management** | [Riverpod](https://riverpod.dev) |
 | **Local Database** | [Hive](https://docs.hivedb.dev/) |
-| **Secure Storage** | [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) |
-| **Authentication** | [local_auth](https://pub.dev/packages/local_auth) |
 | **Routing** | [GoRouter](https://pub.dev/packages/go_router) |
 | **AI** | [Google Generative AI (Gemini)](https://ai.google.dev/) |
 | **Charts** | [fl_chart](https://pub.dev/packages/fl_chart) |
 | **UI** | `flutter_screenutil`, `flutter_svg`, `flutter_markdown_plus`, `flutter_native_splash` |
-| **Other** | `dio`, `shared_preferences`, `url_launcher`, `uuid`, `intl`, `crypto` |
+| **Other** | `dio`, `url_launcher`, `uuid`, `intl` |
 
 ---
 
@@ -131,17 +114,16 @@ lib/
 ├── app/                    # App bootstrap, theme, routing (GoRouter)
 ├── core/
 │   ├── customs/            # Reusable UI components (buttons, typography, etc.)
-│   ├── local_storage/      # Hive, secure storage, shared preferences
-│   ├── services/           # Gemini AI, biometric authentication
+│   ├── local_storage/      # Hive local database
+│   ├── services/           # Gemini AI
 │   └── utils/              # Colors, widgets, constants, gemini_config (local)
 └── features/               # Feature-first modules
-    ├── onboarding/         # Splash, introduction, lock screen
+    ├── onboarding/         # Splash, introduction, personal details
     ├── home/               # Shell, bottom navigation
     ├── expense/            # Dashboard, balance card, category charts
     ├── add_payment/        # Add / edit income & expense
     ├── transaction/        # History, swipe actions, overview
     ├── profile/            # Profile, categories, payment methods, legal links
-    │   └── authentication/ # Passcode, lock screen, fingerprint, PIN storage
     └── ai/                 # FinPal AI chat screen & providers
 
 docs/
@@ -158,7 +140,7 @@ docs/
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (3.x)
 - Dart `^3.7.2`
 - Android Studio / VS Code with Flutter extensions
-- A physical device or emulator with biometric hardware (optional, for fingerprint testing)
+- A physical device or emulator running Android 7.0 (API 24) or newer
 
 ### Setup
 
@@ -245,8 +227,8 @@ In-app links in Profile point to these URLs via `lib/features/profile/profile_co
 
 ## 📋 Roadmap
 
-- [x] **Passcode & App Lock** — 6-digit passcode with lock screen on launch.
-- [x] **Biometric Authentication** — Fingerprint unlock on the lock screen (with passcode fallback).
+- [ ] **Passcode & App Lock** — 6-digit passcode with lock screen on launch.
+- [ ] **Biometric Authentication** — Fingerprint unlock on the lock screen (with passcode fallback).
 - [ ] **Multi-currency Support** — Handle transactions in different currencies with live conversion.
 - [ ] **Data Export** — Export financial data to CSV or PDF reports.
 - [ ] **Subscriptions Tracking** — Manage recurring payments and get notified before they are due.

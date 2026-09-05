@@ -29,7 +29,6 @@ class AppSvgs {
   static const String eyeOpen = '$_basePath/eye_open.svg';
   static const String eyeClosed = '$_basePath/eye_closed.svg';
   static const String female = '$_basePath/female.svg';
-  static const String fingerprint = '$_basePath/fingerprint.svg';
   static const String fullScreen = '$_basePath/full_screen.svg';
   static const String filter = '$_basePath/filter.svg';
   static const String gallery = '$_basePath/gallery.svg';

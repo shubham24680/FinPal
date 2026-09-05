@@ -3,7 +3,6 @@ import 'package:finpal/app/app.dart';
 enum AppRoutesPath {
   splash(path: "/", child: SplashScreen()),
   onboarding(path: "/onboarding", child: OnboardingScreen()),
-  lockScreen(path: "/lock", child: LockScreen()),
   home(path: "/home", child: ScreensWithNavbar()),
   profile(path: "/profile", child: ProfileScreen()),
   editProfile(path: "/edit_profile", child: EditProfileScreen()),
@@ -13,9 +12,7 @@ enum AppRoutesPath {
   currency(path: "/currency", child: CurrencyScreen()),
   editTransaction(path: "/edit_transaction", child: EditTransactionScreen()),
   categories(path: "/categories", child: CategoriesListScreen()),
-  categoryDetail(path: "/category_detail", child: CategoryDetailScreen()),
-  // ai(path: "/ai", child: AIScreen()),
-  pinAuth(path: "/pin_auth", child: PinAuthScreen());
+  categoryDetail(path: "/category_detail", child: CategoryDetailScreen());
 
   const AppRoutesPath({required this.path, required this.child});
   final String path;
@@ -23,7 +20,6 @@ enum AppRoutesPath {
 }
 
 class AppRoutes {
-  static bool isAppLocked = true;
   static final routesProvider = Provider<GoRouter>((ref) {
     final refresh = ValueNotifier<int>(0);
     ref.listen<AsyncValue<SettingsModel>>(settingsNotifier, (_, __) {
@@ -54,14 +50,6 @@ class AppRoutes {
           return AppRoutesPath.onboarding.path;
         }
 
-        // final isPasscodeEnabled = settings.isPasscodeEnabled;
-        // final isOnLockScreen =
-        //     state.matchedLocation == AppRoutesPath.lockScreen.path;
-        // if (isPasscodeEnabled && isAppLocked && !isOnLockScreen) {
-        //   return AppRoutesPath.lockScreen.path;
-        // }
-
-        isAppLocked = false;
         final isOnboarding = location == AppRoutesPath.onboarding.path;
         if (isOnboarding || isOnSplash) {
           return AppRoutesPath.home.path;

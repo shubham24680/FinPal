@@ -4,6 +4,3 @@ export 'ai/ai_provider.dart';
 export 'ai/ai_model.dart';
 export 'ai/ai_service.dart';
 export 'ai/ai_helper.dart';
-
-// Authentication
-export 'authentication/authentication.dart';

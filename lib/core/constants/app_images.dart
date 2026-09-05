@@ -8,6 +8,5 @@ class AppImages {
   static const String personalDetailsScreen = '$imagePath/onboarding/personal_details.png';
   static const String placeholderImage = '$imagePath/placeholder_image.webp';
   static const String reportPoster = '$imagePath/report_poster.png';
-  static const String securityScreen = '$imagePath/onboarding/security.png';
   static const String splash = 'assets/res/logo_512.png';
 }

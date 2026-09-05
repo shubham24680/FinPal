@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:developer' as developer;
-import 'dart:typed_data';
 
 import 'app.dart';
 
@@ -10,8 +8,6 @@ class AppInitializer {
   static final _optionBox = "option_box";
   static final _paymentBox = "payment_box";
   static final _aiBox = "ai_box";
-  static final pinBoxName = 'pin_box';
-  static final hiveKeyAlias = 'hive_encryption_key';
 
   static Future<List<Override>> init() async {
     try {
@@ -29,7 +25,6 @@ class AppInitializer {
         ..registerAdapter(ChatMessageAdapter());
 
       final results = await Future.wait([
-        initPinBox(),
         Hive.openBox<SettingsModel>(_settingsBox),
         Hive.openBox<ProfileModel>(_profileBox),
         Hive.openBox<OptionModel>(_optionBox),
@@ -38,12 +33,11 @@ class AppInitializer {
       ]);
 
       return [
-        pinBoxProvider.overrideWithValue(results[0] as Box<String>),
-        settingsBoxProvider.overrideWithValue(results[1] as Box<SettingsModel>),
-        profileBoxProvider.overrideWithValue(results[2] as Box<ProfileModel>),
-        optionBoxProvider.overrideWithValue(results[3] as Box<OptionModel>),
-        paymentBoxProvider.overrideWithValue(results[4] as Box<PaymentModel>),
-        // aiBoxProvider.overrideWithValue(results[5] as Box<ChatMessage>),
+        settingsBoxProvider.overrideWithValue(results[0] as Box<SettingsModel>),
+        profileBoxProvider.overrideWithValue(results[1] as Box<ProfileModel>),
+        optionBoxProvider.overrideWithValue(results[2] as Box<OptionModel>),
+        paymentBoxProvider.overrideWithValue(results[3] as Box<PaymentModel>),
+        // aiBoxProvider.overrideWithValue(results[4] as Box<ChatMessage>),
       ];
     } catch (error, stackTrace) {
       developer.log(
@@ -53,23 +47,5 @@ class AppInitializer {
       );
       rethrow;
     }
-  }
-
-  static Future<Box<String>> initPinBox() async {
-    final secureStorage = SecureStorage.instance;
-    String? existingKey = await secureStorage.get(hiveKeyAlias);
-    Uint8List encryptionKey;
-
-    if (existingKey == null) {
-      encryptionKey = Uint8List.fromList(Hive.generateSecureKey());
-      await secureStorage.set(hiveKeyAlias, base64Url.encode(encryptionKey));
-    } else {
-      encryptionKey = base64Url.decode(existingKey);
-    }
-
-    return await Hive.openBox<String>(
-      pinBoxName,
-      encryptionCipher: HiveAesCipher(encryptionKey),
-    );
   }
 }

@@ -34,35 +34,6 @@ class SettingsConstants {
     ),
   ];
 
-  static List<SettingsContentModel> securityContents = [
-    SettingsContentModel(
-      id: "change_passcode",
-      title: "Change Passcode",
-      icon: AppSvgs.lock,
-      iconColor: AppColors.warning500,
-      iconBgColor: AppColors.warning50,
-      iconBgDarkColor: AppColors.warning700.withAlpha(100),
-    ),
-    SettingsContentModel(
-      id: "fingerprint_authentication",
-      title: "Fingerprint Authentication",
-      icon: AppSvgs.fingerprint,
-      iconColor: AppColors.warning500,
-      iconBgColor: AppColors.warning50,
-      iconBgDarkColor: AppColors.warning700.withAlpha(100),
-      actionType: ActionType.toggle,
-    ),
-    SettingsContentModel(
-      id: "hide_balance",
-      title: "Hide Balance",
-      icon: AppSvgs.other,
-      iconColor: AppColors.warning500,
-      iconBgColor: AppColors.warning50,
-      iconBgDarkColor: AppColors.warning700.withAlpha(100),
-      actionType: ActionType.toggle,
-    ),
-  ];
-
   static List<SettingsContentModel> preferencesContents = [
     SettingsContentModel(
       id: "currency",
