@@ -179,19 +179,25 @@ class ProfileProvider extends StateNotifier<ProfileState> {
     );
   }
 
-  Future<bool> onSubmit() async {
+  Future<bool> onSubmit({bool skipValidation = false, bool setDefaultData = false}) async {
     state = state.copyWith(buttonState: ButtonState.loading);
     try {
-      await ref
-          .read(profileNotifier.notifier)
-          .save(
-            profileImage: state.profileImage,
-            name: state.name,
-            dob: state.dob,
-            gender: state.gender,
-            monthlyIncome: state.monthlyIncome,
-            clearMonthlyIncome: state.monthlyIncome == null,
-          );
+      if (!skipValidation) {
+        await ref
+            .read(profileNotifier.notifier)
+            .save(
+              profileImage: state.profileImage,
+              name: state.name,
+              dob: state.dob,
+              gender: state.gender,
+              monthlyIncome: state.monthlyIncome,
+              clearMonthlyIncome: state.monthlyIncome == null,
+            );
+      }
+
+      if (setDefaultData) {
+        await ref.read(onboardingProvider.notifier).setupDefaultData();
+      }
       return true;
     } catch (_) {
       return false;

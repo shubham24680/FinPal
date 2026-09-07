@@ -5,12 +5,6 @@ class PersonalDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onboardingState = ref.watch(onboardingProvider);
-
-    if (onboardingState.buttonState == ButtonState.loading) {
-      return SplashScreen();
-    }
-
     return ResponsiveBuilder(
       builder: (context, screenType) {
         final isMobile = screenType.isMobile;
@@ -19,9 +13,10 @@ class PersonalDetailsScreen extends ConsumerWidget {
           _buildMainItem(context, ref, isMobile: isMobile),
         ];
 
-        final screen = isMobile
-            ? Stack(children: items)
-            : Row(children: items.map((e) => Expanded(child: e)).toList());
+        final screen =
+            isMobile
+                ? Stack(children: items)
+                : Row(children: items.map((e) => Expanded(child: e)).toList());
 
         return GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -45,7 +40,9 @@ class PersonalDetailsScreen extends ConsumerWidget {
           child: CustomChip(
             label: "Skip",
             onTap: () async {
-              await ref.read(onboardingProvider.notifier).setupDefaultData();
+              await ref
+                  .read(profileProvider.notifier)
+                  .onSubmit(skipValidation: true, setDefaultData: true);
             },
           ),
         ).padding(top: context.viewPadding.top, right: 16.r),
@@ -53,17 +50,18 @@ class PersonalDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMainItem(BuildContext context, WidgetRef ref, {bool isMobile = true}) {
+  Widget _buildMainItem(
+    BuildContext context,
+    WidgetRef ref, {
+    bool isMobile = true,
+  }) {
     final height = context.screenHeight;
     final bottomPadding = context.viewInsets.bottom;
     final onboardingState = ref.watch(onboardingProvider);
     final personalDetailsState = ref.watch(profileProvider);
     final title = [
       TypographyModel(text: "Tell us a little about"),
-      TypographyModel(
-        text: "\n yourself.",
-        color: AppColors.primary500,
-      ),
+      TypographyModel(text: "\n yourself.", color: AppColors.primary500),
     ];
 
     final child = SafeArea(
@@ -89,12 +87,10 @@ class PersonalDetailsScreen extends ConsumerWidget {
           CustomButton(
             buttonState: personalDetailsState.buttonState,
             label: "Add Details",
-            onTap: () async {
-              final hasSubmitted = await ref.read(profileProvider.notifier).onSubmit();
-              if (hasSubmitted) {
-                await ref.read(onboardingProvider.notifier).setupDefaultData();
-              }
-            },
+            onTap:
+                () async => await ref
+                    .read(profileProvider.notifier)
+                    .onSubmit(setDefaultData: true),
           ),
           SizedBox(height: 40.spMin),
         ],
@@ -105,7 +101,7 @@ class PersonalDetailsScreen extends ConsumerWidget {
       alignment: Alignment.bottomCenter,
       child: CustomContainer(
         height: isMobile ? null : height,
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: context.colors.surface,
         padding: EdgeInsets.symmetric(horizontal: 16.r),
         shadow: [
           BoxShadow(

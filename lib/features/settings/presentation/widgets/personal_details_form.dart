@@ -53,6 +53,7 @@ class _PersonalDetailsFormState extends ConsumerState<PersonalDetailsForm> {
             imageType: ImageType.svgLocal,
             imageUrl: AppSvgs.user,
             color: context.colors.primary,
+            height: 28.spMin,
           ),
         ),
         CustomTextField(

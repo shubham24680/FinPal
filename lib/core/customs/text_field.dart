@@ -258,12 +258,14 @@ class CustomTextField extends ConsumerWidget {
       _ => null,
     };
 
-    final color = Theme.of(context).colorScheme.primary;
+    final color = context.colors.primary;
     return icon != null
         ? CustomImage(
           imageType: ImageType.svgLocal,
           imageUrl: icon,
           color: color,
+          height: 28.spMin,
+          width: 28.spMin,
         )
         : null;
   }
