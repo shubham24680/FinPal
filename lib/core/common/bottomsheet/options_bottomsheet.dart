@@ -61,6 +61,7 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
             imageType: ImageType.svgLocal,
             imageUrl: AppSvgs.search,
             color: context.colors.outline,
+            height: 24.spMin,
           ),
         ),
         values.isEmpty

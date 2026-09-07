@@ -15,6 +15,7 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     final payments = transactions.value?.payments ?? const [];
     final options = ref.watch(optionNotifer).value;
     final currency = ref.watch(currencyProvider);
+    final month = ref.watch(categoriesMonthProvider);
     final analysis = AnalysisCalculator.compute(
       period: period,
       payments: payments,
@@ -23,6 +24,7 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
       currency: currency,
       fallbackCategory: OptionsConstant.otherCategory,
       fallbackMethod: OptionsConstant.otherCategory,
+      month: month,
     );
 
     return SingleChildScrollView(
@@ -30,7 +32,7 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
       child: Column(
         children: [
           _buildTopWidget(context, analysis),
-          _buildMainWidget(context, analysis),
+          _buildMainWidget(context, analysis, month),
         ],
       ),
     );
@@ -73,12 +75,34 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     );
   }
 
-  Widget _buildMainWidget(BuildContext context, PeriodAnalysis analysis) {
+  Widget _buildMainWidget(BuildContext context, PeriodAnalysis analysis, DateTime month) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
       children: [
-        const AnalysisPeriodChips(),
+        // const AnalysisPeriodChips(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomTypography(
+              text: month.formatDate(type: DateFormatType.monthYear),
+              fontType: FontType.body2Bold,
+            ),
+            CustomImage(
+              imageType: ImageType.svgLocal,
+              imageUrl: AppSvgs.filter,
+              onClick: () async {
+                final picked = await CustomBottomSheet.chooseDate(
+                  context,
+                  date: month,
+                  onlyMonths: true,
+                );
+                if (picked == null || !context.mounted) return;
+                ref.read(categoriesMonthProvider.notifier).state = picked;
+              },
+            ),
+          ],
+        ).padding(horizontal: 8.spMin +AppConstants.sidePadding),
         AnalysisTrendChart(
           analysis.expenseTrend,
           analysis.period,
@@ -90,8 +114,8 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
           title: 'Income trend',
           color: ColorSet.info,
         ),
-        AnalysisCategoryBreakdown(analysis),
-        AnalysisMethodBreakdown(analysis),
+        AnalysisBreakdown(analysis),
+        AnalysisBreakdown1(analysis),
       ],
     ).padding(vertical: AppConstants.sidePadding);
   }

@@ -1,7 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- No permissions are declared: everything is stored on-device and nothing
-         is uploaded. INTERNET lives in the debug and profile manifests only,
-         where the Flutter tool needs it for hot reload and the VM service. -->
+    <!-- Requested at tap-time for profile photos and receipts.
+         INTERNET stays in the debug and profile manifests only. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
     <application
         android:label="FinPal"
         android:name="${applicationName}"
@@ -44,6 +51,25 @@
                 android:name="android.intent.action.PROCESS_TEXT"/>
             <data
                 android:mimeType="text/plain"/>
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+            <data android:mimeType="image/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PICK"/>
+            <data android:mimeType="image/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
         </intent>
     </queries>
 </manifest>

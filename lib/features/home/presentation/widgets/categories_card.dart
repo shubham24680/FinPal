@@ -34,7 +34,7 @@ class CategoriesCard extends ConsumerWidget {
               fontType: FontType.label1Medium,
               color: context.colors.primary,
               decoration: TextDecoration.underline,
-            ).onTap(event: () => openCategoriesList(context)),
+            ).onTap(event: () => openCategoriesList(ref, context)),
           ],
         ).padding(horizontal: 4.spMin),
         GridView.builder(
@@ -72,7 +72,10 @@ class CategoriesCard extends ConsumerWidget {
         center: Alignment.bottomRight,
         colors: [color.normal, isDark ? color.dimDark : color.light],
       ),
-      onTap: () => openCategoryDetail(ref, context, category.id),
+      onTap: () {
+        ref.read(categoriesMonthProvider.notifier).state = DateTime.now();
+        openCategoryDetail(ref, context, category.id);
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 4.spMin,

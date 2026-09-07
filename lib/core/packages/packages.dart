@@ -11,4 +11,5 @@ export 'package:fl_chart/fl_chart.dart';
 export 'package:uuid/uuid.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:image_picker/image_picker.dart';
+export 'package:permission_handler/permission_handler.dart';
 export 'package:package_info_plus/package_info_plus.dart';

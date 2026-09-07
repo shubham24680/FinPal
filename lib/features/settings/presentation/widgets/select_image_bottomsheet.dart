@@ -9,13 +9,31 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
     itemBuilder: (context, index) {
       return CustomContainer(
         onTap: () async {
+          final isCamera = options[index].id == "camera";
+          final source = isCamera ? ImageSource.camera : ImageSource.gallery;
+          final label = options[index].title.toLowerCase();
+
           try {
-            final image = await ImagePicker().pickImage(
-              source:
-                  options[index].id == "camera"
-                      ? ImageSource.camera
-                      : ImageSource.gallery,
-            );
+            final allowed = await MediaPermission.ensure(source);
+            if (!context.mounted) return;
+
+            if (!allowed) {
+              context.pop();
+              final permanentlyDenied =
+                  await (isCamera ? Permission.camera : Permission.photos)
+                      .isPermanentlyDenied;
+              if (!context.mounted) return;
+              context.showSnackBar(
+                permanentlyDenied
+                    ? "Allow $label access in Settings to continue"
+                    : "$label access is required to continue",
+                toastType: ToastType.error,
+              );
+              if (permanentlyDenied) await openAppSettings();
+              return;
+            }
+
+            final image = await ImagePicker().pickImage(source: source);
             if (image == null) {
               if (context.mounted) context.pop();
               return;
@@ -39,7 +57,7 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
             if (context.mounted) {
               context.pop();
               context.showSnackBar(
-                "Unable to access ${options[index].title.toLowerCase()}",
+                "Unable to access $label",
                 toastType: ToastType.error,
               );
             }

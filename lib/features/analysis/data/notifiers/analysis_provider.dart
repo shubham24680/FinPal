@@ -11,7 +11,8 @@ final categoriesMonthProvider = StateProvider<DateTime>(
   (ref) => DateTime.now(),
 );
 
-void openCategoriesList(BuildContext context) {
+void openCategoriesList(WidgetRef ref, BuildContext context) {
+  ref.read(categoriesMonthProvider.notifier).state = DateTime.now();
   context.push(AppRoutesPath.categories.path);
 }
 

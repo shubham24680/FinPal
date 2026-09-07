@@ -1,15 +1,10 @@
 import 'package:finpal/app/app.dart';
 
-class CategoryDetailScreen extends ConsumerStatefulWidget {
+class CategoryDetailScreen extends ConsumerWidget {
   const CategoryDetailScreen({super.key});
-  @override
-  ConsumerState<CategoryDetailScreen> createState() =>
-      _CategoryDetailScreenState();
-}
 
-class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final categoryId = ref.watch(selectedCategoryIdProvider);
     final month = ref.watch(categoriesMonthProvider);
     final options = ref.watch(optionNotifer).value;
@@ -37,7 +32,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 16.spMin,
           children: [
-            _buildSummaryCard(context, analysis),
+            _buildSummaryCard(context, ref, analysis),
             if (analysis.trend.any((e) => e.amount > 0))
               AnalysisTrendChart(
                 analysis.trend,
@@ -62,6 +57,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
 
   Widget _buildSummaryCard(
     BuildContext context,
+    WidgetRef ref,
     CategoryMonthAnalysis analysis,
   ) {
     final summary = analysis.summary;

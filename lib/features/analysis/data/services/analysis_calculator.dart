@@ -95,8 +95,11 @@ class AnalysisCalculator {
     CurrencyContants currency = CurrencyContants.rupee,
     OptionModel? fallbackCategory,
     OptionModel? fallbackMethod,
+    DateTime? month,
   }) {
-    final range = period.range;
+    final now = DateTime.now();
+    // final range = period.range;
+    final range = DateTimeRange(start: (month ?? now).startOfMonth, end: (month ?? now).endOfMonth);
     final inPeriodPayments = payments
         .where((p) => inRange(p.date, range))
         .toList(growable: false);

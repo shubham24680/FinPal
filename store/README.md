@@ -7,7 +7,8 @@ into the app — it is not listed under `flutter.assets` in `pubspec.yaml`.
 | --- | --- | --- |
 | `play_icon_512.png` | Store icon, 512x512, full-bleed | Ready |
 | `feature_graphic_1024x500.png` | Feature graphic | Ready |
-| `privacy-policy-amendment.html` | Camera/photos clause for the hosted policy | Needs publishing |
+| `../docs/finpal-privacy-policy.html` | Hosted Privacy Policy (plain legal page) | Publish to GitHub Pages |
+| `../docs/finpal-terms-and-conditions.html` | Hosted Terms and Conditions | Publish to GitHub Pages |
 | `screenshots/01_onboarding.png` … `06_home_dark.png` | Phone screenshots, 1080x2400 | Ready |
 
 The icon is composited from the same art as the launcher icon
@@ -108,8 +109,9 @@ in-app purchases, no ads. Expect "Everyone".
 
 This cannot be done from the repo. Do it in this order:
 
-1. Publish `privacy-policy-amendment.html` into the hosted policy and bump
-   the "Last updated" date.
+1. Publish `docs/finpal-privacy-policy.html` and
+   `docs/finpal-terms-and-conditions.html` to your GitHub Pages policy site
+   (same URLs the app already opens).
 2. Open [Play Console](https://play.google.com/console), finish identity
    verification, and pay the $25 registration fee if that is still pending.
 3. Create the app: name `FinPal: Expense Tracker`, default language English,

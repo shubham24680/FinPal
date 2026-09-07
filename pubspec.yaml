@@ -38,6 +38,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1 # Change this to custom package
   shimmer: ^3.0.0
   image_picker: ^1.2.1
+  permission_handler: ^11.4.0
   package_info_plus: ^9.0.1
 
 flutter_native_splash:
@@ -55,7 +56,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
-  path_provider_platform_interface: ^2.1.3
+  path_provider_platform_interface: ^2.1.2
   plugin_platform_interface: ^2.1.8
 
 flutter:

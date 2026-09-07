@@ -1,11 +1,12 @@
 # FinPal 💰
 
-FinPal is a modern, intuitive personal finance companion built with Flutter. Track income and expenses, visualize spending, review transaction history, and get AI-powered financial guidance — all with a clean, premium interface.
+FinPal is a personal finance tracker that keeps your money data where it belongs — on your phone. Log income and expenses, organise them your way, and see where your money goes. No account, no ads, no analytics, and **no internet permission at all**.
 
 <p align="center">
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter"></a>
   <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.7+-0175C2?style=flat-square&logo=dart&logoColor=white" alt="Dart"></a>
   <a href="https://riverpod.dev"><img src="https://img.shields.io/badge/Riverpod-2.x-00A4A6?style=flat-square" alt="Riverpod"></a>
+  <img src="https://img.shields.io/badge/Android-5.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android 5.0+">
   <a href="https://github.com/shubham24680/FinPal/releases/latest"><img src="https://img.shields.io/github/v/release/shubham24680/FinPal?style=flat-square&label=Release" alt="Release"></a>
 </p>
 
@@ -32,68 +33,89 @@ Download the latest Android APK from the releases page:
 
 [![Download APK](https://img.shields.io/badge/Download-APK-success?style=for-the-badge&logo=android)](https://github.com/shubham24680/FinPal/releases/latest)
 
-> FinPal currently targets **Android**. iOS, macOS, and web project folders are included for future support.
+> **Play Store:** v1.0.0 is built and signed. The Play listing is in closed testing — Google requires a 14-day test with 12+ testers before a personal developer account can publish to production.
+
+FinPal targets **Android**. The iOS, macOS, and web project folders exist but are not supported yet.
 
 ---
 
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/onboarding.png" width="200" alt="Onboarding" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/expense.png" width="200" alt="Dashboard" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/transaction.png" width="200" alt="Transactions" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/profile.png" width="200" alt="Profile" />
-  <img src="https://github.com/shubham24680/FinPal/blob/main/assets/res/add_payment.png" width="200" alt="Add Payment" />
+  <img src="store/screenshots/01_onboarding.png" width="180" alt="Onboarding" />
+  <img src="store/screenshots/02_home.png" width="180" alt="Home" />
+  <img src="store/screenshots/03_transactions.png" width="180" alt="Transactions" />
+  <img src="store/screenshots/04_analysis.png" width="180" alt="Analysis" />
+  <img src="store/screenshots/06_home_dark.png" width="180" alt="Dark theme" />
 </p>
 
 ---
 
 ## 🚀 Features
 
-### Core Finance
-- **Income & Expense Tracking** — Log transactions with amount, date, category, payment method, and optional notes.
-- **Visual Analytics** — Interactive pie charts and balance cards to understand spending at a glance.
-- **Transaction History** — Browse records grouped by month and day with date filtering.
-- **Transaction Overview** — Drill into grouped transactions for a detailed breakdown.
-- **Overspent Alerts** — Real-time validation warns you when expenses exceed income.
-- **Swipe Actions** — Swipe transactions to edit or delete them quickly.
+### Tracking
 
-### Personalization
-- **Custom Categories** — Manage your own income and expense categories.
-- **Payment Methods** — Add and organize payment methods (UPI, cash, cards, etc.).
-- **Profile** — Set a display name and choose from built-in avatars.
-- **Smooth Onboarding** — Guided first-run experience with loading states for a polished setup flow.
+- **Income & expenses** — Amount, date, category, payment method, and an optional note.
+- **Receipt photos** — Attach a photo from the camera or gallery to any transaction. The image is copied into FinPal's private storage so it survives the system clearing your cache.
+- **Swipe actions** — Swipe a transaction to edit or delete it.
+- **History** — Records grouped by month and day, filterable by income or expense.
+
+### Analysis
+
+- **Category breakdown** — Pie chart of where the money went, with amounts and share of total.
+- **Trends** — Income and expense movement over the selected period.
+- **Periods** — This week, this month, last month, and this year.
+- **Category drill-down** — Open any category to see its transactions, its trend, and which payment methods it came from.
+- **Payment method rollup** — Totals per method, so you can see what UPI actually costs you.
+
+### Personalisation
+
+- **Custom categories** — Build your own income and expense categories with an icon and colour.
+- **Payment methods** — Add and organise UPI, cash, cards, or anything else.
+- **Profile** — Display name, avatar, date of birth, gender, and monthly income, with a completion prompt that nudges you through setup.
+- **Theme** — Light, dark, or follow the system.
+- **Currency** — INR or USD.
+- **Hide balance** — Blur your balance on the home screen when you are in public.
+
+### Data
+
+- **Clear data** — Wipe everything from the device in one action, receipts included.
+- **Recovery screen** — If stored data cannot be read at startup, FinPal offers retry and reset instead of showing a black screen.
 
 ---
 
 ## 🔒 Privacy & Data
 
-FinPal is designed with a **local-first** approach:
+FinPal is **local-first, enforced by the binary rather than by a promise.**
 
-| Data | Storage |
-|------|---------|
-| Profile, transactions, categories, payment methods | On-device (Hive) |
-| Receipt images & avatars | On-device (app storage) |
+The release manifest declares **zero permissions** — including no `INTERNET`. Your records physically cannot leave the device, because the app has no way to send them.
 
-- No account or sign-up required
-- No data leaves your device
-- No bank login or credential collection
-- Uninstalling the app removes locally stored data from your device
+| Data | Where it lives |
+| --- | --- |
+| Transactions, categories, payment methods, settings | On-device (Hive) |
+| Receipt images and avatars | On-device (app-private storage) |
 
-See the hosted [Privacy Policy](https://shubham24680.github.io/policy/finpal-privacy-policy.html) and [Terms & Conditions](https://shubham24680.github.io/policy/finpal-terms-and-conditions.html) for full details. Source copies live in the `docs/` folder.
+- No account or sign-up
+- No bank login and no credential collection
+- No ads, no analytics, no crash reporting, no tracking
+- Clearing app data or uninstalling removes your records from the device
+
+Because nothing is uploaded, **there is no cloud backup**. If you lose the device or clear the data, the records are gone.
+
+See the hosted [Privacy Policy](https://shubham24680.github.io/policy/finpal-privacy-policy.html) and [Terms & Conditions](https://shubham24680.github.io/policy/finpal-terms-and-conditions.html). Source copies live in `docs/`.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
 | Layer | Tools |
-|-------|-------|
+| --- | --- |
 | **Framework** | [Flutter](https://flutter.dev) |
-| **State Management** | [Riverpod](https://riverpod.dev) |
-| **Local Database** | [Hive](https://docs.hivedb.dev/) |
+| **State management** | [Riverpod](https://riverpod.dev) |
+| **Local database** | [Hive](https://docs.hivedb.dev/) |
 | **Routing** | [GoRouter](https://pub.dev/packages/go_router) |
 | **Charts** | [fl_chart](https://pub.dev/packages/fl_chart) |
-| **UI** | `flutter_screenutil`, `flutter_svg`, `flutter_native_splash`, `shimmer` |
+| **UI** | `flutter_screenutil`, `flutter_svg`, `flutter_native_splash`, `shimmer`, `smooth_page_indicator` |
 | **Other** | `image_picker`, `path_provider`, `url_launcher`, `uuid`, `intl`, `package_info_plus` |
 
 ---
@@ -102,104 +124,161 @@ See the hosted [Privacy Policy](https://shubham24680.github.io/policy/finpal-pri
 
 ```text
 lib/
-├── app/                    # App bootstrap, theme, routing (GoRouter)
+├── main.dart               # Entry point and startup-failure fallback
+├── app/                    # Barrel exports and app widget
 ├── core/
-│   ├── customs/            # Reusable UI components (buttons, typography, etc.)
-│   ├── local_storage/      # Hive local database
-│   └── utils/              # Colors, widgets, constants
-└── features/               # Feature-first modules
-    ├── onboarding/         # Splash, introduction, personal details
-    ├── home/               # Shell, bottom navigation
-    ├── expense/            # Dashboard, balance card, category charts
-    ├── add_payment/        # Add / edit income & expense
-    ├── transaction/        # History, swipe actions, overview
-    └── profile/            # Profile, categories, payment methods, legal links
+│   ├── common/             # Bottom sheets, responsive builder
+│   ├── constants/          # Colours, images, SVGs, app constants
+│   ├── customs/            # Buttons, dialogs, chips, text fields, typography
+│   ├── extensions/         # DateTime, num, and context helpers
+│   ├── local_storage/      # Hive boxes and initialisation
+│   ├── packages/           # Third-party barrel exports
+│   ├── routes/             # GoRouter configuration
+│   ├── theme/              # Light and dark themes
+│   └── utils/              # Image storage, formatters, helpers
+└── features/
+    ├── onboarding/         # Splash, intro, personal details
+    ├── home/               # Shell, bottom navigation, balance card
+    ├── transaction/        # Add, edit, list, receipts
+    ├── analysis/           # Charts, periods, category drill-down
+    └── settings/           # Profile, categories, methods, theme, currency, legal
 
 docs/
+├── PRD.md                          # Product requirements and roadmap
 ├── finpal-privacy-policy.html
 └── finpal-terms-and-conditions.html
+
+store/                      # Play Console assets (not bundled into the app)
+├── screenshots/
+├── play_icon_512.png
+└── feature_graphic_1024x500.png
+
+test/                       # Unit and widget tests
 ```
+
+Each feature follows the same split: `data/` holds models, services, constants, and Riverpod notifiers; `presentation/` holds screens and widgets.
 
 ---
 
-## 🏗️ Getting Started
+## 🏗 Getting Started
 
 ### Prerequisites
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (3.x)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.x
 - Dart `^3.7.2`
-- Android Studio / VS Code with Flutter extensions
-- A physical device or emulator running Android 7.0 (API 24) or newer
+- Android Studio or VS Code with the Flutter extension
+- A device or emulator running **Android 5.0 (API 21)** or newer
+
+> On Apple Silicon, install the **arm64** Flutter SDK. The x64 build runs under Rosetta and crashes on recent macOS versions.
 
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/shubham24680/FinPal.git
    cd FinPal
    ```
 
 2. **Install dependencies**
+
    ```bash
    flutter pub get
    ```
 
 3. **Generate Hive adapters**
+
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
 
 4. **Run the app**
+
    ```bash
    flutter run
    ```
 
-### Build APK
+### Tests
 
 ```bash
-flutter build apk --release
+flutter analyze
+flutter test
 ```
 
-The output APK will be at `build/app/outputs/flutter-apk/app-release.apk`.
+### Release builds
+
+Release builds are signed and require a keystore. Create `android/key.properties`:
+
+```properties
+storeFile=/absolute/path/to/upload-keystore.jks
+storePassword=...
+keyPassword=...
+keyAlias=upload
+```
+
+The Gradle config **fails the build loudly** if this file is missing, rather than silently falling back to debug signing.
+
+```bash
+flutter build appbundle --release   # build/app/outputs/bundle/release/app-release.aab
+flutter build apk --release         # build/app/outputs/flutter-apk/app-release.apk
+```
+
+| Setting | Value |
+| --- | --- |
+| Application ID | `com.seven.finpal` |
+| compileSdk / targetSdk | 36 |
+| minSdk | 21 |
+| Version | `1.0.0+1` |
 
 ---
 
 ## 📄 Legal
 
-Legal pages are available in the `docs/` folder and are hosted on GitHub Pages:
+Hosted on GitHub Pages, with source copies in `docs/`:
 
 - [Privacy Policy](https://shubham24680.github.io/policy/finpal-privacy-policy.html)
 - [Terms & Conditions](https://shubham24680.github.io/policy/finpal-terms-and-conditions.html)
 
-In-app links in Profile point to these URLs via `lib/features/profile/profile_constants.dart`.
+In-app links live in `lib/features/settings/data/constants/settings_constant.dart`.
 
 ---
 
 ## 📋 Roadmap
 
-- [ ] **Passcode & App Lock** — 6-digit passcode with lock screen on launch.
-- [ ] **Biometric Authentication** — Fingerprint unlock on the lock screen (with passcode fallback).
-- [ ] **FinPal AI** — Chat-based finance assistant for budgeting tips and spending insights.
-- [ ] **Multi-currency Support** — Handle transactions in different currencies with live conversion.
-- [ ] **Data Export** — Export financial data to CSV or PDF reports.
-- [ ] **Subscriptions Tracking** — Manage recurring payments and get notified before they are due.
-- [ ] **Budget Goals** — Set monthly savings targets and track progress.
-- [ ] **Dark Mode** — Full dark theme support across the app.
-- [ ] **Cloud Sync** — Optional cloud backup and multi-device synchronization.
-- [ ] **iOS Release** — App Store build and distribution.
+The full product plan — versions, user stories, acceptance criteria, schema
+migrations, and risks — is in **[`docs/PRD.md`](docs/PRD.md)**.
+
+**v1.1 — Complete the Core** *(offline)* — budgets, recurring, export, search, app lock, multi-currency, reminder, widget
+
+**v1.2 — Effortless Capture** *(on-device)* — notification/SMS review queue, receipt OCR, smart categorisation
+
+**v1.3 — Command Your Money** *(offline)* — account balances, bills & EMIs, savings goals, cash-flow calendar, net worth lite
+
+**v2.0 — Connected** *(opt-in)* — optional account, E2E sync, FinPal Pro
+
+**v2.1 — Shared** *(opt-in)* — Splitwise-class groups that write your share into your budget
+
+**v2.5 — Copilot** *(opt-in)* — AI spending analysis, natural-language query, AI news digest
+
+**v3.0 — Learn** *(opt-in, gated)* — shorts / reels / creator video; cancelled if Stage 1 cards are ignored
+
+Networked releases keep local-first as the default. See
+[the PRD](docs/PRD.md) for user stories, acceptance criteria, schema, and risks.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! To get started:
+Contributions are welcome.
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes
+3. Make sure `flutter analyze` and `flutter test` pass
 4. Open a pull request against `main`
 
-Please keep changes focused and follow the existing feature-based folder structure.
+Keep changes focused and follow the existing `data/` and `presentation/` split inside each feature.
+
+**One hard rule:** do not add a dependency or a permission that sends data off the device without discussing it first. The zero-permission manifest is the product.
 
 ---
 
