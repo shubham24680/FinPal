@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:finpal/app/app.dart';
 
 final selectedOptionProvider = StateProvider<OptionModel?>((ref) => null);
@@ -16,7 +17,6 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveOption(OptionModel option) async {
     final options = state.value;
-    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.save(option);
@@ -25,7 +25,6 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> saveAllOptions(List<OptionModel> newOptions) async {
     final options = state.value;
-    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.saveAll(newOptions);
@@ -34,7 +33,6 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> deleteOption(String id) async {
     final options = state.value;
-    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.delete(id);
@@ -43,7 +41,6 @@ class OptionNotifier extends AsyncNotifier<OptionServices> {
 
   Future<void> clearData() async {
     final options = state.value;
-    log("${options?.categories.length}");
     if (options == null) return;
 
     await options.clearData();
@@ -187,7 +184,7 @@ class OptionProvider extends StateNotifier<OptionState> {
         message: "Option saved successfully",
       );
     } catch (e, stack) {
-      log("Failed to save option", error: e, stackTrace: stack);
+      if (kDebugMode) log("Failed to save option", error: e, stackTrace: stack);
       state = state.copyWith(
         toastType: ToastType.error,
         message: "Failed to save option",

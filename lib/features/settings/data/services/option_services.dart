@@ -1,7 +1,5 @@
 import 'package:finpal/app/app.dart';
 
-import 'dart:developer';
-
 class OptionServices {
   final HiveService<OptionModel> _hiveService;
   List<OptionModel>? _cache;
@@ -13,26 +11,22 @@ class OptionServices {
   Future<void> save(OptionModel option) async {
     await _hiveService.saveData(option.id, option);
     clearCache();
-    log("Option saved: ${option.name}, ${option.id}");
   }
 
   Future<void> saveAll(List<OptionModel> newOptions) async {
     if (newOptions.isEmpty) return;
     await _hiveService.saveAllData({for (final o in newOptions) o.id: o});
     clearCache();
-    log("Options saved: ${newOptions.length}");
   }
 
   Future<void> delete(String id) async {
     await _hiveService.clearData(id);
     clearCache();
-    log("Option deleted: $id");
   }
 
   Future<void> clearData() async {
     await _hiveService.clearAllData();
     clearCache();
-    log("All options deleted");
   }
 
   void clearCache() => _cache = null;

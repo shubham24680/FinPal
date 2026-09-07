@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:finpal/app/app.dart';
 
 class PersonalDetailsScreen extends ConsumerWidget {
@@ -95,7 +94,6 @@ class PersonalDetailsScreen extends ConsumerWidget {
               if (hasSubmitted) {
                 await ref.read(onboardingProvider.notifier).setupDefaultData();
               }
-              log("hasSubmitted: $hasSubmitted");
             },
           ),
           SizedBox(height: 40.spMin),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:finpal/app/app.dart';
 
 class TransactionService {
@@ -15,10 +13,6 @@ class TransactionService {
   Future<void> save(PaymentModel payment) async {
     await _hiveService.saveData(payment.id, payment);
     clearCache();
-    log(
-      "Payment saved: ${payment.id} (total=${payments.length})",
-      name: "TransactionService",
-    );
   }
 
   Future<void> saveAll(List<PaymentModel> newPayments) async {
@@ -27,19 +21,22 @@ class TransactionService {
       for (final payment in newPayments) payment.id: payment,
     });
     clearCache();
-    log("Payments saved: ${newPayments.length}", name: "TransactionService");
   }
 
   Future<void> delete(String id) async {
+    final receiptPath = getPayment(id)?.receiptPath;
     await _hiveService.clearData(id);
     clearCache();
-    log("Payment deleted: $id", name: "TransactionService");
+    await ImageStorage.discard(receiptPath);
   }
 
   Future<void> clearData() async {
+    final receiptPaths = [for (final payment in payments) payment.receiptPath];
     await _hiveService.clearAllData();
     clearCache();
-    log("All payments deleted", name: "TransactionService");
+    for (final path in receiptPaths) {
+      await ImageStorage.discard(path);
+    }
   }
 
   void clearCache() {

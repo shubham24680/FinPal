@@ -231,6 +231,10 @@ class SettingsTiles extends ConsumerWidget {
             ref.watch(settingsNotifier).value?.hideBalanceOnHome ?? false;
         return e.copyWith(value: value);
       }
+      if (e.id == "app_version") {
+        final version = ref.watch(appVersionProvider).value ?? "";
+        return e.copyWith(actionText: version);
+      }
 
       return e;
     }).toList();

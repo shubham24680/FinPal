@@ -89,6 +89,12 @@ final currencyProvider = Provider<CurrencyContants>((ref) {
   );
 });
 
+// APP VERSION
+final appVersionProvider = FutureProvider<String>((ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
+});
+
 final toggleProvider = Provider.family<bool, String>((ref, id) {
   switch (id) {
     case "hide_balance":

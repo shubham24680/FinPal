@@ -23,7 +23,7 @@ class IntroScreen extends ConsumerWidget {
   Widget _buildTopItem(BuildContext context) {
     return Stack(
       children: [
-        CustomImage(imageUrl: AppImages.introScreen, fit: BoxFit.fitWidth),
+        CustomImage(imageUrl: AppImages.introScreen, fit: BoxFit.fitWidth, width: double.infinity),
         Align(
           alignment: Alignment.topLeft,
           child: CustomImage(imageUrl: AppImages.splash, height: 40.spMin),

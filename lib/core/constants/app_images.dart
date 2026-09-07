@@ -5,8 +5,8 @@ class AppImages {
   static const String introScreen = '$imagePath/onboarding/intro.png';
   static const String noTransactions = '$imagePath/no_transactions.webp';
   static const String noCategories = '$imagePath/no_categories.webp';
-  static const String personalDetailsScreen = '$imagePath/onboarding/personal_details.png';
+  static const String personalDetailsScreen = '$imagePath/onboarding/personal_details.webp';
   static const String placeholderImage = '$imagePath/placeholder_image.webp';
-  static const String reportPoster = '$imagePath/report_poster.png';
-  static const String splash = 'assets/res/logo_512.png';
+  static const String reportPoster = '$imagePath/report_poster.webp';
+  static const String splash = '$imagePath/logo_mark.webp';
 }

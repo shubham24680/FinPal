@@ -8,7 +8,6 @@ export '../core/local_storage/local_storage.dart';
 export '../core/packages/packages.dart';
 export '../core/routes/routes.dart';
 export '../core/routes/routes_model.dart';
-export '../core/services/services.dart';
 export '../core/theme/theme.dart';
 export '../core/utils/utils.dart';
 
@@ -17,4 +16,3 @@ export '../features/home/home.dart';
 export '../features/transaction/transaction.dart';
 export '../features/settings/settings.dart';
 export '../features/analysis/analysis.dart';
-export '../features/features.dart';

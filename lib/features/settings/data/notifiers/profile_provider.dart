@@ -24,6 +24,7 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
     bool clearMonthlyIncome = false,
   }) async {
     final profile = state.value ?? ProfileModel();
+    final previousImage = profile.profileImage;
     state = await AsyncValue.guard(() async {
       final profileModel = profile.copyWith(
         profileImage: profileImage,
@@ -37,13 +38,22 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel> {
       await _hiveService.saveData(_key, profileModel);
       return profileModel;
     });
+
+    // Only once the new path is safely stored, so a failed save keeps the old
+    // avatar on disk.
+    final savedImage = state.value?.profileImage;
+    if (savedImage != null && savedImage != previousImage) {
+      await ImageStorage.discard(previousImage);
+    }
   }
 
   Future<void> clearData() async {
+    final previousImage = state.value?.profileImage;
     state = await AsyncValue.guard(() async {
       await _hiveService.clearData(_key);
       return ProfileModel();
     });
+    await ImageStorage.discard(previousImage);
   }
 }
 

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<!-- Permissions: -->
-<uses-permission android:name="android.permission.INTERNET"/>
-
+    <!-- No permissions are declared: everything is stored on-device and nothing
+         is uploaded. INTERNET lives in the debug and profile manifests only,
+         where the Flutter tool needs it for hot reload and the VM service. -->
     <application
         android:label="FinPal"
         android:name="${applicationName}"

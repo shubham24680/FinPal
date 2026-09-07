@@ -57,14 +57,6 @@ class SettingsConstants {
 
   static List<SettingsContentModel> dataContents = [
     SettingsContentModel(
-      id: "export_data",
-      title: "Export Data",
-      icon: AppSvgs.expense,
-      iconColor: AppColors.error500,
-      iconBgColor: AppColors.error50,
-      iconBgDarkColor: AppColors.error700.withAlpha(100),
-    ),
-    SettingsContentModel(
       id: "clear_data",
       title: "Clear Data",
       icon: AppSvgs.bin,
@@ -114,7 +106,6 @@ class SettingsConstants {
       iconBgColor: AppColors.neutral50,
       iconBgDarkColor: AppColors.neutral700.withAlpha(100),
       actionType: ActionType.none,
-      actionText: "1.0.0",
     ),
   ];
 }

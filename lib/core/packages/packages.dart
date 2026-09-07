@@ -1,3 +1,4 @@
+export 'package:flutter/foundation.dart' show kDebugMode;
 export 'package:flutter/material.dart';
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +10,5 @@ export 'package:hive_flutter/hive_flutter.dart';
 export 'package:fl_chart/fl_chart.dart';
 export 'package:uuid/uuid.dart';
 export 'package:url_launcher/url_launcher.dart';
-export 'package:dio/dio.dart';
-export 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 export 'package:image_picker/image_picker.dart';
+export 'package:package_info_plus/package_info_plus.dart';

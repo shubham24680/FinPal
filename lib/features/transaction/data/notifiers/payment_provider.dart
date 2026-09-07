@@ -244,10 +244,14 @@ class PaymentProvider extends StateNotifier<PaymentState> {
         toastMessage: TransactionConstants.saveSuccessMessage,
       );
     } on FormatException catch (e, stackTrace) {
-      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      if (kDebugMode) {
+        log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      }
       _showError(TransactionConstants.amountInvalidMessage);
     } catch (e, stackTrace) {
-      log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      if (kDebugMode) {
+        log(e.toString(), name: "PaymentProvider", stackTrace: stackTrace);
+      }
       _showError(TransactionConstants.saveFailureMessage);
     }
   }
