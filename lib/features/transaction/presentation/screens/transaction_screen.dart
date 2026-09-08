@@ -43,16 +43,19 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     final transactions = ref.watch(transactionProvider);
     final selectedDate = ref.watch(selectedDateProvider);
     final typeFilter = ref.watch(transactionTypeFilterProvider);
-    final isFiltersVisible = ref.watch(transactionAppbarProvider("filters"));
+    // final isFiltersVisible = ref.watch(transactionAppbarProvider("filters"));
 
-    final noTransactionsWidget = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16.spMin,
-      children: [
-        _buildTopWidget(context, 0, 0),
-        _buildFilters(context, selectedDate, typeFilter),
-        _buildNoTransactions(context, ref),
-      ],
+    final noTransactionsWidget = SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 180.spMin),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16.spMin,
+        children: [
+          _buildTopWidget(context, 0, 0),
+          _buildFilters(context, selectedDate, typeFilter),
+          _buildNoTransactions(context, ref),
+        ],
+      ),
     );
 
     return transactions.when(
@@ -62,6 +65,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           monthPayments,
           typeFilter,
         );
+
         if (filteredPayments.isEmpty) {
           return noTransactionsWidget;
         }
@@ -100,21 +104,21 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
                 ),
               ),
             ),
-            CustomContainer(
-              padding: EdgeInsets.only(
-                top: AppConstants.sidePadding + context.viewPadding.top,
-                bottom: AppConstants.sidePadding,
-              ),
-              showShadow: true,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 16.spMin,
-                children: [
-                  if (isFiltersVisible)
-                    _buildFilters(context, selectedDate, typeFilter),
-                ],
-              ),
-            ),
+            // CustomContainer(
+            //   padding: EdgeInsets.only(
+            //     top: AppConstants.sidePadding + context.viewPadding.top,
+            //     bottom: AppConstants.sidePadding,
+            //   ),
+            //   showShadow: true,
+            //   child: Column(
+            //     mainAxisSize: MainAxisSize.min,
+            //     spacing: 16.spMin,
+            //     children: [
+            //       if (isFiltersVisible)
+            //         _buildFilters(context, selectedDate, typeFilter),
+            //     ],
+            //   ),
+            // ),
           ],
         );
       },
@@ -247,10 +251,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
           ),
           CustomTypography(
             overflow: TextOverflow.ellipsis,
-            text: ref.formatCurrency(
-              amount,
-              compact: amount.abs() > 1e7,
-            ),
+            text: ref.formatCurrency(amount, compact: amount.abs() > 1e7),
             fontType: FontType.h4Semibold,
             color: color.normal,
           ),
@@ -330,12 +331,17 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     String description =
         "You haven't made any transactions yet.\nStart by adding income or expenses to track your spending.",
   }) {
-    return Expanded(
+    final isLandscape = context.isLandscape;
+
+    return Center(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 20.spMin),
           CustomImage(
             imageUrl: AppImages.noTransactions,
+            height: 200.spMin,
+            width: 200.spMin,
           ).padding(horizontal: 60.spMin),
           CustomTypography(text: title, fontType: FontType.h4Semibold),
           SizedBox(height: 8.spMin),
@@ -353,9 +359,10 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
               ref.read(selectedTransactionProvider.notifier).state = null;
               context.push(AppRoutesPath.editTransaction.path);
             },
+            isFull: !isLandscape,
           ),
         ],
-      ).padding(horizontal: AppConstants.sidePadding),
-    );
+      ),
+    ).padding(horizontal: AppConstants.sidePadding);
   }
 }

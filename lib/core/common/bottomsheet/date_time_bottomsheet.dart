@@ -139,9 +139,8 @@ class _DatePickerSheetState extends State<DatePickerSheet> {
         dividerColor: Colors.transparent,
         dividerTheme: const DividerThemeData(color: Colors.transparent),
         colorScheme: context.colors.copyWith(
-          primary: context.colors.onSurface,
-          onPrimary: context.colors.primary,
-          onSurface: context.colors.onSurface,
+          primary: context.colors.primary,
+          onPrimary: context.colors.surface,
         ),
         datePickerTheme: DatePickerThemeData(
           dayStyle: textStyle,

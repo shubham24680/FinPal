@@ -21,6 +21,7 @@ class CustomTextField extends ConsumerWidget {
     this.floatingHintColor,
     this.errorColor,
     this.keyboardType,
+    this.textCapitalization,
     this.items = const [],
     this.onChanged,
     this.readOnly = false,
@@ -50,6 +51,7 @@ class CustomTextField extends ConsumerWidget {
   final bool readOnly;
   final bool autofocus;
   final TextInputType? keyboardType;
+  final TextCapitalization? textCapitalization;
   final void Function(String?)? onChanged;
   final void Function()? onTap;
   final TextAlign textAlign;
@@ -125,7 +127,7 @@ class CustomTextField extends ConsumerWidget {
     Widget field = switch (textFieldType) {
       TextFieldType.dropdown => DropdownButtonFormField(
         items: dropDownMenu,
-        value: initialValue,
+        initialValue: initialValue,
         onChanged: onChanged,
         decoration: decoration.copyWith(suffixIcon: suffixIcon),
         style: _buildHint(
@@ -146,6 +148,7 @@ class CustomTextField extends ConsumerWidget {
         textAlign: textAlign,
         decoration: decoration,
         keyboardType: keyboardType ?? _handleKeyboardType(),
+        textCapitalization: textCapitalization ?? TextCapitalization.sentences,
         style: style ?? _buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,

@@ -49,6 +49,7 @@ class _PersonalDetailsFormState extends ConsumerState<PersonalDetailsForm> {
           onChanged: (value) => personalDetailsNotifier.setName(value ?? ""),
           header: "FULL NAME",
           hintText: "Shubham Patel",
+          textCapitalization: TextCapitalization.words,
           perfixIcon: CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: AppSvgs.user,
