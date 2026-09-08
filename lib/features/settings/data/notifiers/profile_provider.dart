@@ -133,7 +133,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
   }
 
   void setName(String name) {
-    state = state.copyWith(name: name);
+    state = state.copyWith(name: name.trim());
     onChange();
   }
 
@@ -187,7 +187,7 @@ class ProfileProvider extends StateNotifier<ProfileState> {
             .read(profileNotifier.notifier)
             .save(
               profileImage: state.profileImage,
-              name: state.name,
+              name: state.name.trim(),
               dob: state.dob,
               gender: state.gender,
               monthlyIncome: state.monthlyIncome,

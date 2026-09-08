@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 enum TextFieldType { input, dropdown }
 
-enum InputType { text, amount, date }
+enum InputType { text, amount, date, name }
 
 class CustomTextField extends ConsumerWidget {
   const CustomTextField({
@@ -148,7 +148,7 @@ class CustomTextField extends ConsumerWidget {
         textAlign: textAlign,
         decoration: decoration,
         keyboardType: keyboardType ?? _handleKeyboardType(),
-        textCapitalization: textCapitalization ?? TextCapitalization.sentences,
+        textCapitalization: textCapitalization ?? _handleTextCapitalization(),
         style: style ?? _buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,
@@ -203,6 +203,13 @@ class CustomTextField extends ConsumerWidget {
     return switch (inputType) {
       InputType.amount => TextInputType.numberWithOptions(decimal: true),
       _ => TextInputType.text,
+    };
+  }
+
+  TextCapitalization _handleTextCapitalization() {
+    return switch (inputType) {
+      InputType.name => TextCapitalization.words,
+      _ => TextCapitalization.sentences,
     };
   }
 
@@ -278,6 +285,7 @@ class CustomTextField extends ConsumerWidget {
       InputType.amount => [
         AmountInputFormatter(currency: ref.selectedCurrency),
       ],
+      InputType.name => [NameInputFormatter()],
       _ => null,
     };
   }
@@ -297,6 +305,72 @@ class CustomTextField extends ConsumerWidget {
     return UnderlineInputBorder(
       borderSide: BorderSide(color: color, width: width),
     );
+  }
+}
+
+/// Letters and a single space between words only.
+///
+/// Blocks symbols, leading spaces, and consecutive spaces. A single trailing
+/// space is kept while typing so the next word can be entered; callers should
+/// [String.trim] on save.
+class NameInputFormatter extends TextInputFormatter {
+  static final _disallowed = RegExp(r'[^a-zA-Z ]');
+  static final _leadingSpaces = RegExp(r'^ +');
+  static final _multiSpaces = RegExp(r' {2,}');
+  static final _letterOrSpace = RegExp(r'[a-zA-Z ]');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) return newValue;
+
+    final text = newValue.text
+        .replaceAll(_disallowed, '')
+        .replaceFirst(_leadingSpaces, '')
+        .replaceAll(_multiSpaces, ' ');
+
+    if (text == newValue.text) return newValue;
+
+    final selection = newValue.selection;
+    final base = _offsetForKeptCount(
+      text,
+      _countKept(newValue.text, selection.baseOffset),
+    );
+    final extent = _offsetForKeptCount(
+      text,
+      _countKept(newValue.text, selection.extentOffset),
+    );
+
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection(
+        baseOffset: base.clamp(0, text.length),
+        extentOffset: extent.clamp(0, text.length),
+      ),
+    );
+  }
+
+  static int _countKept(String text, int offset) {
+    final end = offset.clamp(0, text.length);
+    var count = 0;
+    for (var i = 0; i < end; i++) {
+      if (_letterOrSpace.hasMatch(text[i])) count++;
+    }
+    return count;
+  }
+
+  static int _offsetForKeptCount(String text, int count) {
+    if (count <= 0) return 0;
+    var seen = 0;
+    for (var i = 0; i < text.length; i++) {
+      if (_letterOrSpace.hasMatch(text[i])) {
+        seen++;
+        if (seen >= count) return i + 1;
+      }
+    }
+    return text.length;
   }
 }
 

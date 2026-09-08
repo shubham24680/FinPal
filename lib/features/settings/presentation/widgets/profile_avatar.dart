@@ -15,13 +15,7 @@ Widget buildAvatar(
   bool showShadow = false,
 }) {
   final isDark = context.isDarkMode;
-  final initials =
-      name
-          .split(' ')
-          .where((e) => e.isNotEmpty)
-          .map((e) => e[0])
-          .join('')
-          .toUpperCase();
+  final initials = name.isNotEmpty ? name[0].toUpperCase() : "";
   final fallback =
       initials.isNotEmpty
           ? CustomTypography(

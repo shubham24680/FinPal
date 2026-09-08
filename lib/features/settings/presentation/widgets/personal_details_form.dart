@@ -46,10 +46,10 @@ class _PersonalDetailsFormState extends ConsumerState<PersonalDetailsForm> {
       children: [
         CustomTextField(
           controller: nameController,
+          inputType: InputType.name,
           onChanged: (value) => personalDetailsNotifier.setName(value ?? ""),
           header: "FULL NAME",
           hintText: "Shubham Patel",
-          textCapitalization: TextCapitalization.words,
           perfixIcon: CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: AppSvgs.user,
