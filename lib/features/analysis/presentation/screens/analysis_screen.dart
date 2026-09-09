@@ -75,7 +75,11 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
     );
   }
 
-  Widget _buildMainWidget(BuildContext context, PeriodAnalysis analysis, DateTime month) {
+  Widget _buildMainWidget(
+    BuildContext context,
+    PeriodAnalysis analysis,
+    DateTime month,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16.spMin,
@@ -102,17 +106,25 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
               },
             ),
           ],
-        ).padding(horizontal: 8.spMin +AppConstants.sidePadding),
+        ).padding(horizontal: 8.spMin + AppConstants.sidePadding),
         AnalysisTrendChart(
           analysis.expenseTrend,
           analysis.period,
           title: 'Spending trend',
+          dateRange: DateTimeRange(
+            start: month.startOfMonth,
+            end: month.endOfMonth,
+          ),
         ),
         AnalysisTrendChart(
           analysis.incomeTrend,
           analysis.period,
           title: 'Income trend',
           color: ColorSet.info,
+          dateRange: DateTimeRange(
+            start: month.startOfMonth,
+            end: month.endOfMonth,
+          ),
         ),
         AnalysisBreakdown(analysis),
         AnalysisBreakdown1(analysis),

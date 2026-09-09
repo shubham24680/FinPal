@@ -17,6 +17,7 @@ class AnalysisTrendChart extends ConsumerWidget {
   final ColorSet color;
   final String title;
   final DateTimeRange? dateRange;
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
