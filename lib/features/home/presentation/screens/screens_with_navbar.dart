@@ -9,7 +9,14 @@ class ScreensWithNavbar extends ConsumerWidget {
     final navIndex = ref.watch(navProvider);
     final isDark = context.isDarkMode;
 
-    return AnnotatedRegion(
+    return PopScope(
+      canPop: navIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          ref.read(navProvider.notifier).state = 0;
+        }
+      },
+      child: AnnotatedRegion(
       value: (isDark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light)
           .copyWith(
             statusBarColor: context.colors.surface,
@@ -27,7 +34,7 @@ class ScreensWithNavbar extends ConsumerWidget {
         floatingActionButton: const AnimatedFab(),
         bottomNavigationBar: _bottomNavigationBar(context, ref, navIndex),
       ),
-    );
+    ));
   }
 
   Widget _bottomNavigationBar(

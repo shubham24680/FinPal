@@ -83,7 +83,8 @@ class TransactionList extends ConsumerWidget {
     final isDark = context.isDarkMode;
     final category = options?.findById(payment.categoryId);
     final color = category?.color.colorSet ?? ColorSet.primary;
-    final title = payment.notes.isEmpty ? "Other" : payment.notes;
+    final title = payment.notes.isNotEmpty ? payment.notes : category?.name ?? "Uncategorized";
+    final subTitle = payment.notes.isEmpty ? null : category?.name ?? "Tap to categorize";
     final isExpense = payment.paymentType == TransactionType.expense.id;
 
     return Builder(
@@ -128,9 +129,9 @@ class TransactionList extends ConsumerWidget {
                       fontType: FontType.body2Medium,
                       maxLines: 1,
                     ),
-                    if (category != null)
+                    if (subTitle != null)
                       CustomTypography(
-                        text: category.name,
+                        text: subTitle,
                         fontType: FontType.label1Regular,
                         color: context.colors.onSurfaceVariant,
                         maxLines: 1,

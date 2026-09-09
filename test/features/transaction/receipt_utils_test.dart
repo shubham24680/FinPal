@@ -8,13 +8,11 @@ void main() {
   late Directory tempDir;
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp('finpal_receipt_test');
+    tempDir = await Directory.systemTemp.createTemp('finpal_receipt_');
   });
 
   tearDown(() async {
-    if (tempDir.existsSync()) {
-      await tempDir.delete(recursive: true);
-    }
+    if (tempDir.existsSync()) await tempDir.delete(recursive: true);
   });
 
   Future<File> createReceipt({
@@ -26,44 +24,56 @@ void main() {
     return file;
   }
 
-  group('ReceiptUtils', () {
-    test('validateReceipt accepts png files within size limit', () async {
-      final file = await createReceipt(name: 'receipt.png', sizeInBytes: 1024);
-
-      expect(ReceiptUtils.validateReceipt(file.path), isNull);
+  group('ReceiptUtils.validateReceipt — success', () {
+    test('accepts png / jpg / jpeg within size limit', () async {
+      for (final name in ['a.png', 'b.jpg', 'c.jpeg']) {
+        final file = await createReceipt(name: name, sizeInBytes: 1024);
+        expect(ReceiptUtils.validateReceipt(file.path), isNull, reason: name);
+      }
     });
 
-    test('validateReceipt rejects unsupported file types', () async {
-      final file = await createReceipt(name: 'receipt.pdf', sizeInBytes: 1024);
+    test('empty path is treated as no receipt (skip)', () {
+      expect(ReceiptUtils.validateReceipt(''), isNull);
+      expect(ReceiptUtils.validateReceipt('   '), isNull);
+    });
+  });
 
+  group('ReceiptUtils.validateReceipt — failure', () {
+    test('rejects unsupported file types', () async {
+      final file = await createReceipt(name: 'receipt.pdf', sizeInBytes: 1024);
       expect(
         ReceiptUtils.validateReceipt(file.path),
         TransactionConstants.receiptTypeMessage,
       );
     });
 
-    test('validateReceipt rejects files larger than 5MB', () async {
+    test('rejects files larger than 5MB', () async {
       final file = await createReceipt(
         name: 'large.jpg',
         sizeInBytes: TransactionConstants.maxReceiptSizeBytes + 1,
       );
-
       expect(
         ReceiptUtils.validateReceipt(file.path),
         TransactionConstants.receiptSizeMessage,
       );
     });
 
-    test('validateReceipt rejects missing files', () {
+    test('rejects missing files', () {
       expect(
         ReceiptUtils.validateReceipt('${tempDir.path}/missing.png'),
         TransactionConstants.receiptNotFoundMessage,
       );
     });
+  });
 
-    test('fileName returns basename from path', () {
+  group('ReceiptUtils.fileName', () {
+    test('returns basename from unix and windows-style paths', () {
       expect(
         ReceiptUtils.fileName('/tmp/folder/my-receipt.jpeg'),
+        'my-receipt.jpeg',
+      );
+      expect(
+        ReceiptUtils.fileName(r'C:\tmp\folder\my-receipt.jpeg'),
         'my-receipt.jpeg',
       );
     });

@@ -43,8 +43,10 @@ class CategoryDetailScreen extends ConsumerWidget {
               ),
             if (analysis.methods.isNotEmpty)
               _buildMethodsSection(context, analysis),
-            if (dayGroups.isEmpty)
+            if (dayGroups.isEmpty) ...[
+              SizedBox(height: 16.spMin),
               _buildNoTransactions(context)
+            ]
             else
               ...dayGroups.map(
                 (dayPayments) => TransactionList(payments: dayPayments),
@@ -76,15 +78,15 @@ class CategoryDetailScreen extends ConsumerWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12.spMin,
+        spacing: 28.spMin,
         children: [
           Row(
-            spacing: 12.w,
+            spacing: 12.spMin,
             children: [
               CustomContainer(
-                height: 44.w,
-                width: 44.w,
-                padding: EdgeInsets.all(10.w),
+                height: 48.spMin,
+                width: 48.spMin,
+                padding: EdgeInsets.all(10.spMin),
                 backgroundColor:
                     context.isDarkMode ? color.dimDark : color.light,
                 child: CustomImage(
@@ -117,11 +119,17 @@ class CategoryDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          CustomTypography(text: amount, fontType: FontType.h3Bold),
-          CustomTypography(
-            text: '${summary.count} transactions this month',
-            fontType: FontType.label1Medium,
-            color: context.colors.onSurface,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 2.spMin,
+            children: [
+              CustomTypography(text: amount, fontType: FontType.h3Bold),
+              CustomTypography(
+                text: '${summary.count} transactions this month',
+                fontType: FontType.label1Medium,
+                color: context.colors.onSurface,
+              ),
+            ],
           ),
         ],
       ),
@@ -198,11 +206,14 @@ class CategoryDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildNoTransactions(BuildContext context) {
-    return Column(
+    final isLandscape = context.isLandscape;
+
+    return Center(child: Column(
       children: [
         SizedBox(height: 12.spMin),
         CustomImage(
           imageUrl: AppImages.noTransactions,
+          height: 200.spMin,
         ).padding(horizontal: 60.spMin),
         CustomTypography(
           text: 'No transactions this month',
@@ -215,8 +226,15 @@ class CategoryDetailScreen extends ConsumerWidget {
           color: context.colors.onSurface,
           align: TextAlign.center,
         ),
+        SizedBox(height: 8.spMin),
+        CustomButton(
+          prefixIcon: AppSvgs.add2,
+          label: 'Add transaction',
+          isFull: !isLandscape,
+          onTap: () => context.push(AppRoutesPath.editTransaction.path),
+        )
       ],
-    ).padding(horizontal: AppConstants.sidePadding);
+    )).padding(horizontal: AppConstants.sidePadding);
   }
 
   List<List<PaymentModel>> _dayGroupsForCategory(

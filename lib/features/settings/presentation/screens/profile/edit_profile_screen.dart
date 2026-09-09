@@ -18,12 +18,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   void _init() {
     final profileState = ref.read(profileProvider);
+    final currency = ref.read(currencyProvider);
     final monthlyIncome = profileState.monthlyIncome;
     monthlyIncomeController = TextEditingController(
       text:
           monthlyIncome == null
               ? null
-              : ref.formatAmountForInput(monthlyIncome),
+              : CurrencyFormatter.formatAmountForInput(
+                monthlyIncome,
+                currency: currency,
+              ),
     );
   }
 
