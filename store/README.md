@@ -7,8 +7,8 @@ into the app — it is not listed under `flutter.assets` in `pubspec.yaml`.
 | --- | --- | --- |
 | `play_icon_512.png` | Store icon, 512x512, full-bleed | Ready |
 | `feature_graphic_1024x500.png` | Feature graphic | Ready |
-| `../docs/finpal-privacy-policy.html` | Hosted Privacy Policy (plain legal page) | Publish to GitHub Pages |
-| `../docs/finpal-terms-and-conditions.html` | Hosted Terms and Conditions | Publish to GitHub Pages |
+| `../docs/finpal-privacy-policy.html` | Hosted Privacy Policy (plain legal page) | Live — re-publish after edits |
+| `../docs/finpal-terms-and-conditions.html` | Hosted Terms and Conditions | Live — re-publish after edits |
 | `screenshots/01_onboarding.png` … `06_home_dark.png` | Phone screenshots, 1080x2400 | Ready |
 
 The icon is composited from the same art as the launcher icon
@@ -89,9 +89,19 @@ Questions or feedback? Reach us at seven.dev987@gmail.com
 ## Play Console answers
 
 **Data safety** — no data collected and no data shared. Everything is stored
-on-device and the release manifest declares no permissions. Photos and profile
-details are user-entered and stay local, so they are not "collected" in Play's
-sense. Note the camera/photo access in the policy (see the amendment file).
+on-device, and the release manifest declares no `INTERNET` permission, so nothing
+can be transmitted. Photos and profile details are user-entered and stay local,
+so they are not "collected" in Play's sense.
+
+**Permissions** — the release manifest is not permission-free. It declares
+`CAMERA`, `READ_MEDIA_IMAGES`, and `READ_EXTERNAL_STORAGE` (`maxSdkVersion="32"`),
+all requested at tap time for receipt photos and the profile picture. Do not tell
+Play the app has zero permissions. `READ_MEDIA_IMAGES` is a sensitive permission,
+so expect the Photo and Video Permissions declaration in App content — the
+justification is one-off image attachment chosen by the user, with no gallery
+scanning and no upload. If Play pushes back, the fallback is to drop
+`READ_MEDIA_IMAGES` and rely on the Android photo picker, which needs no
+permission.
 
 **Content rating** — no violence, no user-generated content sharing, no
 in-app purchases, no ads. Expect "Everyone".
@@ -109,9 +119,11 @@ in-app purchases, no ads. Expect "Everyone".
 
 This cannot be done from the repo. Do it in this order:
 
-1. Publish `docs/finpal-privacy-policy.html` and
+1. Copy `docs/finpal-privacy-policy.html` and
    `docs/finpal-terms-and-conditions.html` to your GitHub Pages policy site
-   (same URLs the app already opens).
+   (same URLs the app already opens). Both URLs are already live, so this step
+   is a re-publish whenever the local copies change — the hosted page is what
+   Play reviews, not the one in this repo.
 2. Open [Play Console](https://play.google.com/console), finish identity
    verification, and pay the $25 registration fee if that is still pending.
 3. Create the app: name `FinPal: Expense Tracker`, default language English,
@@ -122,11 +134,14 @@ This cannot be done from the repo. Do it in this order:
 5. Fill Data safety: no data collected, no data shared, no encryption in
    transit (nothing is sent). Photos and profile details are stored only on
    the device. Point the policy URL at the page from step 1.
-6. Content rating questionnaire — expect Everyone. Ads: no. News: no.
+6. App content: complete the Photo and Video Permissions declaration for
+   `READ_MEDIA_IMAGES` (see Permissions above). Do not skip this — it is the
+   most likely cause of a rejection.
+7. Content rating questionnaire — expect Everyone. Ads: no. News: no.
    Target audience 13+. The personal-loan declaration does not apply.
-7. Store listing: paste the copy above, upload `play_icon_512.png`,
+8. Store listing: paste the copy above, upload `play_icon_512.png`,
    `feature_graphic_1024x500.png`, and at least two of the phone screenshots.
-8. Create a closed testing track, add at least 12 testers, and start the
+9. Create a closed testing track, add at least 12 testers, and start the
    test the same day. Production access for a personal account requires
    those testers to stay opted in for 14 continuous days. This is the
    longest lead time in the release.

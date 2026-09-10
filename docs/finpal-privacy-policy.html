@@ -41,12 +41,16 @@
     a {
       color: #000;
     }
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
 
   <h1>Privacy Policy</h1>
-  <p class="meta">FinPal<br>Last updated: 7 September 2026<br>Applies to FinPal version 1.0.0</p>
+  <p class="meta">FinPal<br>Last updated: 10 September 2026<br>Applies to FinPal version 1.0.0</p>
 
   <p>
     FinPal is a personal finance app. This Privacy Policy explains what information
@@ -55,6 +59,12 @@
   <p>
     In short: your data stays on your phone. FinPal v1.0.0 does not create accounts,
     sync to the cloud, connect to your bank, or sell your information.
+  </p>
+  <p>
+    <strong>We collect nothing.</strong> FinPal v1.0.0 does not collect, transmit, or
+    share any personal data. The released Android app is not granted the
+    <code>INTERNET</code> permission, so it has no technical ability to send your
+    records anywhere. Everything described below is stored only on your own device.
   </p>
 
   <h2>1. Who we are</h2>
@@ -75,8 +85,8 @@
   <p>On your device, FinPal may store:</p>
   <ul>
     <li>
-      <strong>Profile details</strong> — display name, gender, date of birth, and
-      any profile picture you choose.
+      <strong>Profile details</strong> — display name, gender, date of birth,
+      monthly income if you enter one, and any profile picture you choose.
     </li>
     <li>
       <strong>Transactions</strong> — income and expense entries you add, including
@@ -111,10 +121,25 @@
     FinPal does not scan, index, or read other photos on your device. It does not
     keep ongoing access to your gallery beyond what you select.
   </p>
+  <p>These are the only permissions the released Android app declares:</p>
+  <ul>
+    <li>
+      <code>CAMERA</code> — used only if you choose to take a new photo.
+    </li>
+    <li>
+      <code>READ_MEDIA_IMAGES</code> — used only if you choose an existing image on
+      Android 13 and above.
+    </li>
+    <li>
+      <code>READ_EXTERNAL_STORAGE</code> — the same purpose on Android 12 and below.
+      It is limited to those versions and is not requested on newer ones.
+    </li>
+  </ul>
   <p>
-    On Android, this may involve permissions such as Camera, access to images, or
-    (on older Android versions) storage access for selecting a photo. You can deny
-    these permissions; features that need them will not work until you allow access.
+    FinPal requests no other permissions. It does not request location, contacts,
+    SMS, call logs, notification access, or the <code>INTERNET</code> permission. You
+    can deny the camera or image permissions at any time in your device settings;
+    only image attachment stops working, and the rest of the app is unaffected.
   </p>
 
   <h2>4. How that information is used</h2>
@@ -149,20 +174,21 @@
   </p>
   <p>
     We do not sell your personal information. We would only disclose information
-    if required by law. Even then, we typically have no remote copy of your FinPal
-    records to hand over.
+    if required by law, but in v1.0.0 we hold no copy of your FinPal records, so
+    there is nothing for us to hand over.
   </p>
   <p>
-    Opening Privacy Policy, Terms, or support links may launch your browser or
-    email app. Those apps have their own privacy practices.
+    Opening the Privacy Policy, Terms, or support links hands the address to your
+    browser or email app, which then loads it. FinPal itself makes no network
+    request. Those apps have their own privacy practices.
   </p>
 
   <h2>7. Your choices</h2>
   <p>You can:</p>
   <ul>
     <li>Edit or delete transactions and profile details inside the app.</li>
-    <li>Use Clear Data in FinPal settings (where available) or clear app data from
-      your phone’s system settings.</li>
+    <li>Use Clear Data in FinPal’s Settings screen, or clear app data from your
+      phone’s system settings.</li>
     <li>Uninstall FinPal to remove locally stored information.</li>
     <li>Deny camera or photo permissions in system settings.</li>
   </ul>
@@ -184,11 +210,14 @@
 
   <h2>10. Contact</h2>
   <p>
-    Questions about this Privacy Policy or your data:
+    Questions, concerns, or complaints about this Privacy Policy or your data can be
+    sent to Shubham Patel, who handles privacy queries and grievances for FinPal:
   </p>
   <p>
     Email: <a href="mailto:seven.dev987@gmail.com">seven.dev987@gmail.com</a><br>
-    GitHub: <a href="https://github.com/shubham24680/FinPal">github.com/shubham24680/FinPal</a>
+  </p>
+  <p>
+    We aim to respond within 30 days.
   </p>
 
   <p class="meta" style="margin-top:2em">

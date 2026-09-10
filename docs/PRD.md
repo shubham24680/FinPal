@@ -83,7 +83,7 @@ Verified against the release AAB, not aspiration.
 | History | Grouped by month and day, filterable by type; swipe to edit or delete |
 | Personalisation | Light / dark / system, hide balance, INR or USD, avatar and display name |
 | Onboarding | Intro → personal details → home |
-| Safety | Startup failure screen with retry and reset; clear-all-data |
+| Safety | Clear-all-data from Settings; orphaned receipt/avatar files swept at startup. No startup-failure screen yet — init errors rethrow (see v1.1) |
 
 ### 3.2 Technical baseline
 
@@ -92,9 +92,9 @@ Verified against the release AAB, not aspiration.
 | Identity | `com.seven.finpal`, version `1.0.0+1`, targetSdk 36 |
 | Stack | Flutter, Riverpod, Hive, GoRouter, fl_chart |
 | Persistence | Hive: `SettingsModel` (typeId 0), `ProfileModel` (1), `OptionModel` (2), `PaymentModel` (5) |
-| Release permissions | none |
+| Release permissions | `CAMERA`, `READ_MEDIA_IMAGES`, `READ_EXTERNAL_STORAGE` (maxSdk 32) — image attachment only; no `INTERNET` |
 | Backend | none |
-| Platforms | Android only (iOS / web folders exist, unsupported) |
+| Platforms | Android only (iOS / macOS / web / Windows / Linux folders exist, unsupported) |
 | Download size (arm64) | ~23.4 MB |
 | Tabs | Home, Transactions, Analysis, Settings |
 
