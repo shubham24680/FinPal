@@ -82,7 +82,7 @@ class TransactionDetailBS extends ConsumerWidget {
         ),
         SizedBox(height: 16.spMin),
         CustomTypography(
-          text: isExpense ? "Money Spent" : "Money Received",
+          text: isExpense ? "Expense" : "Income",
           fontType: FontType.label1Medium,
           color: accent.normal,
         ),
@@ -140,7 +140,7 @@ class TransactionDetailBS extends ConsumerWidget {
                 child: _summaryItem(
                   context,
                   icon: paymentMethod.icon,
-                  label: "Payment method",
+                  label: "Payment Method",
                   value: paymentMethod.name,
                   accent: accent,
                 ),

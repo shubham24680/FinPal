@@ -4,19 +4,19 @@ class AnalysisConstants {
   static List<AnalysisModel> analysis = [
     AnalysisModel(
       id: "earned",
-      title: "Earned",
+      title: "Income",
       amount: 0,
       color: ColorSet.info,
     ),
     AnalysisModel(
       id: "spent",
-      title: "Spent",
+      title: "Expense",
       amount: 0,
       color: ColorSet.warning,
     ),
     AnalysisModel(
       id: "available",
-      title: "Available",
+      title: "Remaining",
       amount: 0,
       color: ColorSet.primary,
     ),

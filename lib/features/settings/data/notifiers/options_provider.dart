@@ -166,7 +166,7 @@ class OptionProvider extends StateNotifier<OptionState> {
       if (isDuplicate) {
         state = state.copyWith(
           toastType: ToastType.error,
-          message: "Option already exists",
+          message: "${state.type?.name ?? 'Item'} already exists",
         );
         return;
       }
@@ -181,13 +181,13 @@ class OptionProvider extends StateNotifier<OptionState> {
       await _ref.read(optionNotifer.notifier).saveOption(option);
       state = state.copyWith(
         toastType: ToastType.success,
-        message: "Option saved successfully",
+        message: "${state.type?.name ?? 'Item'} saved successfully",
       );
     } catch (e, stack) {
       if (kDebugMode) log("Failed to save option", error: e, stackTrace: stack);
       state = state.copyWith(
         toastType: ToastType.error,
-        message: "Failed to save option",
+        message: "Failed to save ${state.type?.name.toLowerCase() ?? 'item'}",
       );
     } finally {
       state = state.copyWith(buttonState: ButtonState.enabled);

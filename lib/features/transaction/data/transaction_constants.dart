@@ -19,7 +19,7 @@ extension TransactionTypeX on String {
 
 class TransactionConstants {
   static const String emptyHelperText = "Enter an amount to see what's left.";
-  static const String savingHelperText = "You'll still have ";
+  static const String savingHelperText = "You'll have ";
   static const String overspentHelperText = "You'd be short by ";
   static const String neutralHelperText = "This uses up your remaining balance.";
 
@@ -33,7 +33,7 @@ class TransactionConstants {
   static const String amountInvalidMessage = "Enter a valid amount";
   static const String receiptNotFoundMessage = "Receipt file not found";
   static const String receiptTypeMessage =
-      "Only JPG, PNG or JPEG receipts are allowed";
+      "Only JPG or PNG receipts are allowed";
   static const String receiptSizeMessage = "Receipt must be 5MB or smaller";
   static const String saveSuccessMessage = "Transaction saved successfully";
   static const String saveFailureMessage = "Failed to save transaction";

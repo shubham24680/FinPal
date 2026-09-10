@@ -141,7 +141,7 @@ class SettingsTiles extends ConsumerWidget {
                 isDark ? AppColors.error700.withAlpha(50) : AppColors.error50,
             title: "Are you sure?",
             message:
-                "This will permanently delete all your data including profile, transactions, categories and settings from Finpal. This action cannot be undone.",
+                "This will permanently delete all your data including profile, transactions, categories and settings from FinPal. This action cannot be undone.",
             buttonText: "Clear All Data",
             buttonColor: AppColors.error500,
             onPressed: () => _clearData(context, ref),

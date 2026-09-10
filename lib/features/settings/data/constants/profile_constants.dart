@@ -82,7 +82,7 @@ class ProfileConstants {
       ),
       ProfileContentModel(
         id: "income",
-        title: "Set your monthly income",
+        title: "Set your typical monthly income",
         icon: AppSvgs.rupee,
         color: ColorSet.primary,
         isCompleted: (profile.monthlyIncome ?? 0) > 0,
@@ -133,8 +133,8 @@ class ProfileConstants {
     }
     if (percent >= 80) {
       return hasName
-          ? "Keep up your good work, $firstName!"
-          : "Keep up your good work!";
+          ? "Keep up the good work, $firstName!"
+          : "Keep up the good work!";
     }
     if (percent >= 40) {
       return "You're making progress — keep going!";

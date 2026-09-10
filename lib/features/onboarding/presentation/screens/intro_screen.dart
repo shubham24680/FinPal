@@ -43,8 +43,8 @@ class IntroScreen extends ConsumerWidget {
     final title = [
       TypographyModel(text: "Track "),
       TypographyModel(text: "Expenses.", color: AppColors.primary500),
-      TypographyModel(text: "\nBuild Better "),
-      TypographyModel(text: "Habits.", color: AppColors.primary500),
+      TypographyModel(text: "\nUnderstand Your "),
+      TypographyModel(text: "Spending.", color: AppColors.primary500),
     ];
 
     final child = SafeArea(
@@ -56,7 +56,7 @@ class IntroScreen extends ConsumerWidget {
           SizedBox(height: 20.spMin),
           CustomTypography(typos: title),
           CustomTypography(
-            text: "Monitor your spending and make smarter financial decisions.",
+            text: "Log income and expenses. See what's left.",
             fontType: FontType.label1Regular,
             align: TextAlign.center,
             color: Theme.of(context).colorScheme.onSurface,

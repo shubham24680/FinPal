@@ -75,13 +75,13 @@ class OptionsConstant {
     ),
     OptionModel(
       type: OptionType.income.id,
-      name: "Investment",
+      name: "Investment returns",
       icon: AppSvgs.investment,
     ),
     OptionModel(type: OptionType.income.id, name: "Gift", icon: AppSvgs.gift),
     OptionModel(
       type: OptionType.income.id,
-      name: "Rental",
+      name: "Rental income",
       icon: AppSvgs.rental,
     ),
   ];
@@ -130,7 +130,7 @@ class OptionsConstant {
     ),
     OptionModel(
       type: OptionType.expense.id,
-      name: "Party",
+      name: "Events",
       icon: AppSvgs.party,
     ),
     OptionModel(

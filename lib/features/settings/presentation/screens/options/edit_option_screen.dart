@@ -49,10 +49,12 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
       }
     });
 
+    final itemLabel = optionState.type?.name ?? "Item";
+
     return Scaffold(
       appBar: customAppBar(
         context,
-        title: isAdded ? "Edit Category" : "Add Category",
+        title: isAdded ? "Edit $itemLabel" : "Add $itemLabel",
       ),
       bottomNavigationBar: CustomButton(
         onTap: () => optionNotifier.save(),
@@ -143,8 +145,8 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                     typeController.text =
                         selectedType?.name ?? optionState.type?.name ?? "";
                   },
-                  header: "CATEGORY TYPE",
-                  hintText: "Select Category Type",
+                  header: "TYPE",
+                  hintText: "Select type",
                   perfixIcon:
                       typeIcon.isNotEmpty
                           ? CustomImage(

@@ -105,7 +105,7 @@ class CategoryDetailScreen extends ConsumerWidget {
                       fontType: FontType.body2Semibold,
                     ),
                     CustomTypography(
-                      text: 'of month expenses',
+                      text: 'of this month\'s expenses',
                       fontType: FontType.label2Regular,
                       color: context.colors.onSurface,
                     ),
@@ -149,7 +149,7 @@ class CategoryDetailScreen extends ConsumerWidget {
         spacing: 16.spMin,
         children: [
           CustomTypography(
-            text: 'Payment methods',
+            text: 'Payment Methods',
             fontType: FontType.body2Semibold,
           ),
           ...analysis.methods.map((method) {
@@ -229,7 +229,7 @@ class CategoryDetailScreen extends ConsumerWidget {
         SizedBox(height: 8.spMin),
         CustomButton(
           prefixIcon: AppSvgs.add2,
-          label: 'Add transaction',
+          label: 'Add Transaction',
           isFull: !isLandscape,
           onTap: () => context.push(AppRoutesPath.editTransaction.path),
         )

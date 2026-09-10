@@ -84,13 +84,18 @@ class OptionTiles extends ConsumerWidget {
                                   : AppColors.error50,
                               title: "Delete ${contents[index].name}",
                               message:
-                                  "You can't undo this. Existing records keep their data.",
-                              buttonText: "Yes, Delete",
+                                  "This can't be undone. Past transactions will keep this name until you edit them.",
+                              buttonText: "Delete",
                               buttonColor: AppColors.error500,
                               onPressed:
                                   () {
                                     optionProvider.deleteOption(contents[index].id);
-                                    context.showSnackBar("Option deleted successfully");
+                                    final typeName =
+                                        contents[index].type.byId?.name ??
+                                        "Item";
+                                    context.showSnackBar(
+                                      "$typeName deleted successfully",
+                                    );
                                     context.pop();
                                   },
                             ),

@@ -51,7 +51,7 @@ Offline expense tracker. No account, no ads, and no data leaves your phone.
 FinPal is a personal finance tracker that keeps your money data where it
 belongs — on your phone.
 
-No sign-up. No cloud account. No ads. No analytics. FinPal ships with zero
+No sign-up. No cloud account. No ads. No analysis. FinPal ships with zero
 network permissions, so your records physically cannot leave your device.
 
 WHAT YOU CAN DO

@@ -126,7 +126,7 @@ class AnalysisBreakdown1 extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTypography(
-                text: 'Payment methods',
+                text: 'Payment Methods',
                 fontType: FontType.body2Semibold,
               ),
             ],

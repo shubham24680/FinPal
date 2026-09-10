@@ -174,7 +174,7 @@ class CategoryListTile extends ConsumerWidget {
                           ),
                         ),
                         CustomTypography(
-                          text: 'Most Popular',
+                          text: 'Highest Spend',
                           fontType: FontType.label2SemiBold,
                           color: Colors.white,
                         ).padding(horizontal: 12.spMin, vertical: 4.spMin),

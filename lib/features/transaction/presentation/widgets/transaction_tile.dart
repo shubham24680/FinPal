@@ -83,7 +83,7 @@ class TransactionList extends ConsumerWidget {
     final isDark = context.isDarkMode;
     final category = options?.findById(payment.categoryId);
     final color = category?.color.colorSet ?? ColorSet.primary;
-    final title = payment.notes.isNotEmpty ? payment.notes : category?.name ?? "Uncategorized";
+    final title = payment.notes.isNotEmpty ? payment.notes : category?.name ?? "Other";
     final subTitle = payment.notes.isEmpty ? null : category?.name ?? "Tap to categorize";
     final isExpense = payment.paymentType == TransactionType.expense.id;
 
@@ -276,8 +276,8 @@ Future<bool?> confirmDelete(
     iconColor: AppColors.error500,
     iconBgColor: isDark ? AppColors.error700.withAlpha(50) : AppColors.error50,
     title: "Delete Transaction",
-    message: "You can't undo this. This transaction will be removed.",
-    buttonText: "Yes, Delete",
+    message: "This can't be undone. This transaction will be removed.",
+    buttonText: "Delete",
     buttonColor: AppColors.error500,
     onPressed: () {
       ref.read(transactionProvider.notifier).deletePayment(payment.id).then((

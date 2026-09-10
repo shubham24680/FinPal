@@ -25,8 +25,12 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
               if (!context.mounted) return;
               context.showSnackBar(
                 permanentlyDenied
-                    ? "Allow $label access in Settings to continue"
-                    : "$label access is required to continue",
+                    ? isCamera
+                        ? "Allow camera access in Settings to continue"
+                        : "Allow photo library access in Settings to continue"
+                    : isCamera
+                    ? "Camera access is required to continue"
+                    : "Photo library access is required to continue",
                 toastType: ToastType.error,
               );
               if (permanentlyDenied) await openAppSettings();

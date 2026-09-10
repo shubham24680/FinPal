@@ -80,7 +80,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
           ),
           SizedBox(height: 8.spMin),
           CustomTypography(
-            text: "Let's make today\nfinancially rewarding.",
+            text: "Here's where your\nmoney stands.",
             fontType: FontType.body2Medium,
             color: context.colors.onSurface,
           ),
@@ -157,7 +157,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
               hideBalance ? CrossAxisAlignment.center : CrossAxisAlignment.end,
           children: [
             CustomTypography(
-              text: "Available Balance",
+              text: "Net Balance",
               fontType:
                   smallFont ? FontType.label2Medium : FontType.body2Medium,
             ),
@@ -328,7 +328,7 @@ class _AnalysisScreenState extends ConsumerState<HomeScreen> {
                         AnalysisCard(
                           analysis,
                           hideBalance: !hideBalance || toggleBalance,
-                          title: "Analytics",
+                          title: "Analysis",
                           onTap: () => ref.read(navProvider.notifier).state = 2,
                         ),
                         CategoriesCard(),

@@ -61,7 +61,7 @@ class PersonalDetailsScreen extends ConsumerWidget {
     final personalDetailsState = ref.watch(profileProvider);
     final title = [
       TypographyModel(text: "Tell us a little about"),
-      TypographyModel(text: "\n yourself.", color: AppColors.primary500),
+      TypographyModel(text: "\nyourself.", color: AppColors.primary500),
     ];
 
     final child = SafeArea(
@@ -74,7 +74,7 @@ class PersonalDetailsScreen extends ConsumerWidget {
           CustomTypography(typos: title),
           CustomTypography(
             text:
-                "This will help us personalize your experience.\n All data stays on your device.",
+                "This will help us personalize your experience.\nAll data stays on your device.",
             fontType: FontType.label1Regular,
             align: TextAlign.center,
             color: Theme.of(context).colorScheme.onSurface,

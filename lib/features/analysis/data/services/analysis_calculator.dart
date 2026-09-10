@@ -150,7 +150,7 @@ class AnalysisCalculator {
               return e.copyWith(amount: expense);
             case "available":
               return e.copyWith(
-                title: isOverSpent ? 'Over Spent' : 'Available',
+                title: isOverSpent ? 'Overspent' : 'Remaining',
                 color: isOverSpent ? ColorSet.error : ColorSet.primary,
                 amount: available?.abs(),
               );

@@ -192,7 +192,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
             children: [
               _buildTransactionOverviewItem(
                 context,
-                "Total Spendings",
+                "Total Expenses",
                 AppSvgs.arrowUp,
                 ColorSet.error,
                 amount: totalExpense,
@@ -329,7 +329,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen> {
     WidgetRef ref, {
     String title = "No transactions yet",
     String description =
-        "You haven't made any transactions yet.\nStart by adding income or expenses to track your spending.",
+        "You haven't added any transactions yet.\nLog income or expenses to track your money.",
   }) {
     final isLandscape = context.isLandscape;
 

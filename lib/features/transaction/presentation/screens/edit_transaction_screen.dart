@@ -274,7 +274,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           ),
           SizedBox(height: 20.spMin),
           CustomTypography(
-            text: "Description",
+            text: "Note",
             fontType: FontType.label1Bold,
             color: context.colors.onSurface,
           ),
@@ -422,7 +422,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
                 SizedBox(height: 4.spMin),
                 CustomTypography(
-                  text: "JPG, PNG or JPEG (Max. 5MB)",
+                  text: "JPG or PNG (max 5MB)",
                   fontType: FontType.label1Medium,
                   color: context.colors.onSurfaceVariant,
                 ),

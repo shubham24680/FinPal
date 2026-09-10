@@ -59,7 +59,9 @@ class ProfileScreen extends ConsumerWidget {
     final desc =
         profile.name.isEmpty
             ? "Add your details to personalize your experience"
-            : "Member ${profileDate.isNotEmpty ? "since $profileDate" : ""}";
+            : profileDate.isNotEmpty
+            ? "Member since $profileDate"
+            : "FinPal member";
 
     return CustomContainer(
       backgroundColor: context.colors.surface,

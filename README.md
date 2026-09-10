@@ -1,6 +1,6 @@
 # FinPal 💰
 
-FinPal is a personal finance tracker that keeps your money data where it belongs — on your phone. Log income and expenses, organise them your way, and see where your money goes. No account, no ads, no analytics, and **no `INTERNET` permission in the release build**.
+FinPal is a personal finance tracker that keeps your money data where it belongs — on your phone. Log income and expenses, organise them your way, and see where your money goes. No account, no ads, no analysis, and **no `INTERNET` permission in the release build**.
 
 <p align="center">
   <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter"></a>
@@ -108,7 +108,7 @@ Denying them only disables image attachment; everything else keeps working. Sele
 
 - No account or sign-up
 - No bank login and no credential collection
-- No ads, no analytics, no crash reporting, no tracking
+- No ads, no analysis, no crash reporting, no tracking
 - No location, contacts, SMS, or notification access
 - Clearing app data or uninstalling removes your records from the device
 

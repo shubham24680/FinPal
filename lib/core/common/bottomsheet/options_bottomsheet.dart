@@ -108,6 +108,11 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
   }
 
   Widget buildNoCategories(BuildContext context) {
+    final isPaymentMethod =
+        widget.categories.isNotEmpty &&
+        widget.categories.first.type == OptionType.paymentMethod.id;
+    final method = isPaymentMethod ? "payment method" : "category";
+
     return Consumer(
       builder: (context, ref, child) {
         return Column(
@@ -117,20 +122,20 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
               imageUrl: AppImages.noCategories,
             ).padding(horizontal: 72.spMin),
             CustomTypography(
-              text: "No categories found",
+              text: "No ${method}s found",
               fontType: FontType.h4Semibold,
             ),
             SizedBox(height: 8.spMin),
             CustomTypography(
               text:
-                  "We couldn't find a category that matches your search. Try a different name.",
+                  "We couldn't find a $method that matches your search. Try a different name.",
               fontType: FontType.label1Medium,
               color: context.colors.onSurface,
               align: TextAlign.center,
             ),
             SizedBox(height: 16.spMin),
             CustomButton(
-              label: "Add a category",
+              label: "Add a $method",
               prefixIcon: AppSvgs.add1,
               onTap: () {
                 ref.read(selectedOptionProvider.notifier).state = null;

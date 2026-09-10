@@ -13,7 +13,7 @@ class SettingsConstants {
     ),
     SettingsContentModel(
       id: "manage_categories",
-      title: "Manage Categories",
+      title: "Categories & Methods",
       icon: AppSvgs.category,
       iconColor: AppColors.info500,
       iconBgColor: AppColors.info50,
@@ -47,6 +47,7 @@ class SettingsConstants {
     SettingsContentModel(
       id: "hide_balance",
       title: "Hide Balance",
+      subtitle: "Hide amounts on the home screen",
       icon: AppSvgs.cash,
       iconColor: AppColors.primary500,
       iconBgColor: AppColors.primary50,

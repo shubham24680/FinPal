@@ -10,7 +10,7 @@ class OptionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: customAppBar(
         context,
-        title: "Manage Categories",
+        title: "Categories & Methods",
         actions: [
           AppBarModel(
             icon: AppSvgs.add1,
@@ -71,7 +71,7 @@ class OptionsScreen extends ConsumerWidget {
           imageUrl: AppImages.noCategories,
         ).padding(horizontal: 60.spMin),
         CustomTypography(
-          text: "No Categories yet",
+          text: "No categories yet",
           fontType: FontType.h4Semibold,
         ),
         SizedBox(height: 8.spMin),

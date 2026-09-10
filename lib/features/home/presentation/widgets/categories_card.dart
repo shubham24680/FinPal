@@ -25,7 +25,7 @@ class CategoriesCard extends ConsumerWidget {
           spacing: 8.spMin,
           children: [
             CustomTypography(
-              text: "Top Categories",
+              text: "Top spending",
               fontType: FontType.body2Semibold,
               color: context.colors.onSurface,
             ),
