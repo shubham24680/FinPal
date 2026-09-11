@@ -1,8 +1,12 @@
 import 'package:finpal/app/app.dart';
 
 enum ButtonState { enabled, loading, disabled }
+
 enum ButtonType { primary, negative, inherit }
+
 enum ButtonVariant { primary, secondary, tertiary }
+
+enum ButtonSize { small, medium, large }
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -10,6 +14,7 @@ class CustomButton extends StatelessWidget {
     this.buttonType = ButtonType.primary,
     this.buttonVariant = ButtonVariant.primary,
     this.buttonState = ButtonState.enabled,
+    this.buttonSize = ButtonSize.medium,
     this.onTap,
     this.margin,
     this.prefixIcon,
@@ -23,6 +28,7 @@ class CustomButton extends StatelessWidget {
   final ButtonType buttonType;
   final ButtonVariant buttonVariant;
   final ButtonState buttonState;
+  final ButtonSize buttonSize;
   final VoidCallback? onTap;
   final EdgeInsets? margin;
   final String? prefixIcon;
@@ -46,10 +52,11 @@ class CustomButton extends StatelessWidget {
           CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: prefixIcon,
-            color: buttonVariant == ButtonVariant.secondary
-                  ? backgroundColor
-                  : foregroundColor,
-            height: 24.spMin,
+            color:
+                buttonVariant == ButtonVariant.secondary
+                    ? backgroundColor
+                    : foregroundColor,
+            height: _getIconSize(),
           ),
         CustomTypography(
           text: label ?? "Submit",
@@ -57,16 +64,17 @@ class CustomButton extends StatelessWidget {
               buttonVariant == ButtonVariant.secondary
                   ? backgroundColor
                   : foregroundColor,
-          fontType: FontType.body1Medium,
+          fontType: _getFontType(),
         ),
         if (suffixIcon != null)
           CustomImage(
             imageType: ImageType.svgLocal,
             imageUrl: suffixIcon,
-            color: buttonVariant == ButtonVariant.secondary
-                  ? backgroundColor
-                  : foregroundColor,
-            height: 24.spMin,
+            color:
+                buttonVariant == ButtonVariant.secondary
+                    ? backgroundColor
+                    : foregroundColor,
+            height: _getIconSize(),
           ),
       ],
     );
@@ -102,8 +110,10 @@ class CustomButton extends StatelessWidget {
     final isDisabled = buttonState == ButtonState.disabled;
     final darkButton = isDark && buttonVariant == ButtonVariant.tertiary;
 
-    if(isDisabled || darkButton) {
-      return isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.lightSurface2;
+    if (isDisabled || darkButton) {
+      return isDark
+          ? AppColors.darkSurface2.withAlpha(100)
+          : AppColors.lightSurface2;
     }
 
     return switch ((buttonType, buttonVariant)) {
@@ -111,7 +121,8 @@ class CustomButton extends StatelessWidget {
       (ButtonType.primary, _) => AppColors.primary700,
       (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error50,
       (ButtonType.negative, _) => AppColors.error700,
-      (ButtonType.inherit, _) => isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.neutral100,
+      (ButtonType.inherit, _) =>
+        isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.neutral100,
     };
   }
 
@@ -125,6 +136,22 @@ class CustomButton extends StatelessWidget {
       (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error500,
       (ButtonType.inherit, _) => AppColors.neutral500,
       _ => AppColors.white,
+    };
+  }
+
+  double _getIconSize() {
+    return switch (buttonSize) {
+      ButtonSize.small => 20.spMin,
+      ButtonSize.medium => 24.spMin,
+      ButtonSize.large => 28.spMin,
+    };
+  }
+
+  FontType _getFontType() {
+    return switch (buttonSize) {
+      ButtonSize.small => FontType.body2Medium,
+      ButtonSize.medium => FontType.body1Medium,
+      ButtonSize.large => FontType.h4Semibold,
     };
   }
 }

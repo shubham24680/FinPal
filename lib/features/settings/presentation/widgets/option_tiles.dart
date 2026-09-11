@@ -56,50 +56,53 @@ class OptionTiles extends ConsumerWidget {
                           fontType: FontType.body2Medium,
                         ),
                       ),
-                      CustomImage(
-                        imageType: ImageType.svgLocal,
-                        imageUrl: AppSvgs.edit,
-                        color: context.colors.onSurface,
-                        height: 20.spMin,
-                        width: 20.spMin,
-                        onClick:
-                            () {
-                              ref.read(selectedOptionProvider.notifier).state = contents[index];
-                              context.push(AppRoutesPath.editOption.path);
-                            },
-                      ),
-                      CustomImage(
-                        imageType: ImageType.svgLocal,
-                        imageUrl: AppSvgs.bin,
-                        color: context.colors.error,
-                        height: 20.spMin,
-                        width: 20.spMin,
-                        onClick:
-                            () => CustomDialog.show(
-                              context,
-                              icon: AppSvgs.bin,
-                              iconColor: AppColors.error500,
-                              iconBgColor: isDark
-                                  ? AppColors.error700.withAlpha(50)
-                                  : AppColors.error50,
-                              title: "Delete ${contents[index].name}",
-                              message:
-                                  "This can't be undone. Past transactions will keep this name until you edit them.",
-                              buttonText: "Delete",
-                              buttonColor: AppColors.error500,
-                              onPressed:
-                                  () {
-                                    optionProvider.deleteOption(contents[index].id);
-                                    final typeName =
-                                        contents[index].type.byId?.name ??
-                                        "Item";
-                                    context.showSnackBar(
-                                      "$typeName deleted successfully",
-                                    );
-                                    context.pop();
-                                  },
-                            ),
-                      ),
+                      if (!contents[index].isMandatory) ...[
+                        CustomImage(
+                          imageType: ImageType.svgLocal,
+                          imageUrl: AppSvgs.edit,
+                          color: context.colors.onSurface,
+                          height: 20.spMin,
+                          width: 20.spMin,
+                          onClick: () {
+                            ref.read(selectedOptionProvider.notifier).state =
+                                contents[index];
+                            context.push(AppRoutesPath.editOption.path);
+                          },
+                        ),
+                        CustomImage(
+                          imageType: ImageType.svgLocal,
+                          imageUrl: AppSvgs.bin,
+                          color: context.colors.error,
+                          height: 20.spMin,
+                          width: 20.spMin,
+                          onClick:
+                              () => CustomDialog.show(
+                                context,
+                                icon: AppSvgs.bin,
+                                iconColor: AppColors.error500,
+                                iconBgColor:
+                                    isDark
+                                        ? AppColors.error700.withAlpha(50)
+                                        : AppColors.error50,
+                                title: "Delete ${contents[index].name}",
+                                message:
+                                    "This can't be undone. Past transactions will keep this name until you edit them.",
+                                buttonText: "Delete",
+                                buttonColor: AppColors.error500,
+                                onPressed: () {
+                                  optionProvider.deleteOption(
+                                    contents[index].id,
+                                  );
+                                  final typeName =
+                                      contents[index].type.byId?.name ?? "Item";
+                                  context.showSnackBar(
+                                    "$typeName deleted successfully",
+                                  );
+                                  context.pop();
+                                },
+                              ),
+                        ),
+                      ],
                     ],
                   ).padding(horizontal: 16.r, vertical: 12.r);
                 },

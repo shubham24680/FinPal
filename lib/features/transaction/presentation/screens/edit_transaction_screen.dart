@@ -245,7 +245,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             () async {
               final picked = await CustomBottomSheet.showOptions(
                 context,
-                categories,
+                type: state.type.optionType.id,
+                categories: categories ?? [],
                 title: "Select Category",
                 selectedOption: state.category,
               );
@@ -263,7 +264,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             () async {
               final picked = await CustomBottomSheet.showOptions(
                 context,
-                paymentMethod,
+                type: OptionType.paymentMethod.id,
+                categories: paymentMethod ?? [],
                 title: "Select Payment Method",
                 selectedOption: state.paymentMethod,
               );

@@ -14,6 +14,8 @@ class OptionModel extends HiveObject {
   final String icon;
   @HiveField(4, defaultValue: "")
   final String color;
+  @HiveField(5, defaultValue: false)
+  final bool isMandatory;
 
   OptionModel({
     String? id,
@@ -21,6 +23,7 @@ class OptionModel extends HiveObject {
     required this.name,
     this.icon = "",
     this.color = "",
+    this.isMandatory = false,
   }) : id = (id == null || id.isEmpty) ? Uuid().v4() : id;
 
   OptionModel copyWith({
@@ -29,11 +32,13 @@ class OptionModel extends HiveObject {
     String? name,
     String? icon,
     String? color,
+    bool? isMandatory,
   }) => OptionModel(
     id: id ?? this.id,
     type: type ?? this.type,
     name: name ?? this.name,
     icon: icon ?? this.icon,
     color: color ?? this.color,
+    isMandatory: isMandatory ?? this.isMandatory,
   );
 }

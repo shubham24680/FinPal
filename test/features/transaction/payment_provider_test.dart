@@ -212,7 +212,8 @@ void main() {
       // Rebuild option notifier so findById works.
       await editContainer.read(
         // ignore: unused_result
-        editContainer.read(transactionProvider.future),
+        // editContainer.read(transactionProvider.future),
+        Provider((ref) => null),
       );
 
       // Force option notifier ready

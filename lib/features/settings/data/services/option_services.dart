@@ -63,4 +63,7 @@ class OptionServices {
   List<OptionModel> byType(String type, {String? excludeId}) => categories
       .where((o) => o.type == type && o.id != excludeId)
       .toList(growable: false);
+
+  List<OptionModel> byTypeSorted(String type) => [...byType(type)]
+    ..sort((a, b) => a.isMandatory ? -1 : 1);
 }

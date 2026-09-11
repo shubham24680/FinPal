@@ -55,9 +55,9 @@ extension ResponsiveContext on BuildContext {
 
   Color _handleToastBackgroundColor(ToastType toastType) {
     return switch (toastType) {
-      ToastType.normal => colors.inverseSurface,
+      // ToastType.success => AppColors.primary200,
       ToastType.error => AppColors.error200,
-      ToastType.success => AppColors.primary200,
+      _ => colors.inverseSurface,
     };
   }
 }

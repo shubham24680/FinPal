@@ -1,28 +1,32 @@
 import 'package:finpal/app/app.dart';
 
-class OptionsBottomSheet extends StatefulWidget {
-  const OptionsBottomSheet(
-    this.categories, {
+class OptionsBottomSheet extends ConsumerStatefulWidget {
+  const OptionsBottomSheet({
     super.key,
+    this.type,
+    this.categories = const [],
     this.title,
     this.selectedOption,
   });
 
+  final String? type;
   final List<OptionModel> categories;
   final OptionModel? selectedOption;
   final String? title;
 
   @override
-  State<OptionsBottomSheet> createState() => _OptionsBottomSheetState();
+  ConsumerState<OptionsBottomSheet> createState() => _OptionsBottomSheetState();
 }
 
-class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
+class _OptionsBottomSheetState extends ConsumerState<OptionsBottomSheet> {
   late final TextEditingController controller;
+  late List<OptionModel> _options;
 
   @override
   void initState() {
     super.initState();
     controller = TextEditingController();
+    _options = List<OptionModel>.of(widget.categories);
   }
 
   @override
@@ -31,13 +35,31 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
     super.dispose();
   }
 
+  String? get _typeId =>
+      widget.type ?? (_options.isNotEmpty ? _options.first.type : null);
+  void _refreshOptions() {
+    final typeId = _typeId;
+    if (typeId == null) return;
+    setState(() {
+      _options =
+          ref.read(optionNotifer).value?.byType(typeId) ?? widget.categories;
+    });
+  }
+
+  Future<void> _openAddOption() async {
+    ref.read(selectedOptionProvider.notifier).state = null;
+    await context.push(AppRoutesPath.editOption.path);
+    if (!mounted) return;
+    _refreshOptions();
+  }
+
   List<OptionModel> get filteredOptions {
     final searchedText = controller.text.trim();
     if (searchedText.isEmpty) {
-      return widget.categories;
+      return _options;
     }
 
-    return widget.categories
+    return _options
         .where(
           (option) =>
               option.name.toLowerCase().contains(searchedText.toLowerCase()),
@@ -47,7 +69,18 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isPaymentMethod = _typeId == OptionType.paymentMethod.id;
+    final method = isPaymentMethod ? "payment method" : "category";
     final values = filteredOptions;
+    final items = [
+      ...values,
+      OptionsConstant.otherCategory,
+      OptionModel(
+        type: "add_category",
+        name: "Add Category",
+        icon: AppSvgs.add1,
+      ),
+    ];
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -64,18 +97,25 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
             height: 24.spMin,
           ),
         ),
-        values.isEmpty
-            ? buildNoCategories(context)
-            : Expanded(
-              child: ListView.separated(
-                itemCount: values.length,
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                itemBuilder:
-                    (context, index) => optionTile(context, values[index]),
-                separatorBuilder: (_, _) => const Divider(),
-              ),
-            ),
+        Expanded(
+          child: ListView.separated(
+            itemCount: items.length,
+            padding: EdgeInsets.only(bottom: 60.spMin),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return (items[index].type == "add_category")
+                  ? CustomButton(
+                    buttonSize: ButtonSize.small,
+                    buttonVariant: ButtonVariant.tertiary,
+                    label: "Add a $method",
+                    prefixIcon: AppSvgs.add1,
+                    onTap: _openAddOption,
+                  ).padding(top: 8.spMin)
+                  : optionTile(context, items[index]);
+            },
+            separatorBuilder: (_, _) => const Divider(),
+          ),
+        ),
       ],
     ).onTap(event: () => context.focusNode.unfocus());
   }
@@ -95,7 +135,12 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
             imageUrl: option.icon,
             color: color.normal,
           ),
-          Expanded(child: CustomTypography(text: option.name, fontType: FontType.body2Medium)),
+          Expanded(
+            child: CustomTypography(
+              text: option.name,
+              fontType: FontType.body2Medium,
+            ),
+          ),
           if (isSelected)
             CustomImage(
               imageType: ImageType.svgLocal,
@@ -104,47 +149,6 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
             ),
         ],
       ),
-    );
-  }
-
-  Widget buildNoCategories(BuildContext context) {
-    final isPaymentMethod =
-        widget.categories.isNotEmpty &&
-        widget.categories.first.type == OptionType.paymentMethod.id;
-    final method = isPaymentMethod ? "payment method" : "category";
-
-    return Consumer(
-      builder: (context, ref, child) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomImage(
-              imageUrl: AppImages.noCategories,
-            ).padding(horizontal: 72.spMin),
-            CustomTypography(
-              text: "No ${method}s found",
-              fontType: FontType.h4Semibold,
-            ),
-            SizedBox(height: 8.spMin),
-            CustomTypography(
-              text:
-                  "We couldn't find a $method that matches your search. Try a different name.",
-              fontType: FontType.label1Medium,
-              color: context.colors.onSurface,
-              align: TextAlign.center,
-            ),
-            SizedBox(height: 16.spMin),
-            CustomButton(
-              label: "Add a $method",
-              prefixIcon: AppSvgs.add1,
-              onTap: () {
-                ref.read(selectedOptionProvider.notifier).state = null;
-                context.push(AppRoutesPath.editOption.path);
-              },
-            ),
-          ],
-        ).padding(horizontal: AppConstants.sidePadding, vertical: 16.r);
-      },
     );
   }
 }

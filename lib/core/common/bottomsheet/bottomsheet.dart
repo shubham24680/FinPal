@@ -91,15 +91,20 @@ class CustomBottomSheet extends StatelessWidget {
   }
 
   static Future<OptionModel?> showOptions(
-    BuildContext context,
-    List<OptionModel>? options, {
+    BuildContext context, {
+    String? type,
+    List<OptionModel> categories = const [],
     OptionModel? selectedOption,
     String? title,
   }) async {
     final option = await show<OptionModel>(
       context,
       title: title,
-      widget: OptionsBottomSheet(options ?? const [], selectedOption: selectedOption),
+      widget: OptionsBottomSheet(
+        categories: categories,
+        type: type,
+        selectedOption: selectedOption,
+      ),
       layout: SheetLayout.typeB,
     );
     return option ?? selectedOption;

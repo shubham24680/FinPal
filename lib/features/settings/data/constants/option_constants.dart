@@ -34,31 +34,37 @@ class OptionsConstant {
       type: OptionType.paymentMethod.id,
       name: "Cash",
       icon: AppSvgs.cash,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "UPI",
       icon: AppSvgs.upi,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "Credit Card",
       icon: AppSvgs.creditCard,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "Debit Card",
       icon: AppSvgs.debitCard,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "Net Banking",
       icon: AppSvgs.netBanking,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.paymentMethod.id,
       name: "Wallet",
       icon: AppSvgs.wallet,
+      isMandatory: true,
     ),
   ];
 
@@ -67,6 +73,13 @@ class OptionsConstant {
       type: OptionType.income.id,
       name: "Salary",
       icon: AppSvgs.salary,
+      isMandatory: true,
+    ),
+    OptionModel(
+      type: OptionType.income.id,
+      name: "Gift",
+      icon: AppSvgs.gift,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.income.id,
@@ -78,7 +91,6 @@ class OptionsConstant {
       name: "Investment returns",
       icon: AppSvgs.investment,
     ),
-    OptionModel(type: OptionType.income.id, name: "Gift", icon: AppSvgs.gift),
     OptionModel(
       type: OptionType.income.id,
       name: "Rental income",
@@ -91,6 +103,31 @@ class OptionsConstant {
       type: OptionType.expense.id,
       name: "Food & Dining",
       icon: AppSvgs.food,
+      isMandatory: true,
+    ),
+    OptionModel(
+      type: OptionType.expense.id,
+      name: "Bills & Utilities",
+      icon: AppSvgs.bills,
+      isMandatory: true,
+    ),
+    OptionModel(
+      type: OptionType.expense.id,
+      name: "Transport & Fuel",
+      icon: AppSvgs.transportation,
+      isMandatory: true,
+    ),
+    OptionModel(
+      type: OptionType.expense.id,
+      name: "Health & Medical",
+      icon: AppSvgs.health,
+      isMandatory: true,
+    ),
+    OptionModel(
+      type: OptionType.expense.id,
+      name: "Shopping",
+      icon: AppSvgs.shopping,
+      isMandatory: true,
     ),
     OptionModel(
       type: OptionType.expense.id,
@@ -100,33 +137,13 @@ class OptionsConstant {
     OptionModel(type: OptionType.expense.id, name: "Rent", icon: AppSvgs.rent),
     OptionModel(
       type: OptionType.expense.id,
-      name: "Bills & Utilities",
-      icon: AppSvgs.bills,
-    ),
-    OptionModel(
-      type: OptionType.expense.id,
       name: "Recharge & Internet",
       icon: AppSvgs.recharge,
     ),
     OptionModel(
       type: OptionType.expense.id,
-      name: "Transport & Fuel",
-      icon: AppSvgs.transportation,
-    ),
-    OptionModel(
-      type: OptionType.expense.id,
-      name: "Shopping",
-      icon: AppSvgs.shopping,
-    ),
-    OptionModel(
-      type: OptionType.expense.id,
       name: "Entertainment",
       icon: AppSvgs.entertainment,
-    ),
-    OptionModel(
-      type: OptionType.expense.id,
-      name: "Health & Medical",
-      icon: AppSvgs.health,
     ),
     OptionModel(
       type: OptionType.expense.id,

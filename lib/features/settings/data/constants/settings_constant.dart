@@ -47,7 +47,7 @@ class SettingsConstants {
     SettingsContentModel(
       id: "hide_balance",
       title: "Hide Balance",
-      subtitle: "Hide amounts on the home screen",
+      subtitle: "Hide amounts on the home",
       icon: AppSvgs.cash,
       iconColor: AppColors.primary500,
       iconBgColor: AppColors.primary50,
