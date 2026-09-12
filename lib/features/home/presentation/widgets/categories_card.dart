@@ -68,35 +68,56 @@ class CategoriesCard extends ConsumerWidget {
     final amount = ref.formatCurrency(category.amount);
 
     return CustomContainer(
-      gradient: RadialGradient(
-        center: Alignment.bottomRight,
-        colors: [color.normal, isDark ? color.dimDark : color.light],
-      ),
+      backgroundColor: AppColors.transparent,
+      padding: EdgeInsets.zero,
       onTap: () {
         ref.read(categoriesMonthProvider.notifier).state = DateTime.now();
         openCategoryDetail(ref, context, category.id);
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4.spMin,
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          CustomContainer(
-            padding: EdgeInsets.all(12.r),
-            backgroundColor: isDark ? color.dimDark : color.extraLight,
-            child: CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: category.icon,
-              color: color.normal,
-              height: 20.spMin,
-              width: 20.spMin,
+          Positioned.fill(
+            child: ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) => LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  color.normal.withValues(alpha: isDark ? 0.35 : 0.1),
+                  (isDark ? color.dimDark : color.extraLight)
+                      .withValues(alpha: isDark ? 0.2 : 0.5),
+                ],
+              ).createShader(bounds),
+              child: const CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: AppSvgs.folder,
+              ),
             ),
           ),
-          Spacer(),
-          CustomTypography(
-            text: category.title,
-            fontType: FontType.body2Semibold,
-          ),
-          CustomTypography(text: amount, fontType: FontType.body2Bold),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 4.spMin,
+            children: [
+              CustomContainer(
+                padding: EdgeInsets.all(12.r),
+                backgroundColor: isDark ? color.dimDark : color.light,
+                child: CustomImage(
+                  imageType: ImageType.svgLocal,
+                  imageUrl: category.icon,
+                  color: color.normal,
+                  height: 20.spMin,
+                  width: 20.spMin,
+                ),
+              ),
+              const Spacer(),
+              CustomTypography(
+                text: category.title,
+                fontType: FontType.body2Semibold,
+              ),
+              CustomTypography(text: amount, fontType: FontType.body2Bold),
+            ],
+          ).padding(all: AppConstants.sidePadding),
         ],
       ),
     );

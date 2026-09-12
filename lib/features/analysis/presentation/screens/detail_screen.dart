@@ -45,9 +45,8 @@ class CategoryDetailScreen extends ConsumerWidget {
               _buildMethodsSection(context, analysis),
             if (dayGroups.isEmpty) ...[
               SizedBox(height: 16.spMin),
-              _buildNoTransactions(context)
-            ]
-            else
+              _buildNoTransactions(context),
+            ] else
               ...dayGroups.map(
                 (dayPayments) => TransactionList(payments: dayPayments),
               ),
@@ -62,6 +61,7 @@ class CategoryDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     CategoryMonthAnalysis analysis,
   ) {
+    final isDark = context.isDarkMode;
     final summary = analysis.summary;
     final color = summary.color;
     final amount = ref.formatCurrency(summary.amount);
@@ -69,11 +69,14 @@ class CategoryDetailScreen extends ConsumerWidget {
     return CustomContainer(
       showShadow: true,
       margin: EdgeInsets.symmetric(horizontal: AppConstants.sidePadding),
-      gradient: RadialGradient(
-        center: Alignment.bottomRight,
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
         colors: [
-          color.normal.withAlpha(40),
-          context.isDarkMode ? color.dimDark : color.extraLight,
+          color.normal.withValues(alpha: isDark ? 0.35 : 0.1),
+          (isDark ? color.dimDark : color.extraLight).withValues(
+            alpha: isDark ? 0.2 : 0.5,
+          ),
         ],
       ),
       child: Column(
@@ -84,15 +87,15 @@ class CategoryDetailScreen extends ConsumerWidget {
             spacing: 12.spMin,
             children: [
               CustomContainer(
-                height: 48.spMin,
-                width: 48.spMin,
-                padding: EdgeInsets.all(10.spMin),
+                padding: EdgeInsets.all(12.r),
                 backgroundColor:
                     context.isDarkMode ? color.dimDark : color.light,
                 child: CustomImage(
                   imageType: ImageType.svgLocal,
                   imageUrl: summary.icon ?? AppSvgs.bin,
                   color: color.normal,
+                  height: 20.spMin,
+                  width: 20.spMin,
                 ),
               ),
               Expanded(
@@ -208,33 +211,35 @@ class CategoryDetailScreen extends ConsumerWidget {
   Widget _buildNoTransactions(BuildContext context) {
     final isLandscape = context.isLandscape;
 
-    return Center(child: Column(
-      children: [
-        SizedBox(height: 12.spMin),
-        CustomImage(
-          imageUrl: AppImages.noTransactions,
-          height: 200.spMin,
-        ).padding(horizontal: 60.spMin),
-        CustomTypography(
-          text: 'No transactions this month',
-          fontType: FontType.h4Semibold,
-        ),
-        SizedBox(height: 8.spMin),
-        CustomTypography(
-          text: 'Try another month or add expenses in this category.',
-          fontType: FontType.label1Medium,
-          color: context.colors.onSurface,
-          align: TextAlign.center,
-        ),
-        SizedBox(height: 8.spMin),
-        CustomButton(
-          prefixIcon: AppSvgs.add2,
-          label: 'Add Transaction',
-          isFull: !isLandscape,
-          onTap: () => context.push(AppRoutesPath.editTransaction.path),
-        )
-      ],
-    )).padding(horizontal: AppConstants.sidePadding);
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 12.spMin),
+          CustomImage(
+            imageUrl: AppImages.noTransactions,
+            height: 200.spMin,
+          ).padding(horizontal: 60.spMin),
+          CustomTypography(
+            text: 'No transactions this month',
+            fontType: FontType.h4Semibold,
+          ),
+          SizedBox(height: 8.spMin),
+          CustomTypography(
+            text: 'Try another month or add expenses in this category.',
+            fontType: FontType.label1Medium,
+            color: context.colors.onSurface,
+            align: TextAlign.center,
+          ),
+          SizedBox(height: 8.spMin),
+          CustomButton(
+            prefixIcon: AppSvgs.add2,
+            label: 'Add Transaction',
+            isFull: !isLandscape,
+            onTap: () => context.push(AppRoutesPath.editTransaction.path),
+          ),
+        ],
+      ),
+    ).padding(horizontal: AppConstants.sidePadding);
   }
 
   List<List<PaymentModel>> _dayGroupsForCategory(
