@@ -126,6 +126,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                   header: "NAME",
                   hintText: "Shopping",
                   maxLength: 20,
+                  inputType: InputType.name,
                   perfixIcon: CustomImage(
                     imageType: ImageType.svgLocal,
                     imageUrl: optionState.icon,

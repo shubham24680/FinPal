@@ -54,6 +54,10 @@ class OptionServices {
         return option;
       }
     }
+    if(OptionsConstant.otherCategory.name.toLowerCase() == normalized) {
+      return OptionsConstant.otherCategory;
+    }
+    
     return null;
   }
 
