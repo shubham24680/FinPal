@@ -17,6 +17,7 @@ class UnicodeConstants {
   static const String pipe = '\u007C';
   static const String and = '\u0026';
   static const String colon = '\u003A';
+  static const String asterisk = '\u002A';
 }
 
 enum CurrencyContants {

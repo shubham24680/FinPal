@@ -42,8 +42,7 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
               if (context.mounted) context.pop();
               return;
             }
-            // The picker returns a cache path; only a copy we own is safe to
-            // store, so fail the selection outright if the copy does not work.
+ 
             final storedPath = await ImageStorage.persist(image.path);
             if (!context.mounted) return;
 

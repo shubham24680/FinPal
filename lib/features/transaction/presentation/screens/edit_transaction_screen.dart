@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:finpal/app/app.dart';
 
 class EditTransactionScreen extends ConsumerStatefulWidget {
@@ -37,7 +36,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   Widget build(BuildContext context) {
     final transactionState = ref.watch(paymentProvider);
     final transactionNotifer = ref.read(paymentProvider.notifier);
-    final ctaText = transactionState.id != null ? "Update" : "Add";
     final title = "${transactionState.id != null ? "Edit" : "Add"} Transaction";
 
     ref.listen(paymentProvider, (previous, next) {
@@ -56,12 +54,14 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       bottomNavigationBar: SafeArea(
         child: CustomButton(
           buttonState: transactionState.buttonState,
-          label: ctaText,
+          label: title,
           onTap: () => transactionNotifer.save(),
-        ).padding(
-          horizontal: AppConstants.sidePadding,
-          top: 8.spMin,
-          bottom: context.buttonBottomPadding,
+          margin: EdgeInsets.fromLTRB(
+            AppConstants.sidePadding,
+            8.spMin,
+            AppConstants.sidePadding,
+            context.buttonBottomPadding,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -84,7 +84,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                     TransactionType.values
                         .map(
                           (type) => _buildPaymentType(
-                            context,
                             type,
                             transactionState.type,
                             transactionNotifer,
@@ -93,10 +92,10 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                         .toList(),
               ),
             ),
-            _buildAmountField(context, transactionState, transactionNotifer),
-            _buildDateField(context, transactionState, transactionNotifer),
-            _otherFields(context, transactionState, transactionNotifer),
-            _buildReceiptField(context, transactionState, transactionNotifer),
+            _buildAmountField(transactionState, transactionNotifer),
+            _buildDateField(transactionState, transactionNotifer),
+            _otherFields(transactionState, transactionNotifer),
+            _buildReceiptField(transactionState, transactionNotifer),
           ],
         ),
       ),
@@ -104,19 +103,21 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   }
 
   Widget _buildPaymentType(
-    BuildContext context,
     TransactionType type,
     TransactionType selectedType,
     PaymentProvider notifer,
   ) {
     final isSelected = selectedType.id == type.id;
     final isDark = context.isDarkMode;
+    final backgroundColor =
+        isSelected ? context.colors.surface : Colors.transparent;
+    final textColor =
+        isSelected ? type.color.normal : context.colors.inverseSurface;
 
     return Expanded(
       child: CustomContainer(
         onTap: () => notifer.set(type: type),
-        backgroundColor:
-            isSelected ? context.colors.surface : Colors.transparent,
+        backgroundColor: backgroundColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -125,10 +126,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             CustomTypography(
               text: type.name,
               fontType: FontType.label1Bold,
-              color:
-                  isSelected
-                      ? type.color.normal
-                      : context.colors.inverseSurface,
+              color: textColor,
             ),
             Container(
               width: 16.spMin,
@@ -150,30 +148,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _buildAmountField(
-    BuildContext context,
-    PaymentState state,
-    PaymentProvider notifer,
-  ) {
+  Widget _buildAmountField(PaymentState state, PaymentProvider notifer) {
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            spacing: 4.spMin,
-            children: [
-              CustomTypography(
-                text: "Amount",
-                fontType: FontType.label1Bold,
-                color: context.colors.onSurface,
-              ),
-              CustomTypography(
-                text: '\u002A', // *
-                fontType: FontType.label1Bold,
-                color: context.colors.error,
-              ),
-            ],
-          ),
+          transTitle(context, "Amount", isMandatory: true),
           CustomTextField(
             onChanged: (value) => notifer.set(amount: value),
             controller: amountController,
@@ -196,13 +176,11 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   }
 
   Widget _buildDateField(
-    BuildContext context,
     PaymentState transactionState,
     PaymentProvider notifer,
   ) {
     return CustomContainer(
       child: _buildField(
-        context,
         "Date",
         AppSvgs.calendar,
         transactionState.date,
@@ -222,11 +200,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _otherFields(
-    BuildContext context,
-    PaymentState state,
-    PaymentProvider notifer,
-  ) {
+  Widget _otherFields(PaymentState state, PaymentProvider notifer) {
     final categories = ref
         .watch(optionNotifer)
         .value
@@ -238,7 +212,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildField(
-            context,
             "Category",
             state.category?.icon ?? AppSvgs.category,
             state.category?.name,
@@ -257,7 +230,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           ),
           SizedBox(height: 20.spMin),
           _buildField(
-            context,
             "Payment Method",
             state.paymentMethod?.icon ?? AppSvgs.upi,
             state.paymentMethod?.name,
@@ -275,11 +247,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             color: state.paymentMethod?.color.colorSet,
           ),
           SizedBox(height: 20.spMin),
-          CustomTypography(
-            text: "Note",
-            fontType: FontType.label1Bold,
-            color: context.colors.onSurface,
-          ),
+          transTitle(context, "Note"),
           SizedBox(height: 8.spMin),
           CustomTextField(
             controller: noteController,
@@ -294,7 +262,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   }
 
   Widget _buildField(
-    BuildContext context,
     String title,
     String icon,
     String? value,
@@ -307,22 +274,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       spacing: 8.spMin,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          spacing: 4.spMin,
-          children: [
-            CustomTypography(
-              text: title,
-              fontType: FontType.label1Bold,
-              color: context.colors.onSurface,
-            ),
-            if (isRequired)
-              CustomTypography(
-                text: '\u002A', // *
-                fontType: FontType.label1Medium,
-                color: context.colors.error,
-              ),
-          ],
-        ),
+        transTitle(context, title, isMandatory: isRequired),
         AnimatedTap(
           onTap: onTap,
           child: Row(
@@ -354,11 +306,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  Widget _buildReceiptField(
-    BuildContext context,
-    PaymentState state,
-    PaymentProvider notifer,
-  ) {
+  Widget _buildReceiptField(PaymentState state, PaymentProvider notifer) {
     final hasReceipt = state.receiptPath.isNotEmpty;
 
     return CustomContainer(
@@ -366,15 +314,10 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12.spMin,
         children: [
-          CustomTypography(
-            text: "Add Receipt",
-            fontType: FontType.label1Bold,
-            color: context.colors.onSurface,
-          ),
-          if (hasReceipt)
-            _buildSelectedReceipt(context, state.receiptPath, notifer)
-          else
-            _buildUploadReceipt(context, notifer),
+          transTitle(context, "Receipt"),
+          hasReceipt
+              ? _buildSelectedReceipt(context, state.receiptPath, notifer)
+              : _buildUploadReceipt(context, notifer),
         ],
       ),
     );

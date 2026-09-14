@@ -1,6 +1,28 @@
 import 'dart:io';
-
 import 'package:finpal/app/app.dart';
+
+Widget transTitle(
+  BuildContext context,
+  String title, {
+  bool isMandatory = false,
+}) {
+  return Row(
+    spacing: 4.spMin,
+    children: [
+      CustomTypography(
+        text: title,
+        fontType: FontType.label1Bold,
+        color: context.colors.onSurface,
+      ),
+      if (isMandatory)
+        CustomTypography(
+          text: UnicodeConstants.asterisk,
+          fontType: FontType.label1Bold,
+          color: context.colors.error,
+        ),
+    ],
+  );
+}
 
 void showReceiptPreview(BuildContext context, String path) {
   final widget = ClipRRect(

@@ -6,6 +6,7 @@ export '../core/customs/custom.dart';
 export '../core/extensions/extensions.dart';
 export '../core/local_storage/local_storage.dart';
 export '../core/packages/packages.dart';
+export '../core/permissions/permissions.dart';
 export '../core/routes/routes.dart';
 export '../core/routes/routes_model.dart';
 export '../core/theme/theme.dart';
