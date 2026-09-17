@@ -1,28 +1,38 @@
 import 'package:finpal/app/app.dart';
 
-enum ButtonType { primary, negative }
-
 enum ButtonState { enabled, loading, disabled }
+
+enum ButtonType { primary, negative, inherit }
+
+enum ButtonVariant { primary, secondary, tertiary }
+
+enum ButtonSize { small, medium, large }
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
+    this.buttonType = ButtonType.primary,
+    this.buttonVariant = ButtonVariant.primary,
     this.buttonState = ButtonState.enabled,
+    this.buttonSize = ButtonSize.medium,
     this.onTap,
     this.margin,
-    this.icon,
+    this.prefixIcon,
+    this.suffixIcon,
     this.label,
-    this.buttonType = ButtonType.primary,
     this.bgColor,
     this.labelColor,
     this.isFull = true,
   });
 
   final ButtonType buttonType;
+  final ButtonVariant buttonVariant;
   final ButtonState buttonState;
+  final ButtonSize buttonSize;
   final VoidCallback? onTap;
   final EdgeInsets? margin;
-  final String? icon;
+  final String? prefixIcon;
+  final String? suffixIcon;
   final String? label;
   final Color? bgColor;
   final Color? labelColor;
@@ -30,51 +40,118 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = switch (buttonType) {
-      ButtonType.primary => CardColors.shade1000,
-      ButtonType.negative => NegativeColors.shade100,
-    };
-    final backgroundShade = switch (buttonState) {
-      ButtonState.disabled => backgroundColor.withAlpha(100),
-      _ => backgroundColor,
-    };
-    final textColor = switch (buttonType) {
-      ButtonType.primary => Colors.white,
-      ButtonType.negative => NegativeColors.shade900,
-    };
-    final child = switch (buttonState) {
-      ButtonState.loading => Center(
+    final backgroundColor = bgColor ?? _getBackgroundColor(context);
+    final foregroundColor = labelColor ?? _getLabelColor(context);
+
+    final child = Row(
+      spacing: 8.w,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: isFull ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        if (prefixIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: prefixIcon,
+            color:
+                buttonVariant == ButtonVariant.secondary
+                    ? backgroundColor
+                    : foregroundColor,
+            height: _getIconSize(),
+          ),
+        CustomTypography(
+          text: label ?? "Submit",
+          color:
+              buttonVariant == ButtonVariant.secondary
+                  ? backgroundColor
+                  : foregroundColor,
+          fontType: _getFontType(),
+        ),
+        if (suffixIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: suffixIcon,
+            color:
+                buttonVariant == ButtonVariant.secondary
+                    ? backgroundColor
+                    : foregroundColor,
+            height: _getIconSize(),
+          ),
+      ],
+    );
+
+    if (buttonState == ButtonState.loading) {
+      return Center(
         child: CircularProgressIndicator(
-          color: textColor,
+          backgroundColor: Colors.transparent,
+          color: backgroundColor,
           strokeCap: StrokeCap.round,
         ),
-      ),
-      _ => Row(
-        spacing: 8.w,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: isFull ? MainAxisSize.max : MainAxisSize.min,
-        children: [
-          if (icon != null)
-            CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: icon,
-              color: labelColor ?? textColor,
-            ),
-          CustomTypography(
-            text: label ?? "Submit",
-            color: labelColor ?? textColor,
-            fontType: FontType.body1Medium,
-          ),
-        ],
-      ),
-    };
+      );
+    }
 
     return CustomContainer(
       onTap: buttonState == ButtonState.enabled ? onTap : null,
-      showShadow: true,
-      backgroundColor: bgColor ?? backgroundShade,
+      showShadow: buttonVariant != ButtonVariant.secondary,
+      backgroundColor:
+          buttonVariant == ButtonVariant.secondary
+              ? Colors.transparent
+              : backgroundColor,
+      border:
+          buttonVariant == ButtonVariant.secondary
+              ? Border.all(color: backgroundColor)
+              : null,
       margin: margin,
       child: child,
     );
+  }
+
+  Color _getBackgroundColor(BuildContext context) {
+    final isDark = context.isDarkMode;
+    final isDisabled = buttonState == ButtonState.disabled;
+    final darkButton = isDark && buttonVariant == ButtonVariant.tertiary;
+
+    if (isDisabled || darkButton) {
+      return isDark
+          ? AppColors.darkSurface2.withAlpha(100)
+          : AppColors.lightSurface2;
+    }
+
+    return switch ((buttonType, buttonVariant)) {
+      (ButtonType.primary, ButtonVariant.tertiary) => AppColors.primary50,
+      (ButtonType.primary, _) => AppColors.primary700,
+      (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error50,
+      (ButtonType.negative, _) => AppColors.error700,
+      (ButtonType.inherit, _) =>
+        isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.neutral100,
+    };
+  }
+
+  Color _getLabelColor(BuildContext context) {
+    if (buttonState == ButtonState.disabled) {
+      return AppColors.neutral500.withAlpha(100);
+    }
+
+    return switch ((buttonType, buttonVariant)) {
+      (ButtonType.primary, ButtonVariant.tertiary) => AppColors.primary500,
+      (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error500,
+      (ButtonType.inherit, _) => AppColors.neutral500,
+      _ => AppColors.white,
+    };
+  }
+
+  double _getIconSize() {
+    return switch (buttonSize) {
+      ButtonSize.small => 20.spMin,
+      ButtonSize.medium => 24.spMin,
+      ButtonSize.large => 28.spMin,
+    };
+  }
+
+  FontType _getFontType() {
+    return switch (buttonSize) {
+      ButtonSize.small => FontType.body2Medium,
+      ButtonSize.medium => FontType.body1Medium,
+      ButtonSize.large => FontType.h4Semibold,
+    };
   }
 }

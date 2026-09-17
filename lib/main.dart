@@ -1,5 +1,4 @@
 import 'package:finpal/app/app.dart';
-import 'package:flutter/services.dart';
 
 void main() async {
   final init = await AppInitializer.init();
@@ -12,20 +11,22 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routes = ref.watch(AppRoutes.routesProvider);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: BGColors.shade50,
-      ),
-    );
+    final themeMode = ref.watch(themeProvider);
 
     return ScreenUtilInit(
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        routerConfig: routes,
-      ),
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp.router(
+          title: 'FinPal',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeMode,
+          routerConfig: routes,
+        );
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 name: finpal
 description: "A Finance app."
 publish_to: "none"
-version: 0.1.0
+version: 1.0.1+2
 
 environment:
   sdk: ^3.7.2
@@ -13,39 +13,42 @@ dependencies:
   # State Management
   flutter_riverpod: ^2.6.1
 
-  # Services
-  dio: ^5.9.2
+  # Identifiers
+  uuid: ^4.5.3
 
   # Local storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  uuid: ^4.5.3
-  shared_preferences: ^2.5.3
+  path_provider: ^2.1.5
 
   # Routing
   go_router: ^17.0.0
 
-  # UI
+  # Responsive
   flutter_screenutil: ^5.9.3
+
+  # Images
   flutter_svg: ^2.2.2
+
+  # Utils
   intl: ^0.20.2
-  smooth_page_indicator: ^1.2.1
   fl_chart: ^0.66.0
-  flutter_native_splash: ^2.4.6
-  url_launcher: ^6.3.2
-  google_generative_ai: ^0.4.7
-  flutter_markdown_plus: ^1.0.7
+  flutter_native_splash: ^2.4.6 
+  url_launcher: ^6.3.2 # Switch to method channel
+  smooth_page_indicator: ^1.2.1 # Change this to custom package
+  shimmer: ^3.0.0
+  image_picker: ^1.2.1
+  permission_handler: ^11.4.0
+  package_info_plus: ^10.2.1
 
 flutter_native_splash:
   android: true
   ios: true
-
-  color: "#BF7EE"
-  image: assets/res/splash.png
-
+  color: "#ffffff"
+  image: assets/res/logo_512.png
   android_12:
-    color: "#BF7EE"
-    image: assets/res/splash_12.png
+    color: "#ffffff"
+    image: assets/res/logo_1024.png
 
 dev_dependencies:
   flutter_test:
@@ -53,15 +56,19 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/images/
-    - assets/images/avatars/
+    - assets/images/onboarding/
     - assets/svgs/
-    - assets/lotties/
+    - assets/svgs/expense_category/
+    - assets/svgs/income_category/
+    - assets/svgs/payment_method/
 
   fonts:
     - family: Poppins
@@ -77,18 +84,4 @@ flutter:
         - asset: assets/fonts/poppins/semibold.ttf
           weight: 600
         - asset: assets/fonts/poppins/bold.ttf
-          weight: 700
-    - family: Inter
-      fonts:
-        - asset: assets/fonts/inter/thin.ttf
-          weight: 100
-        - asset: assets/fonts/inter/light.ttf
-          weight: 300
-        - asset: assets/fonts/inter/regular.ttf
-          weight: 400
-        - asset: assets/fonts/inter/medium.ttf
-          weight: 500
-        - asset: assets/fonts/inter/semibold.ttf
-          weight: 600
-        - asset: assets/fonts/inter/bold.ttf
           weight: 700

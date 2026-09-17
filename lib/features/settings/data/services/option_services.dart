@@ -1,0 +1,73 @@
+import 'package:finpal/app/app.dart';
+
+class OptionServices {
+  final HiveService<OptionModel> _hiveService;
+  List<OptionModel>? _cache;
+
+  OptionServices(Box<OptionModel> box)
+    : _hiveService = HiveService<OptionModel>(box);
+
+  // CRUD Operations
+  Future<void> save(OptionModel option) async {
+    await _hiveService.saveData(option.id, option);
+    clearCache();
+  }
+
+  Future<void> saveAll(List<OptionModel> newOptions) async {
+    if (newOptions.isEmpty) return;
+    await _hiveService.saveAllData({for (final o in newOptions) o.id: o});
+    clearCache();
+  }
+
+  Future<void> delete(String id) async {
+    await _hiveService.clearData(id);
+    clearCache();
+  }
+
+  Future<void> clearData() async {
+    await _hiveService.clearAllData();
+    clearCache();
+  }
+
+  void clearCache() => _cache = null;
+
+  // Getters
+  List<OptionModel> get categories => _cache ??= _hiveService.getAllData();
+  List<OptionModel> get incomeCategories => byType(OptionType.income.id);
+  List<OptionModel> get expenseCategories => byType(OptionType.expense.id);
+  List<OptionModel> get paymentMethods => byType(OptionType.paymentMethod.id);
+
+  //Filters
+  OptionModel findById(String id) =>
+      _hiveService.getData(id) ?? OptionsConstant.otherCategory;
+
+  OptionModel findByName(String name, String type) {
+    return findByNameOrNull(name, type) ?? OptionsConstant.otherCategory;
+  }
+
+  OptionModel? findByNameOrNull(String name, String type, {String? excludeId}) {
+    final normalized = name.trim().toLowerCase();
+    if (normalized.isEmpty) return null;
+    for (final option in categories) {
+      if (option.id == excludeId) continue;
+      if (option.type == type && option.name.toLowerCase() == normalized) {
+        return option;
+      }
+    }
+    if(OptionsConstant.otherCategory.name.toLowerCase() == normalized) {
+      return OptionsConstant.otherCategory;
+    }
+    
+    return null;
+  }
+
+  bool existsByName(String name, String type, {String? excludeId}) =>
+      findByNameOrNull(name, type, excludeId: excludeId) != null;
+
+  List<OptionModel> byType(String type, {String? excludeId}) => categories
+      .where((o) => o.type == type && o.id != excludeId)
+      .toList(growable: false);
+
+  List<OptionModel> byTypeSorted(String type) => [...byType(type)]
+    ..sort((a, b) => a.isMandatory ? -1 : 1);
+}

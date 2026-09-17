@@ -33,8 +33,7 @@ class CustomImage extends StatelessWidget {
     final image = switch (imageType) {
       ImageType.svgLocal => SvgPicture.asset(
         imageUrl ?? AppSvgs.arrowLeft,
-        colorFilter:
-            (color != null) ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+        colorFilter: ColorFilter.mode(color ?? context.colors.inverseSurface, BlendMode.srcIn),
         fit: fit ?? BoxFit.contain,
         height: height,
         width: width,

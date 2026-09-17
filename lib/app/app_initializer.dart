@@ -3,6 +3,11 @@ import 'dart:developer' as developer;
 import 'app.dart';
 
 class AppInitializer {
+  static final _settingsBox = "settings_box";
+  static final _profileBox = "profile_box";
+  static final _optionBox = "option_box";
+  static final _paymentBox = "payment_box";
+
   static Future<List<Override>> init() async {
     try {
       WidgetsFlutterBinding.ensureInitialized();
@@ -10,32 +15,42 @@ class AppInitializer {
       await Hive.initFlutter();
 
       Hive
+        ..registerAdapter(SettingsModelAdapter())
         ..registerAdapter(ProfileModelAdapter())
-        ..registerAdapter(PaymentModelAdapter())
         ..registerAdapter(OptionModelAdapter())
-        ..registerAdapter(ChatRoleAdapter())
-        ..registerAdapter(ChatMessageStatusAdapter())
-        ..registerAdapter(ChatMessageAdapter());
+        ..registerAdapter(PaymentModelAdapter());
 
       final results = await Future.wait([
-        Hive.openBox<ProfileModel>('profile_box'),
-        Hive.openBox<PaymentModel>('payment_box'),
-        Hive.openBox<OptionModel>('option_box'),
-        Hive.openBox<ChatMessage>('ai_box'),
+        Hive.openBox<SettingsModel>(_settingsBox),
+        Hive.openBox<ProfileModel>(_profileBox),
+        Hive.openBox<OptionModel>(_optionBox),
+        Hive.openBox<PaymentModel>(_paymentBox),
+      ]);
+
+      final profileBox = results[1] as Box<ProfileModel>;
+      final paymentBox = results[3] as Box<PaymentModel>;
+
+      // Runs before any screen exists, so nothing can be holding a picked
+      // image that has not been saved yet.
+      await ImageStorage.sweepOrphans([
+        for (final profile in profileBox.values) profile.profileImage,
+        for (final payment in paymentBox.values) payment.receiptPath,
       ]);
 
       return [
-        profileBoxProvider.overrideWithValue(results[0] as Box<ProfileModel>),
-        paymentBoxProvider.overrideWithValue(results[1] as Box<PaymentModel>),
+        settingsBoxProvider.overrideWithValue(results[0] as Box<SettingsModel>),
+        profileBoxProvider.overrideWithValue(profileBox),
         optionBoxProvider.overrideWithValue(results[2] as Box<OptionModel>),
-        aiBoxProvider.overrideWithValue(results[3] as Box<ChatMessage>),
+        paymentBoxProvider.overrideWithValue(paymentBox),
       ];
     } catch (error, stackTrace) {
-      developer.log(
-        'FinPal initialization failed',
-        error: error,
-        stackTrace: stackTrace,
-      );
+      if (kDebugMode) {
+        developer.log(
+          'FinPal initialization failed',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
       rethrow;
     }
   }

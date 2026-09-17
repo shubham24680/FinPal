@@ -3,26 +3,25 @@ import 'package:flutter/services.dart';
 
 enum TextFieldType { input, dropdown }
 
-enum InputType { text, amount }
+enum InputType { text, amount, date, name }
 
-enum InputBorderType { underline, outline }
-
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends ConsumerWidget {
   const CustomTextField({
     super.key,
-    this.inputType = InputType.text,
     this.textFieldType = TextFieldType.input,
-    this.inputBorderType = InputBorderType.underline,
+    this.inputType = InputType.text,
+    this.header,
     this.controller,
-    this.filled,
+    this.focusNode,
     this.fillColor,
-    this.labelText,
     this.hintText,
     this.hintColor,
+    this.labelText,
     this.errorText,
     this.floatingHintColor,
     this.errorColor,
     this.keyboardType,
+    this.textCapitalization,
     this.items = const [],
     this.onChanged,
     this.readOnly = false,
@@ -36,68 +35,91 @@ class CustomTextField extends StatelessWidget {
     this.focusedBorderColor,
     this.inputFormatters,
     this.maxLength,
+    this.helperText,
+    this.helperTextColor,
+    this.helperIcon,
+    this.isUnderLineBorder = false,
+    this.hintStyle,
+    this.style,
   });
 
-  final InputType inputType;
-  final InputBorderType inputBorderType;
   final TextFieldType textFieldType;
+  final InputType inputType;
+  final String? header;
   final TextEditingController? controller;
-  final bool? filled;
+  final FocusNode? focusNode;
   final bool readOnly;
   final bool autofocus;
-  final Color? fillColor;
-  final Color? hintColor;
-  final Color? floatingHintColor;
-  final Color? errorColor;
-  final String? labelText;
-  final String? hintText;
-  final String? errorText;
-  final String? initialValue;
-  final List<String> items;
   final TextInputType? keyboardType;
-  final Widget? perfixIcon;
-  final Widget? suffixIcon;
+  final TextCapitalization? textCapitalization;
   final void Function(String?)? onChanged;
   final void Function()? onTap;
   final TextAlign textAlign;
   final int maxLines;
+  final Color? fillColor;
+  final String? hintText;
+  final Color? hintColor;
+  final TextStyle? hintStyle;
+  final String? labelText;
+  final Color? floatingHintColor;
+  final String? errorText;
+  final Color? errorColor;
+  final TextStyle? style;
+  final String? helperText;
+  final Color? helperTextColor;
+  final String? helperIcon;
+  final String? initialValue;
+  final List<String> items;
+  final Widget? perfixIcon;
+  final Widget? suffixIcon;
   final Color? focusedBorderColor;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
+  final bool isUnderLineBorder;
 
   @override
-  Widget build(BuildContext context) {
-    final defaultColor = Colors.transparent;
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hintStyle =
+        this.hintStyle ?? _buildHint(context, hintColor).getTextStyle(context);
     final decoration = InputDecoration(
-      filled: filled,
-      fillColor: fillColor ?? defaultColor,
+      filled: true,
+      fillColor: fillColor ?? context.colors.surfaceContainerHighest,
+      hintText: hintText ?? _buildHintText(ref),
+      hintStyle: hintStyle,
       labelText: labelText,
-      hintText: hintText ?? _buildHintText(),
+      labelStyle: hintStyle,
+      floatingLabelStyle: _buildHint(
+        context,
+        floatingHintColor,
+      ).getTextStyle(context),
       errorText: errorText,
-      labelStyle: buildHint(hintColor).getTextStyle(),
-      floatingLabelStyle: buildHint(floatingHintColor).getTextStyle(),
-      hintStyle: buildHint(hintColor).getTextStyle(),
-      errorStyle:
-          buildHint(
-            Colors.red.shade700,
-            fontType: FontType.label1Regular,
-          ).getTextStyle(),
-      prefixIcon: (perfixIcon ?? _buildPrefixIcon())?.padding(horizontal: 10.w),
-      suffixIcon: suffixIcon?.padding(all: 10.w),
-      errorBorder: buildBorder(Colors.red.shade700),
-      focusedBorder: buildBorder(focusedBorderColor ?? BGColors.shade700),
-      enabledBorder: buildBorder(TextColors.shade300),
-      disabledBorder: buildBorder(TextColors.shade50),
-      contentPadding: EdgeInsets.all(12.w),
+      errorStyle: _buildHint(
+        context,
+        AppColors.error500,
+        fontType: FontType.label1Regular,
+      ).getTextStyle(context),
+      helper: _buildHelperText(context, helperText, helperIcon, helperTextColor),
+      prefixIcon: (perfixIcon ?? _buildPrefixIcon(context))?.padding(
+        horizontal: 10.r,
+      ),
+      suffixIcon: suffixIcon?.padding(all: 10.r),
+      border: buildUnderLineBorder(color: context.colors.outline),
+      enabledBorder: buildUnderLineBorder(color: context.colors.outline),
+      focusedBorder: buildUnderLineBorder(color: context.colors.primary),
+      errorBorder: buildUnderLineBorder(color: context.colors.error),
+      focusedErrorBorder: buildUnderLineBorder(
+        color: context.colors.error,
+        width: 2,
+      ),
     );
+    final textColor = context.colors.onInverseSurface;
 
     final dropDownMenu =
         items
             .map(
               (value) => DropdownMenuItem(
                 value: value,
-                child: buildHint(PrimaryColors.shade500, text: value),
+                child: _buildHint(context, PrimaryColors.shade500, text: value),
               ),
             )
             .toList();
@@ -105,119 +127,347 @@ class CustomTextField extends StatelessWidget {
     Widget field = switch (textFieldType) {
       TextFieldType.dropdown => DropdownButtonFormField(
         items: dropDownMenu,
-        // initialValue: initialValue,
-        value: initialValue,
+        initialValue: initialValue,
         onChanged: onChanged,
         decoration: decoration.copyWith(suffixIcon: suffixIcon),
-        style: buildHint(PrimaryColors.shade500).getTextStyle(),
-        hint: buildHint(hintColor, text: hintText),
-        dropdownColor: PrimaryColors.shade500,
-        borderRadius: BorderRadius.circular(0.015.sh),
+        style: _buildHint(
+          context,
+          PrimaryColors.shade500,
+        ).getTextStyle(context),
+        hint: _buildHint(context, hintColor, text: hintText),
+        dropdownColor: context.colors.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16.r),
       ),
       TextFieldType.input => TextFormField(
         controller: controller,
-        onTap: onTap,
+        focusNode: focusNode,
+        onTap: () => _handleTap(context),
         onChanged: onChanged,
-        decoration: decoration,
-        readOnly: readOnly,
+        readOnly: _handleReadOnly(),
         autofocus: autofocus,
         textAlign: textAlign,
-        keyboardType: keyboardType ?? _buildTextInputType(),
-        style: buildHint(TextColors.shade900).getTextStyle(),
-        cursorColor: focusedBorderColor ?? BGColors.shade700,
-        cursorErrorColor: Colors.red.shade700,
+        decoration: decoration,
+        keyboardType: keyboardType ?? _handleKeyboardType(),
+        textCapitalization: textCapitalization ?? _handleTextCapitalization(),
+        style: style ?? _buildHint(context, textColor).getTextStyle(context),
         maxLines: maxLines,
         maxLength: maxLength,
-        inputFormatters: inputFormatters ?? _buildInputFormatters(),
+        inputFormatters: inputFormatters ?? _buildInputFormatters(ref),
+        cursorColor: AppColors.primary500,
+        cursorErrorColor: AppColors.error500,
       ),
     };
 
-    return field;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (header != null)
+          CustomTypography(
+            text: header,
+            fontType: FontType.body2Medium,
+            color: Theme.of(context).colorScheme.onSurface,
+          ).padding(left: 4.r, bottom: 2.r),
+        field,
+      ],
+    );
   }
 
-  String? _buildHintText() {
+  Future<void> _handleTap(BuildContext context) async {
+    switch (inputType) {
+      case InputType.date:
+        final current = controller?.text ?? '';
+        final picked = await CustomBottomSheet.chooseDate(
+          context,
+          date: current.isEmpty ? null : current.parseDate(type: DateFormatType.fullDate),
+          firstDate: DateTime(1900),
+        );
+        final formattedDate = picked != null ? picked.formatDate(type: DateFormatType.fullDate) : '';
+        controller?.text = formattedDate;
+        onChanged?.call(formattedDate);
+        break;
+      default:
+        onTap?.call();
+        break;
+    }
+  }
+
+  bool _handleReadOnly() {
     return switch (inputType) {
-      InputType.amount => "8124.80",
-      _ => null,
+      InputType.date => true,
+      _ => readOnly,
     };
   }
 
-  // String? _buildErrorText() {
-  //   return switch (inputType) {
-  //     InputType.amount => "Amount should be greater than 0",
-  //     _ => null,
-  //   };
-  // }
-
-  Widget? _buildPrefixIcon() {
-    final icon = switch (inputType) {
-      InputType.amount => AppSvgs.rupee,
-      _ => null,
-    };
-
-    return icon != null
-        ? CustomImage(imageType: ImageType.svgLocal, imageUrl: icon)
-        : null;
-  }
-
-  TextInputType _buildTextInputType() {
+  TextInputType _handleKeyboardType() {
     return switch (inputType) {
       InputType.amount => TextInputType.numberWithOptions(decimal: true),
       _ => TextInputType.text,
     };
   }
 
-  List<TextInputFormatter>? _buildInputFormatters() {
+  TextCapitalization _handleTextCapitalization() {
     return switch (inputType) {
-      InputType.amount => [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-        LengthLimitingTextInputFormatter(10),
-        AmountInputFormatter(),
+      InputType.name => TextCapitalization.words,
+      _ => TextCapitalization.sentences,
+    };
+  }
+
+  CustomTypography _buildHint(
+    BuildContext context,
+    Color? color, {
+    String? text,
+    FontType? fontType,
+  }) {
+    return CustomTypography(
+      text: text,
+      color: color ?? Theme.of(context).colorScheme.outline,
+      fontType: fontType ?? FontType.body1Semibold,
+    );
+  }
+
+  Widget? _buildHelperText(
+    BuildContext context,
+    String? helperText,
+    String? helperIcon,
+    Color? helperTextColor,
+  ) {
+    if (helperText == null) return null;
+    return Row(
+      spacing: 8.spMin,
+      children: [
+        if (helperIcon != null)
+          CustomImage(
+            imageType: ImageType.svgLocal,
+            imageUrl: helperIcon,
+            height: 16.spMin,
+            color: AppColors.primary500,
+          ),
+        _buildHint(
+          context,
+          helperTextColor ?? context.colors.onSurfaceVariant,
+          text: helperText,
+          fontType: FontType.label1Medium,
+        ),
       ],
+    );
+  }
+
+  String? _buildHintText(WidgetRef ref) {
+    return switch (inputType) {
+      InputType.amount => ref.formatCurrencyInput("1250.00"),
+      InputType.date => "July 11, 2001",
       _ => null,
     };
   }
 
-  CustomTypography buildHint(Color? color, {String? text, FontType? fontType}) {
-    return CustomTypography(
-      text: text,
-      color: color ?? TextColors.shade200,
-      fontType: fontType ?? FontType.body1Medium,
-    );
+  Widget? _buildPrefixIcon(BuildContext context) {
+    final icon = switch (inputType) {
+      InputType.amount => AppSvgs.money,
+      InputType.date => AppSvgs.calendar,
+      _ => null,
+    };
+
+    final color = context.colors.primary;
+    return icon != null
+        ? CustomImage(
+          imageType: ImageType.svgLocal,
+          imageUrl: icon,
+          color: color,
+          height: 28.spMin,
+          width: 28.spMin,
+        )
+        : null;
+  }
+
+  List<TextInputFormatter>? _buildInputFormatters(WidgetRef ref) {
+    return switch (inputType) {
+      InputType.amount => [
+        AmountInputFormatter(currency: ref.selectedCurrency),
+      ],
+      InputType.name => [NameInputFormatter()],
+      _ => null,
+    };
   }
 
   InputBorder buildBorder(Color color) {
-    return switch (inputBorderType) {
-      InputBorderType.underline => UnderlineInputBorder(
-        borderSide: BorderSide(color: color),
-      ),
-      InputBorderType.outline => OutlineInputBorder(
-        borderSide: BorderSide(color: color, width: 1.5),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-    };
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 1.5),
+      borderRadius: BorderRadius.circular(12.r),
+    );
+  }
+
+  InputBorder? buildUnderLineBorder({
+    Color color = AppColors.primary500,
+    double width = 1,
+  }) {
+    if (!isUnderLineBorder) return null;
+    return UnderlineInputBorder(
+      borderSide: BorderSide(color: color, width: width),
+    );
   }
 }
 
-class AmountInputFormatter extends TextInputFormatter {
+/// Letters and a single space between words only.
+///
+/// Blocks symbols, leading spaces, and consecutive spaces. A single trailing
+/// space is kept while typing so the next word can be entered; callers should
+/// [String.trim] on save.
+class NameInputFormatter extends TextInputFormatter {
+  static final _disallowed = RegExp(r'[^a-zA-Z ]');
+  static final _leadingSpaces = RegExp(r'^ +');
+  static final _multiSpaces = RegExp(r' {2,}');
+  static final _letterOrSpace = RegExp(r'[a-zA-Z ]');
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text;
+    if (newValue.text.isEmpty) return newValue;
 
-    if ('.'.allMatches(text).length > 1) {
-      return oldValue;
+    final text = newValue.text
+        .replaceAll(_disallowed, '')
+        .replaceFirst(_leadingSpaces, '')
+        .replaceAll(_multiSpaces, ' ');
+
+    if (text == newValue.text) return newValue;
+
+    final selection = newValue.selection;
+    final base = _offsetForKeptCount(
+      text,
+      _countKept(newValue.text, selection.baseOffset),
+    );
+    final extent = _offsetForKeptCount(
+      text,
+      _countKept(newValue.text, selection.extentOffset),
+    );
+
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection(
+        baseOffset: base.clamp(0, text.length),
+        extentOffset: extent.clamp(0, text.length),
+      ),
+    );
+  }
+
+  static int _countKept(String text, int offset) {
+    final end = offset.clamp(0, text.length);
+    var count = 0;
+    for (var i = 0; i < end; i++) {
+      if (_letterOrSpace.hasMatch(text[i])) count++;
     }
+    return count;
+  }
 
-    if (text.contains('.')) {
-      final parts = text.split('.');
-      if (parts.length > 1 && parts[1].length > 2) {
-        return oldValue;
+  static int _offsetForKeptCount(String text, int count) {
+    if (count <= 0) return 0;
+    var seen = 0;
+    for (var i = 0; i < text.length; i++) {
+      if (_letterOrSpace.hasMatch(text[i])) {
+        seen++;
+        if (seen >= count) return i + 1;
       }
     }
+    return text.length;
+  }
+}
 
-    return newValue;
+class AmountInputFormatter extends TextInputFormatter {
+  AmountInputFormatter({
+    this.currency = CurrencyContants.rupee,
+    this.decimalDigits = 2,
+    this.maxIntegerDigits = 16,
+  });
+
+  final CurrencyContants currency;
+  final int decimalDigits;
+  final int maxIntegerDigits;
+
+  static final _significant = RegExp(r'[0-9.]');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) return newValue;
+
+    var raw = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    final firstDot = raw.indexOf('.');
+    if (firstDot != -1) {
+      raw =
+          raw.substring(0, firstDot + 1) +
+          raw.substring(firstDot + 1).replaceAll('.', '');
+    }
+
+    final parts = raw.split('.');
+    var intPart = parts[0];
+    final decPart = parts.length > 1 ? parts[1] : null;
+
+    if (intPart.length > maxIntegerDigits) return oldValue;
+    if (decPart != null && decPart.length > decimalDigits) return oldValue;
+
+    if (intPart.length > 1) {
+      intPart = intPart.replaceFirst(RegExp(r'^0+(?=.)'), '');
+    }
+
+    raw =
+        decPart == null
+            ? (raw.endsWith('.') ? '$intPart.' : intPart)
+            : '$intPart.$decPart';
+
+    if (raw.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    final formatted = CurrencyFormatter.formatInput(
+      raw,
+      currency: currency,
+      decimalDigits: decimalDigits,
+    );
+
+    final selection = newValue.selection;
+    final base = _offsetForSignificantCount(
+      formatted,
+      _countSignificant(newValue.text, selection.baseOffset),
+    );
+    final extent = _offsetForSignificantCount(
+      formatted,
+      _countSignificant(newValue.text, selection.extentOffset),
+    );
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection(baseOffset: base, extentOffset: extent),
+    );
+  }
+
+  /// Counts digits and `.` before [offset], ignoring grouping separators.
+  static int _countSignificant(String text, int offset) {
+    final end = offset.clamp(0, text.length);
+    var count = 0;
+    for (var i = 0; i < end; i++) {
+      if (_significant.hasMatch(text[i])) count++;
+    }
+    return count;
+  }
+
+  /// Finds the cursor index in [text] after [count] significant characters.
+  static int _offsetForSignificantCount(String text, int count) {
+    if (count <= 0) return 0;
+    var seen = 0;
+    for (var i = 0; i < text.length; i++) {
+      if (_significant.hasMatch(text[i])) {
+        seen++;
+        if (seen >= count) return i + 1;
+      }
+    }
+    return text.length;
   }
 }

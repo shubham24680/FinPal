@@ -5,8 +5,11 @@ class CustomContainer extends StatefulWidget {
     super.key,
     this.child,
     this.onTap,
+    this.onLongTap,
+    this.animateOnTap = true,
     this.padding,
     this.margin,
+    this.image,
     this.backgroundColor,
     this.borderRadius,
     this.border,
@@ -17,12 +20,16 @@ class CustomContainer extends StatefulWidget {
     this.height,
     this.width,
     this.alignment,
+    this.gradient,
   });
 
   final Widget? child;
   final VoidCallback? onTap;
+  final VoidCallback? onLongTap;
+  final bool animateOnTap;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
+  final String? image;
   final Color? backgroundColor;
   final BorderRadiusGeometry? borderRadius;
   final BoxBorder? border;
@@ -33,50 +40,28 @@ class CustomContainer extends StatefulWidget {
   final double? height;
   final double? width;
   final AlignmentGeometry? alignment;
+  final Gradient? gradient;
 
   @override
   State<CustomContainer> createState() => _CustomContainerState();
 }
 
-class _CustomContainerState extends State<CustomContainer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.animationDuration,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: widget.scaleDownFactor,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() async {
-    if (widget.onTap != null) {
-      widget.onTap!();
-      await _controller.forward();
-      if (mounted) {
-        _controller.reverse();
-      }
-    }
-  }
-
+class _CustomContainerState extends State<CustomContainer> {
   @override
   Widget build(BuildContext context) {
     final defaultBorderRadius =
         widget.borderRadius ?? BorderRadius.circular(16.r);
-    final defaultPadding = widget.padding ?? EdgeInsets.all(16.w);
+    final defaultPadding = widget.padding ?? EdgeInsets.all(16.r);
+    final defaultShadow =
+        widget.shadow ??
+        [
+          BoxShadow(
+            color: Colors.black.withAlpha(10),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ];
+    final image = widget.image;
 
     final container = Container(
       height: widget.height,
@@ -85,32 +70,34 @@ class _CustomContainerState extends State<CustomContainer>
       padding: defaultPadding,
       alignment: widget.alignment,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? PrimaryColors.shade100,
+        image:
+            image != null
+                ? DecorationImage(image: AssetImage(image), fit: BoxFit.cover)
+                : null,
+        color: widget.backgroundColor ?? context.colors.surface,
         borderRadius: defaultBorderRadius,
         border: widget.border,
-        boxShadow:
-            widget.showShadow
-                ? widget.shadow ??
-                    [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(10),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                : null,
+        boxShadow: widget.showShadow ? defaultShadow : null,
+        gradient: widget.gradient,
       ),
       child: widget.child,
     );
 
-    if (widget.onTap == null) {
-      return container;
+    if (!widget.animateOnTap) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        onLongPress: widget.onLongTap,
+        behavior: HitTestBehavior.opaque,
+        child: container,
+      );
     }
 
-    return GestureDetector(
-      onTap: _handleTap,
-      behavior: HitTestBehavior.opaque,
-      child: ScaleTransition(scale: _scaleAnimation, child: container),
+    return AnimatedTap(
+      onTap: widget.onTap,
+      onLongTap: widget.onLongTap,
+      scaleDownFactor: widget.scaleDownFactor,
+      animationDuration: widget.animationDuration,
+      child: container,
     );
   }
 }

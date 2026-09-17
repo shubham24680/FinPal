@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Override AGP 9's bundled KGP (2.2.10) while using built-in Kotlin.
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
+    }
+}
+
 allprojects {
     repositories {
         google()

@@ -2,9 +2,10 @@ import 'package:finpal/app/app.dart';
 
 class AppBarModel {
   final String icon;
+  final Color? color;
   final VoidCallback onTap;
 
-  AppBarModel({required this.icon, required this.onTap});
+  AppBarModel({required this.icon, this.color, required this.onTap});
 }
 
 AppBar customAppBar(
@@ -17,17 +18,17 @@ AppBar customAppBar(
 }) {
   return AppBar(
     automaticallyImplyLeading: false,
-    backgroundColor: BGColors.shade500,
     leading:
         enableBack
             ? CustomImage(
               imageType: ImageType.svgLocal,
               imageUrl: AppSvgs.arrowLeft,
-            ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.w)
+              color: context.colors.inverseSurface,
+            ).onTap(event: onBack ?? () => context.pop()).padding(all: 12.r)
             : null,
     title:
         title != null
-            ? CustomTypography(text: title, fontType: FontType.body1Medium)
+            ? CustomTypography(text: title, fontType: FontType.h4Medium)
             : null,
     actions:
         actions
@@ -35,8 +36,9 @@ AppBar customAppBar(
               (e) => CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: e.icon,
-                height: 24.w,
-              ).onTap(event: e.onTap).padding(right: 16.w),
+                // height: 24.spMin,
+                color: e.color,
+              ).onTap(event: e.onTap).padding(right: 16.r),
             )
             .toList(),
     bottom: bottom,

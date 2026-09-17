@@ -1,0 +1,54 @@
+import 'package:finpal/app/app.dart';
+
+final paymentBoxProvider = Provider<Box<PaymentModel>>(
+  (ref) => throw UnimplementedError(),
+);
+
+class TransactionNotifier extends AsyncNotifier<TransactionService> {
+  @override
+  Future<TransactionService> build() async {
+    final box = ref.watch(paymentBoxProvider);
+    return TransactionService(box);
+  }
+
+  Future<void> save(PaymentModel payment) async {
+    final updatedData = state.value;
+    if (updatedData == null) return;
+    await updatedData.save(payment);
+    state = AsyncData(updatedData);
+  }
+
+  Future<void> saveAll(List<PaymentModel> payments) async {
+    final updatedData = state.value;
+    if (updatedData == null) return;
+    await updatedData.saveAll(payments);
+    state = AsyncData(updatedData);
+  }
+
+  Future<void> deletePayment(String id) async {
+    final stateValue = state.value;
+    if (stateValue == null) return;
+    await stateValue.delete(id);
+    state = AsyncData(stateValue);
+  }
+
+  Future<void> clearData() async {
+    final stateValue = state.value;
+    if (stateValue == null) return;
+    await stateValue.clearData();
+    state = AsyncData(stateValue);
+  }
+}
+
+final transactionProvider =
+    AsyncNotifierProvider<TransactionNotifier, TransactionService>(
+      () => TransactionNotifier(),
+    );
+
+final selectedDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final transactionTypeFilterProvider = StateProvider<TransactionType?>(
+  (ref) => null,
+);
+final transactionAppbarProvider = StateProvider.family<bool, String>(
+  (ref, id) => false,
+);

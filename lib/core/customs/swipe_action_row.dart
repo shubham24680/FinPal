@@ -77,21 +77,6 @@ class _SwipeActionRowState extends State<SwipeActionRow>
     _animateTo(0);
   }
 
-  Future<void> _closeThenRun(VoidCallback action) async {
-    if (_offset == 0) {
-      action();
-      return;
-    }
-    _snap.stop();
-    _snapAnim = Tween<double>(
-      begin: _offset,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _snap, curve: Curves.easeOutCubic));
-    await _snap.forward(from: 0);
-    if (!mounted) return;
-    action();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.onEdit == null && widget.onDelete == null) {
@@ -106,15 +91,15 @@ class _SwipeActionRowState extends State<SwipeActionRow>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (widget.onEdit != null)
-                  _buildActionButton(AppSvgs.edit, onTap: widget.onEdit),
-                const Spacer(),
-                if (widget.onDelete != null)
-                  _buildActionButton(
-                    AppSvgs.delete,
-                    onTap: widget.onDelete,
-                    backgroundColor: NegativeColors.shade800,
-                  ),
+                // if (widget.onEdit != null)
+                //   _buildActionButton(AppSvgs.edit, onTap: widget.onEdit),
+                // const Spacer(),
+                // if (widget.onDelete != null)
+                //   _buildActionButton(
+                //     AppSvgs.delete,
+                //     onTap: widget.onDelete,
+                //     backgroundColor: NegativeColors.shade800,
+                //   ),
               ],
             ),
           ),
@@ -144,33 +129,4 @@ class _SwipeActionRowState extends State<SwipeActionRow>
     );
   }
 
-  Widget _buildActionButton(
-    String imageUrl, {
-    VoidCallback? onTap,
-    Color? backgroundColor,
-    Color? iconColor,
-  }) {
-    return SizedBox(
-      width: widget.actionExtent,
-      child: Material(
-        color: backgroundColor ?? CardColors.shade1000,
-        child: InkWell(
-          onTap: () {
-            if (onTap != null) {
-              _closeThenRun(onTap);
-            }
-          },
-          child: Center(
-            child: CustomImage(
-              imageType: ImageType.svgLocal,
-              imageUrl: imageUrl,
-              color: iconColor ?? Colors.white,
-              height: 24.w,
-              width: 24.w,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
