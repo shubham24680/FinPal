@@ -7,12 +7,16 @@ class OptionsBottomSheet extends ConsumerStatefulWidget {
     this.categories = const [],
     this.title,
     this.selectedOption,
+    this.enableSearch = true,
+    this.enableAddButton = true,
   });
 
   final String? type;
   final List<OptionModel> categories;
   final OptionModel? selectedOption;
   final String? title;
+  final bool enableSearch;
+  final bool enableAddButton;
 
   @override
   ConsumerState<OptionsBottomSheet> createState() => _OptionsBottomSheetState();
@@ -74,48 +78,52 @@ class _OptionsBottomSheetState extends ConsumerState<OptionsBottomSheet> {
     final values = filteredOptions;
     final items = [
       ...values,
-      OptionsConstant.otherCategory,
-      OptionModel(
-        type: "add_category",
-        name: "Add Category",
-        icon: AppSvgs.add1,
-      ),
+      if (widget.enableAddButton) ...[
+        OptionsConstant.otherCategory,
+        OptionModel(
+          type: "add_category",
+          name: "Add a $method",
+          icon: AppSvgs.add1,
+        ),
+      ],
     ];
+
+    final child = ListView.separated(
+      itemCount: items.length,
+      padding: EdgeInsets.only(bottom: 60.spMin),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return (items[index].type == "add_category")
+            ? CustomButton(
+              buttonSize: ButtonSize.small,
+              buttonVariant: ButtonVariant.tertiary,
+              label: "Add a $method",
+              prefixIcon: AppSvgs.add1,
+              onTap: _openAddOption,
+            ).padding(top: 8.spMin)
+            : optionTile(context, items[index]);
+      },
+      separatorBuilder: (_, _) => const Divider(),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 12.spMin),
-        CustomTextField(
-          controller: controller,
-          hintText: "Search",
-          onChanged: (_) => setState(() {}),
-          perfixIcon: CustomImage(
-            imageType: ImageType.svgLocal,
-            imageUrl: AppSvgs.search,
-            color: context.colors.outline,
-            height: 24.spMin,
+        if (widget.enableSearch) ...[
+          SizedBox(height: 12.spMin),
+          CustomTextField(
+            controller: controller,
+            hintText: "Search",
+            onChanged: (_) => setState(() {}),
+            perfixIcon: CustomImage(
+              imageType: ImageType.svgLocal,
+              imageUrl: AppSvgs.search,
+              color: context.colors.outline,
+              height: 24.spMin,
+            ),
           ),
-        ),
-        Expanded(
-          child: ListView.separated(
-            itemCount: items.length,
-            padding: EdgeInsets.only(bottom: 60.spMin),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return (items[index].type == "add_category")
-                  ? CustomButton(
-                    buttonSize: ButtonSize.small,
-                    buttonVariant: ButtonVariant.tertiary,
-                    label: "Add a $method",
-                    prefixIcon: AppSvgs.add1,
-                    onTap: _openAddOption,
-                  ).padding(top: 8.spMin)
-                  : optionTile(context, items[index]);
-            },
-            separatorBuilder: (_, _) => const Divider(),
-          ),
-        ),
+        ],
+        widget.enableSearch ? Expanded(child: child) : child,
       ],
     ).onTap(event: () => context.focusNode.unfocus());
   }

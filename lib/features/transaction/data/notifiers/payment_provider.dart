@@ -8,6 +8,8 @@ class PaymentState {
   final TransactionType type;
   final double initialAmount;
   final String amount;
+  final bool recurringPayment;
+  final OptionModel? interval;
   final String date;
   final OptionModel? category;
   final OptionModel? paymentMethod;
@@ -26,6 +28,8 @@ class PaymentState {
     required this.type,
     required this.initialAmount,
     required this.amount,
+    required this.recurringPayment,
+    this.interval,
     required this.date,
     this.category,
     this.paymentMethod,
@@ -44,6 +48,7 @@ class PaymentState {
     type: TransactionType.expense,
     initialAmount: 0,
     amount: '',
+    recurringPayment: false,
     date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
     overspent: '',
@@ -60,6 +65,8 @@ class PaymentState {
     TransactionType? type,
     double? initialAmount,
     String? amount,
+    bool? recurringPayment,
+    OptionModel? interval,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -77,6 +84,8 @@ class PaymentState {
     type: type ?? this.type,
     initialAmount: initialAmount ?? this.initialAmount,
     amount: amount ?? this.amount,
+    recurringPayment: recurringPayment ?? this.recurringPayment,
+    interval: (recurringPayment == false) ? null : interval ?? this.interval,
     date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
         (type == null || type == this.type)
@@ -136,6 +145,8 @@ class PaymentProvider extends StateNotifier<PaymentState> {
   void set({
     TransactionType? type,
     String? amount,
+    bool? recurringPayment,
+    OptionModel? interval,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -153,6 +164,8 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     state = state.copyWith(
       type: type,
       amount: amount,
+      recurringPayment: recurringPayment,
+      interval: interval,
       date: date,
       category: category,
       paymentMethod: paymentMethod,

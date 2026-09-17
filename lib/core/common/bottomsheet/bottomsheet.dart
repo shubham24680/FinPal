@@ -96,6 +96,8 @@ class CustomBottomSheet extends StatelessWidget {
     List<OptionModel> categories = const [],
     OptionModel? selectedOption,
     String? title,
+    bool enableSearch = true,
+    bool enableAddButton = true,
   }) async {
     final option = await show<OptionModel>(
       context,
@@ -104,6 +106,8 @@ class CustomBottomSheet extends StatelessWidget {
         categories: categories,
         type: type,
         selectedOption: selectedOption,
+        enableSearch: enableSearch,
+        enableAddButton: enableAddButton,
       ),
       layout: SheetLayout.typeB,
     );

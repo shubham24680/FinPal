@@ -1,10 +1,28 @@
 import 'package:finpal/app/app.dart';
 
 enum TransactionType {
-  income("income", "Income", AppSvgs.arrowDown, ColorSet.primary, OptionType.income),
-  expense("expense", "Expense", AppSvgs.arrowUp, ColorSet.error, OptionType.expense);
+  income(
+    "income",
+    "Income",
+    AppSvgs.arrowDown,
+    ColorSet.primary,
+    OptionType.income,
+  ),
+  expense(
+    "expense",
+    "Expense",
+    AppSvgs.arrowUp,
+    ColorSet.error,
+    OptionType.expense,
+  );
 
-  const TransactionType(this.id, this.name, this.icon, this.color, this.optionType);
+  const TransactionType(
+    this.id,
+    this.name,
+    this.icon,
+    this.color,
+    this.optionType,
+  );
   final String id, name, icon;
   final ColorSet color;
   final OptionType optionType;
@@ -21,14 +39,11 @@ class TransactionConstants {
   static const String emptyHelperText = "Enter an amount to see what's left.";
   static const String savingHelperText = "You'll have ";
   static const String overspentHelperText = "You'd be short by ";
-  static const String neutralHelperText = "This uses up your remaining balance.";
+  static const String neutralHelperText =
+      "This uses up your remaining balance.";
 
   static const int maxReceiptSizeBytes = 5 * 1024 * 1024;
-  static const List<String> allowedReceiptExtensions = [
-    'jpg',
-    'jpeg',
-    'png',
-  ];
+  static const List<String> allowedReceiptExtensions = ['jpg', 'jpeg', 'png'];
 
   static const String amountInvalidMessage = "Enter a valid amount";
   static const String receiptNotFoundMessage = "Receipt file not found";
@@ -37,4 +52,15 @@ class TransactionConstants {
   static const String receiptSizeMessage = "Receipt must be 5MB or smaller";
   static const String saveSuccessMessage = "Transaction saved successfully";
   static const String saveFailureMessage = "Failed to save transaction";
+  static final List<OptionModel> intervalOptions = [
+    OptionModel(id: "daily", type: "interval", name: "Daily"),
+    OptionModel(id: "weekly", type: "interval", name: "Weekly"),
+    OptionModel(id: "monthly", type: "interval", name: "Monthly"),
+    OptionModel(id: "yearly", type: "interval", name: "Yearly"),
+  ];
+  static final List<OptionModel> endRepetition = [
+    OptionModel(id: "never", type: "end_repetition", name: "Never"),
+    OptionModel(id: "after_count", type: "end_repetition", name: "On a date"),
+    OptionModel(id: "after_date", type: "end_repetition", name: "After a number of events"),
+  ];
 }

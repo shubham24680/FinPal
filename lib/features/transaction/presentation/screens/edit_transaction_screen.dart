@@ -93,6 +93,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
               ),
             ),
             _buildAmountField(transactionState, transactionNotifer),
+            _buildRecurringField(transactionState, transactionNotifer),
             _buildDateField(transactionState, transactionNotifer),
             _otherFields(transactionState, transactionNotifer),
             _buildReceiptField(transactionState, transactionNotifer),
@@ -175,13 +176,68 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
+  Widget _buildRecurringField(PaymentState state, PaymentProvider notifer) {
+    final bottomPadding = state.recurringPayment ? 16.spMin : 8.spMin;
+    return CustomContainer(
+      padding: EdgeInsets.fromLTRB(
+        20.spMin,
+        8.spMin,
+        AppConstants.sidePadding,
+        bottomPadding,
+      ),
+      onTap: () => notifer.set(recurringPayment: !state.recurringPayment),
+      animateOnTap: false,
+      child: Column(
+        spacing: 16.spMin,
+        children: [
+          Row(
+            spacing: 16.spMin,
+            children: [
+              CustomImage(
+                imageType: ImageType.svgLocal,
+                imageUrl: AppSvgs.sync,
+                color: context.colors.primary,
+              ),
+              Expanded(
+                child: CustomTypography(
+                  text: "Recurring payment",
+                  fontType: FontType.body1Medium,
+                ),
+              ),
+              Switch(
+                value: state.recurringPayment,
+                onChanged:
+                    (_) =>
+                        notifer.set(recurringPayment: !state.recurringPayment),
+              ),
+            ],
+          ),
+          if (state.recurringPayment) ...[
+            _buildField(AppSvgs.time, "Inverval", () async {
+              final picked = await CustomBottomSheet.showOptions(
+                context,
+                categories: TransactionConstants.intervalOptions,
+                selectedOption: state.interval,
+                title: "Select Interval",
+                enableSearch: false,
+                enableAddButton: false,
+              );
+              notifer.set(interval: picked);
+            }, subValue: state.interval?.name ?? ""),
+            _buildField(AppSvgs.time1, "End repetition", () => {}),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildDateField(
     PaymentState transactionState,
     PaymentProvider notifer,
   ) {
     return CustomContainer(
       child: _buildField(
-        "Date",
+        title: "Date",
         AppSvgs.calendar,
         transactionState.date,
         () async {
@@ -212,7 +268,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildField(
-            "Category",
+            title: "Category",
             state.category?.icon ?? AppSvgs.category,
             state.category?.name,
             () async {
@@ -230,7 +286,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           ),
           SizedBox(height: 20.spMin),
           _buildField(
-            "Payment Method",
+            title: "Payment Method",
             state.paymentMethod?.icon ?? AppSvgs.upi,
             state.paymentMethod?.name,
             () async {
@@ -262,10 +318,11 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   }
 
   Widget _buildField(
-    String title,
     String icon,
     String? value,
     VoidCallback onTap, {
+    String subValue = "",
+    String title = "",
     String hintText = "",
     bool isRequired = false,
     ColorSet? color,
@@ -274,7 +331,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       spacing: 8.spMin,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        transTitle(context, title, isMandatory: isRequired),
+        if (title.isNotEmpty)
+          transTitle(context, title, isMandatory: isRequired),
         AnimatedTap(
           onTap: onTap,
           child: Row(
@@ -292,6 +350,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                   color: (value != null) ? null : context.colors.onSurface,
                 ),
               ),
+              if (subValue.isNotEmpty)
+                CustomTypography(
+                  text: subValue,
+                  fontType: FontType.label1Regular,
+                  color: context.colors.onSurface,
+                ),
               CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: AppSvgs.arrowRight1,
