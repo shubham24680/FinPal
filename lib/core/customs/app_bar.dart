@@ -36,7 +36,6 @@ AppBar customAppBar(
               (e) => CustomImage(
                 imageType: ImageType.svgLocal,
                 imageUrl: e.icon,
-                // height: 24.spMin,
                 color: e.color,
               ).onTap(event: e.onTap).padding(right: 16.r),
             )

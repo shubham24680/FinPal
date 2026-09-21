@@ -33,6 +33,10 @@ class CategoriesListScreen extends ConsumerWidget {
               ref.read(categoriesMonthProvider.notifier).state = picked;
             },
           ),
+          AppBarModel(
+            icon: AppSvgs.category,
+            onTap: () => context.push(AppRoutesPath.options.path),
+          ),
         ],
       ),
       body:

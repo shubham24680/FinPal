@@ -176,11 +176,14 @@ class CustomTextField extends ConsumerWidget {
   Future<void> _handleTap(BuildContext context) async {
     switch (inputType) {
       case InputType.date:
+        final date = DateTime.now();
+        final lastDate = DateTime(date.year - 13, date.month, date.day);
         final current = controller?.text ?? '';
         final picked = await CustomBottomSheet.chooseDate(
           context,
           date: current.isEmpty ? null : current.parseDate(type: DateFormatType.fullDate),
           firstDate: DateTime(1900),
+          lastDate: lastDate,
         );
         final formattedDate = picked != null ? picked.formatDate(type: DateFormatType.fullDate) : '';
         controller?.text = formattedDate;
@@ -256,7 +259,7 @@ class CustomTextField extends ConsumerWidget {
   String? _buildHintText(WidgetRef ref) {
     return switch (inputType) {
       InputType.amount => ref.formatCurrencyInput("1250.00"),
-      InputType.date => "July 11, 2001",
+      InputType.date => "June 25, 2002",
       _ => null,
     };
   }
