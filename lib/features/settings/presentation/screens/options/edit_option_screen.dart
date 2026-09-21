@@ -102,7 +102,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                 final selected =
                     await CustomBottomSheet.show<Map<String, dynamic>>(
                       context,
-                      widget: _ImageBS(
+                      child: _ImageBS(
                         icon: optionState.icon,
                         color: optionState.color,
                       ),
@@ -140,7 +140,7 @@ class _EditOptionScreenState extends ConsumerState<EditOptionScreen> {
                     final selectedType =
                         await CustomBottomSheet.show<OptionType>(
                           context,
-                          widget: _buildCategoriesBSWidget(),
+                          child: _buildCategoriesBSWidget(),
                         );
                     optionNotifier.set(type: selectedType);
                     typeController.text =

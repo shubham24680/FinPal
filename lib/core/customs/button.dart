@@ -1,11 +1,8 @@
 import 'package:finpal/app/app.dart';
 
 enum ButtonState { enabled, loading, disabled }
-
 enum ButtonType { primary, negative, inherit }
-
 enum ButtonVariant { primary, secondary, tertiary }
-
 enum ButtonSize { small, medium, large }
 
 class CustomButton extends StatelessWidget {
@@ -83,7 +80,7 @@ class CustomButton extends StatelessWidget {
       return Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.transparent,
-          color: backgroundColor,
+          color: buttonVariant == ButtonVariant.tertiary ? foregroundColor : backgroundColor,
           strokeCap: StrokeCap.round,
         ),
       );
@@ -111,9 +108,7 @@ class CustomButton extends StatelessWidget {
     final darkButton = isDark && buttonVariant == ButtonVariant.tertiary;
 
     if (isDisabled || darkButton) {
-      return isDark
-          ? AppColors.darkSurface2.withAlpha(100)
-          : AppColors.lightSurface2;
+      return isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
     }
 
     return switch ((buttonType, buttonVariant)) {
@@ -122,19 +117,20 @@ class CustomButton extends StatelessWidget {
       (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error50,
       (ButtonType.negative, _) => AppColors.error700,
       (ButtonType.inherit, _) =>
-        isDark ? AppColors.darkSurface2.withAlpha(100) : AppColors.neutral100,
+        isDark ? AppColors.darkSurface2 : AppColors.neutral100,
     };
   }
 
   Color _getLabelColor(BuildContext context) {
+    final disabledColor = context.isDarkMode ? AppColors.neutral600 : AppColors.neutral300;
     if (buttonState == ButtonState.disabled) {
-      return AppColors.neutral500.withAlpha(100);
+      return disabledColor;
     }
 
     return switch ((buttonType, buttonVariant)) {
       (ButtonType.primary, ButtonVariant.tertiary) => AppColors.primary500,
       (ButtonType.negative, ButtonVariant.tertiary) => AppColors.error500,
-      (ButtonType.inherit, _) => AppColors.neutral500,
+      (ButtonType.inherit, _) => disabledColor,
       _ => AppColors.white,
     };
   }

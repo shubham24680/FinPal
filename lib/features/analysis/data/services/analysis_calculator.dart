@@ -13,16 +13,23 @@ class AnalysisCalculator {
   }) {
     final expenseId = TransactionType.expense.id;
     final categoryType = OptionType.expense.id;
+    final other = OptionsConstant.otherCategory;
+    final knownIds = {
+      for (final category in allCategories)
+        if (category.type == categoryType) category.id,
+    };
     final amountByCategory = <String, double>{};
     final countByCategory = <String, int>{};
+
     for (final payment in payments) {
       if (payment.paymentType != expenseId) continue;
       if (month != null && !payment.date.isSameMonthAs(month)) continue;
-      amountByCategory[payment.categoryId] =
-          (amountByCategory[payment.categoryId] ?? 0) + payment.amount;
-      countByCategory[payment.categoryId] =
-          (countByCategory[payment.categoryId] ?? 0) + 1;
+      final categoryId = _resolvedOptionId(payment.categoryId, knownIds);
+      amountByCategory[categoryId] =
+          (amountByCategory[categoryId] ?? 0) + payment.amount;
+      countByCategory[categoryId] = (countByCategory[categoryId] ?? 0) + 1;
     }
+
     var categories =
         allCategories
             .where((category) => category.type == categoryType)
@@ -37,6 +44,22 @@ class AnalysisCalculator {
               ),
             )
             .toList();
+
+    final otherAmount = amountByCategory[other.id] ?? 0;
+    final otherCount = countByCategory[other.id] ?? 0;
+    if (otherAmount > 0 || otherCount > 0) {
+      categories.add(
+        AnalysisModel(
+          id: other.id,
+          title: other.name,
+          amount: otherAmount,
+          count: otherCount,
+          color: other.color.colorSet,
+          icon: other.icon,
+        ),
+      );
+    }
+
     if (onlyWithSpend) {
       categories = categories.where((c) => c.amount > 0).toList();
     }
@@ -51,6 +74,7 @@ class AnalysisCalculator {
     required List<PaymentModel> payments,
     required OptionModel category,
     List<OptionModel> paymentMethods = const [],
+    List<OptionModel> knownCategories = const [],
   }) {
     final range = DateTimeRange(
       start: month.startOfMonth,
@@ -63,8 +87,15 @@ class AnalysisCalculator {
         .where((p) => p.paymentType == TransactionType.expense.id)
         .toList(growable: false);
     final monthExpenseTotal = sumByType(monthPayments, TransactionType.expense);
+    final knownIds = {for (final c in knownCategories) c.id};
     final categoryPayments = monthExpenses
-        .where((p) => p.categoryId == categoryId)
+        .where(
+          (p) => _matchesResolvedOption(
+            paymentOptionId: p.categoryId,
+            targetId: categoryId,
+            knownIds: knownIds,
+          ),
+        )
         .toList(growable: false);
     final amount = categoryPayments.fold<double>(0, (a, b) => a + b.amount);
     final count = categoryPayments.length;
@@ -118,8 +149,18 @@ class AnalysisCalculator {
     final analysisPie = getAnalysis(income, expense, available);
     final expenseTrend = getTrend(expenses, period, range);
     final incomeTrend = getTrend(incomes, period, range);
-    final categories = categoryBreakdown(expenses, expenseCategories, expense);
-    final methods = methodBreakdown(expenses, paymentMethods, expense);
+    final categories = categoryBreakdown(
+      expenses,
+      expenseCategories,
+      expense,
+      fallback: fallbackCategory ?? OptionsConstant.otherCategory,
+    );
+    final methods = methodBreakdown(
+      expenses,
+      paymentMethods,
+      expense,
+      fallback: fallbackMethod ?? OptionsConstant.otherCategory,
+    );
 
     return PeriodAnalysis(
       period: period,
@@ -223,27 +264,43 @@ class AnalysisCalculator {
   static List<AnalysisModel> categoryBreakdown(
     List<PaymentModel> payments,
     List<OptionModel> categories,
-    double totalAmount,
-  ) {
+    double totalAmount, {
+    OptionModel? fallback,
+  }) {
+    final knownIds = {for (final c in categories) c.id};
     final byId = <String, List<PaymentModel>>{};
     for (final p in payments) {
-      (byId[p.categoryId] ??= []).add(p);
+      final id = _resolvedOptionId(p.categoryId, knownIds);
+      (byId[id] ??= []).add(p);
     }
 
-    return breakdownPayments(byId, categories, totalAmount);
+    return breakdownPayments(
+      byId,
+      categories,
+      totalAmount,
+      fallback: fallback ?? OptionsConstant.otherCategory,
+    );
   }
 
   static List<AnalysisModel> methodBreakdown(
     List<PaymentModel> payments,
-    List<OptionModel> category,
-    double total,
-  ) {
+    List<OptionModel> methods,
+    double total, {
+    OptionModel? fallback,
+  }) {
+    final knownIds = {for (final m in methods) m.id};
     final byId = <String, List<PaymentModel>>{};
     for (final p in payments) {
-      (byId[p.paymentMethodId] ??= []).add(p);
+      final id = _resolvedOptionId(p.paymentMethodId, knownIds);
+      (byId[id] ??= []).add(p);
     }
 
-    return breakdownPayments(byId, category, total);
+    return breakdownPayments(
+      byId,
+      methods,
+      total,
+      fallback: fallback ?? OptionsConstant.otherCategory,
+    );
   }
 
   static bool inRange(DateTime date, DateTimeRange range) {
@@ -264,15 +321,15 @@ class AnalysisCalculator {
   static List<AnalysisModel> breakdownPayments(
     Map<String, List<PaymentModel>> byId,
     List<OptionModel> categories,
-    double totalAmount,
-  ) {
+    double totalAmount, {
+    OptionModel? fallback,
+  }) {
+    final fallbackOption = fallback ?? OptionsConstant.otherCategory;
+    final optionsById = {for (final c in categories) c.id: c};
     final rows = <AnalysisModel>[];
 
     for (final entry in byId.entries) {
-      final category = categories.firstWhere(
-        (c) => c.id == entry.key,
-        orElse: () => OptionsConstant.otherCategory,
-      );
+      final category = optionsById[entry.key] ?? fallbackOption;
       final amount = entry.value.fold<double>(0, (a, b) => a + b.amount);
       rows.add(
         AnalysisModel(
@@ -289,5 +346,33 @@ class AnalysisCalculator {
 
     rows.sort((a, b) => b.amount.compareTo(a.amount));
     return rows;
+  }
+
+  /// Maps empty / unknown option ids onto [OptionsConstant.otherCategory].
+  static String _resolvedOptionId(String optionId, Set<String> knownIds) {
+    if (optionId.isEmpty) return OptionsConstant.otherCategory.id;
+    if (knownIds.isEmpty || knownIds.contains(optionId)) return optionId;
+    return OptionsConstant.otherCategory.id;
+  }
+
+  static bool matchesCategory({
+    required String paymentCategoryId,
+    required String categoryId,
+    required Iterable<OptionModel> knownCategories,
+  }) {
+    final knownIds = {for (final c in knownCategories) c.id};
+    return _matchesResolvedOption(
+      paymentOptionId: paymentCategoryId,
+      targetId: categoryId,
+      knownIds: knownIds,
+    );
+  }
+
+  static bool _matchesResolvedOption({
+    required String paymentOptionId,
+    required String targetId,
+    required Set<String> knownIds,
+  }) {
+    return _resolvedOptionId(paymentOptionId, knownIds) == targetId;
   }
 }

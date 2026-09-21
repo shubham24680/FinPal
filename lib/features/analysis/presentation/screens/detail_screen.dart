@@ -22,8 +22,14 @@ class CategoryDetailScreen extends ConsumerWidget {
       payments: payments,
       category: category,
       paymentMethods: options.paymentMethods,
+      knownCategories: options.expenseCategories,
     );
-    final dayGroups = _dayGroupsForCategory(payments, categoryId, month);
+    final dayGroups = _dayGroupsForCategory(
+      payments,
+      categoryId,
+      month,
+      options.expenseCategories,
+    );
     return Scaffold(
       appBar: customAppBar(context, title: category.name),
       body: SingleChildScrollView(
@@ -246,10 +252,17 @@ class CategoryDetailScreen extends ConsumerWidget {
     List<PaymentModel> payments,
     String categoryId,
     DateTime month,
+    List<OptionModel> knownCategories,
   ) {
     final byDay = <DateTime, List<PaymentModel>>{};
     for (final payment in payments) {
-      if (payment.categoryId != categoryId) continue;
+      if (!AnalysisCalculator.matchesCategory(
+        paymentCategoryId: payment.categoryId,
+        categoryId: categoryId,
+        knownCategories: knownCategories,
+      )) {
+        continue;
+      }
       if (!payment.date.isSameMonthAs(month)) continue;
       final day = payment.date.startOfDay;
       (byDay[day] ??= []).add(payment);

@@ -36,9 +36,9 @@ class OptionsScreen extends ConsumerWidget {
     OptionServices options,
     WidgetRef ref,
   ) {
-    final incomeCategories = options.byTypeSorted(OptionType.income.id);
-    final expenseCategories = options.byTypeSorted(OptionType.expense.id);
-    final paymentMethods = options.byTypeSorted(OptionType.paymentMethod.id);
+    final incomeCategories = options.byTypeSorted(OptionType.income.id, isMandatory: true);
+    final expenseCategories = options.byTypeSorted(OptionType.expense.id, isMandatory: true);
+    final paymentMethods = options.byTypeSorted(OptionType.paymentMethod.id, isMandatory: true);
     final isAllEmpty =
         incomeCategories.isEmpty &&
         expenseCategories.isEmpty &&

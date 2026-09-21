@@ -1,5 +1,7 @@
 import 'package:finpal/app/app.dart';
 
+enum SortType { ascending, descending }
+
 class OptionServices {
   final HiveService<OptionModel> _hiveService;
   List<OptionModel>? _cache;
@@ -54,10 +56,10 @@ class OptionServices {
         return option;
       }
     }
-    if(OptionsConstant.otherCategory.name.toLowerCase() == normalized) {
+    if (OptionsConstant.otherCategory.name.toLowerCase() == normalized) {
       return OptionsConstant.otherCategory;
     }
-    
+
     return null;
   }
 
@@ -68,6 +70,24 @@ class OptionServices {
       .where((o) => o.type == type && o.id != excludeId)
       .toList(growable: false);
 
-  List<OptionModel> byTypeSorted(String type) => [...byType(type)]
-    ..sort((a, b) => a.isMandatory ? -1 : 1);
+  List<OptionModel> byTypeSorted(
+    String type, {
+    SortType sortType = SortType.ascending,
+    bool isMandatory = false,
+  }) {
+    final options = [...byType(type)];
+    options.sort((a, b) {
+      final condition = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      if(!isMandatory) return condition;
+      
+      if (a.isMandatory && b.isMandatory) return condition;
+      if (a.isMandatory) return -1;
+      if (b.isMandatory) return 1;
+      return condition;
+    });
+    return switch (sortType) {
+      SortType.ascending => options,
+      SortType.descending => options.reversed.toList(),
+    };
+  }
 }

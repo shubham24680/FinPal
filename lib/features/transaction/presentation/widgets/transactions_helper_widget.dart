@@ -29,7 +29,7 @@ void showReceiptPreview(BuildContext context, String path) {
     borderRadius: BorderRadius.circular(12.r),
     child: Image.file(File(path)),
   );
-  CustomBottomSheet.show(context, widget: widget, title: "Receipt Preview");
+  CustomBottomSheet.show(context, child: widget, title: "Receipt Preview");
 }
 
 class DashedBorderPainter extends CustomPainter {
