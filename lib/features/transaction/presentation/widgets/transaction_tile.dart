@@ -93,7 +93,7 @@ class TransactionList extends ConsumerWidget {
           onTap: () {
             CustomBottomSheet.show(
               context,
-              widget: TransactionDetailBS(payment: payment),
+              child: TransactionDetailBS(payment: payment),
               noPadding: true,
             );
           },

@@ -86,5 +86,5 @@ Future<String?> selectImageBottomSheet(BuildContext context) async {
     separatorBuilder: (context, index) => const Divider(),
   );
 
-  return await CustomBottomSheet.show<String?>(context, widget: child);
+  return await CustomBottomSheet.show<String?>(context, child: child);
 }

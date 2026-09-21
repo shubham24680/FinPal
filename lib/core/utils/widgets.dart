@@ -182,7 +182,7 @@ Future<String> chooseDate(
   return await CustomBottomSheet.show<String>(
         context,
         title: "Select date",
-        widget: child,
+        child: child,
       ) ??
       date;
 }

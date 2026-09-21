@@ -204,8 +204,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     final categories = ref
         .watch(optionNotifer)
         .value
-        ?.byType(state.type.optionType.id);
-    final paymentMethod = ref.watch(optionNotifer).value?.paymentMethods;
+        ?.byTypeSorted(state.type.optionType.id);
+    final paymentMethod = ref.watch(optionNotifer).value?.byTypeSorted(OptionType.paymentMethod.id);
 
     return CustomContainer(
       child: Column(
