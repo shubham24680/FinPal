@@ -9,7 +9,8 @@ class PaymentState {
   final double initialAmount;
   final String amount;
   final bool recurringPayment;
-  final OptionModel? interval;
+  final OptionModel interval;
+  final OptionModel endRepetition;
   final String date;
   final OptionModel? category;
   final OptionModel? paymentMethod;
@@ -29,7 +30,8 @@ class PaymentState {
     required this.initialAmount,
     required this.amount,
     required this.recurringPayment,
-    this.interval,
+    required this.interval,
+    required this.endRepetition,
     required this.date,
     this.category,
     this.paymentMethod,
@@ -49,6 +51,8 @@ class PaymentState {
     initialAmount: 0,
     amount: '',
     recurringPayment: false,
+    interval: TransactionConstants.intervalOptions.first,
+    endRepetition: TransactionConstants.endRepetition.first,
     date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
     overspent: '',
@@ -67,6 +71,7 @@ class PaymentState {
     String? amount,
     bool? recurringPayment,
     OptionModel? interval,
+    OptionModel? endRepetition,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -85,7 +90,8 @@ class PaymentState {
     initialAmount: initialAmount ?? this.initialAmount,
     amount: amount ?? this.amount,
     recurringPayment: recurringPayment ?? this.recurringPayment,
-    interval: (recurringPayment == false) ? null : interval ?? this.interval,
+    interval: (recurringPayment == false) ? TransactionConstants.intervalOptions.first : interval ?? this.interval,
+    endRepetition: (recurringPayment == false) ? TransactionConstants.endRepetition.first : endRepetition ?? this.endRepetition,
     date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
         (type == null || type == this.type)
@@ -147,6 +153,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     String? amount,
     bool? recurringPayment,
     OptionModel? interval,
+    OptionModel? endRepetition,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -166,6 +173,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       amount: amount,
       recurringPayment: recurringPayment,
       interval: interval,
+      endRepetition: endRepetition,
       date: date,
       category: category,
       paymentMethod: paymentMethod,
