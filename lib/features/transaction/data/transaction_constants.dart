@@ -61,6 +61,7 @@ class TransactionConstants {
   static final List<OptionModel> endRepetition = [
     OptionModel(id: "never", type: "end_repetition", name: "Never"),
     OptionModel(id: "date", type: "end_repetition", name: "On a date"),
-    OptionModel(id: "events", type: "end_repetition", name: "After a number of events"),
+    // OptionModel(id: "events", type: "end_repetition", name: "After a number of events"),
   ];
+  static const int maxEndDate = 365 * 5;
 }

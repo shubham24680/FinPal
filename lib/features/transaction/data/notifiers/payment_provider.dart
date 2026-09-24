@@ -11,6 +11,7 @@ class PaymentState {
   final bool recurringPayment;
   final OptionModel interval;
   final OptionModel endRepetition;
+  final String endDate;
   final String date;
   final OptionModel? category;
   final OptionModel? paymentMethod;
@@ -32,6 +33,7 @@ class PaymentState {
     required this.recurringPayment,
     required this.interval,
     required this.endRepetition,
+    required this.endDate,
     required this.date,
     this.category,
     this.paymentMethod,
@@ -53,6 +55,7 @@ class PaymentState {
     recurringPayment: false,
     interval: TransactionConstants.intervalOptions.first,
     endRepetition: TransactionConstants.endRepetition.first,
+    endDate: '',
     date: DateTime.now().formatDate(type: DateFormatType.dateTime),
     buttonState: ButtonState.disabled,
     overspent: '',
@@ -72,6 +75,7 @@ class PaymentState {
     bool? recurringPayment,
     OptionModel? interval,
     OptionModel? endRepetition,
+    DateTime? endDate,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -90,8 +94,18 @@ class PaymentState {
     initialAmount: initialAmount ?? this.initialAmount,
     amount: amount ?? this.amount,
     recurringPayment: recurringPayment ?? this.recurringPayment,
-    interval: (recurringPayment == false) ? TransactionConstants.intervalOptions.first : interval ?? this.interval,
-    endRepetition: (recurringPayment == false) ? TransactionConstants.endRepetition.first : endRepetition ?? this.endRepetition,
+    interval:
+        (recurringPayment == false)
+            ? TransactionConstants.intervalOptions.first
+            : interval ?? this.interval,
+    endRepetition:
+        (recurringPayment == false)
+            ? TransactionConstants.endRepetition.first
+            : endRepetition ?? this.endRepetition,
+    endDate:
+        (recurringPayment == false)
+            ? ''
+            : endDate?.formatDate() ?? this.endDate,
     date: date?.formatDate(type: DateFormatType.dateTime) ?? this.date,
     category:
         (type == null || type == this.type)
@@ -122,9 +136,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     if (selectedTransaction == null) return;
 
     final type = selectedTransaction.paymentType.type;
-    final amount = _ref.formatAmountForInput(
-      selectedTransaction.amount,
-    );
+    final amount = _ref.formatAmountForInput(selectedTransaction.amount);
     final options = _ref.read(optionNotifer).value;
     final category = options?.findById(selectedTransaction.categoryId);
     final paymentMethod = options?.findById(
@@ -154,6 +166,8 @@ class PaymentProvider extends StateNotifier<PaymentState> {
     bool? recurringPayment,
     OptionModel? interval,
     OptionModel? endRepetition,
+    DateTime? endDate,
+    int? noOfEvents,
     DateTime? date,
     OptionModel? category,
     OptionModel? paymentMethod,
@@ -174,6 +188,7 @@ class PaymentProvider extends StateNotifier<PaymentState> {
       recurringPayment: recurringPayment,
       interval: interval,
       endRepetition: endRepetition,
+      endDate: endDate,
       date: date,
       category: category,
       paymentMethod: paymentMethod,

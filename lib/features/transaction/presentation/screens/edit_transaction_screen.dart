@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:finpal/app/app.dart';
 
@@ -254,6 +255,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             items[index],
             notifier,
             state.endRepetition,
+            date: state.endDate,
           ),
       separatorBuilder: (context, index) => Divider(),
     );
@@ -264,29 +266,25 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     OptionModel option,
     PaymentProvider notifier,
     OptionModel selectedOption, {
-    DateTime? date,
-    int? noOfEvents,
+    String date = '',
   }) {
     final isSelected = option.id == selectedOption.id;
-    final event = date != null ? date.formatDate() : noOfEvents?.toString();
     return CustomContainer(
       onTap: () async {
-        switch(option.id) {
-          case "date":
-            final picked = await CustomBottomSheet.chooseDate(
-              context,
-              date: date,
-            );
-            if (!mounted) return;
-            notifier.set(date: picked);
-            if (!context.mounted) return;
-            // context.pop(option);
-            break;
-          case "events":
-          default:
-            context.pop(option);
-            break;
+        if (option.id == "date") {
+          final picked = await CustomBottomSheet.chooseDate(
+            context,
+            date: date.isNotEmpty ? date.parseDate() : null,
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(Duration(days: TransactionConstants.maxEndDate)),
+          );
+
+          if (!mounted || picked == null) return;
+          notifier.set(endDate: picked);
         }
+
+        if (!context.mounted) return;
+        context.pop(option);
       },
       padding: EdgeInsets.symmetric(vertical: 16.r),
       child: Row(
@@ -299,9 +297,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
             ),
           ),
           if (isSelected) ...[
-            if (event != null)
+            if (date.isNotEmpty)
               CustomTypography(
-                text: event,
+                text: date,
                 fontType: FontType.label1Medium,
                 color: context.colors.onSurface,
               ),
