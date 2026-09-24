@@ -35,6 +35,24 @@ extension TransactionTypeX on String {
   );
 }
 
+enum RecurringInterval {
+  daily("Daily"),
+  weekly("Weekly"),
+  monthly("Monthly"),
+  yearly("Yearly");
+
+  const RecurringInterval(this.title);
+  final String title;
+}
+
+enum RecurringEndType {
+  never("Never"),
+  date("On a date");
+
+  const RecurringEndType(this.title);
+  final String title;
+}
+
 class TransactionConstants {
   static const String emptyHelperText = "Enter an amount to see what's left.";
   static const String savingHelperText = "You'll have ";
@@ -52,16 +70,25 @@ class TransactionConstants {
   static const String receiptSizeMessage = "Receipt must be 5MB or smaller";
   static const String saveSuccessMessage = "Transaction saved successfully";
   static const String saveFailureMessage = "Failed to save transaction";
-  static final List<OptionModel> intervalOptions = [
-    OptionModel(id: "daily", type: "interval", name: "Daily"),
-    OptionModel(id: "weekly", type: "interval", name: "Weekly"),
-    OptionModel(id: "monthly", type: "interval", name: "Monthly"),
-    OptionModel(id: "yearly", type: "interval", name: "Yearly"),
-  ];
-  static final List<OptionModel> endRepetition = [
-    OptionModel(id: "never", type: "end_repetition", name: "Never"),
-    OptionModel(id: "date", type: "end_repetition", name: "On a date"),
-    // OptionModel(id: "events", type: "end_repetition", name: "After a number of events"),
-  ];
+  static final List<OptionModel> intervalOptions =
+      RecurringInterval.values
+          .map(
+            (interval) => OptionModel(
+              id: interval.name,
+              type: "interval",
+              name: interval.title,
+            ),
+          )
+          .toList();
+  static final List<OptionModel> endRepetition =
+      RecurringEndType.values
+          .map(
+            (endType) => OptionModel(
+              id: endType.name,
+              type: "end_repetition",
+              name: endType.title,
+            ),
+          )
+          .toList();
   static const int maxEndDate = 365 * 5;
 }

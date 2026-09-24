@@ -24,6 +24,8 @@ class PaymentModel extends HiveObject {
   final DateTime updatedAt;
   @HiveField(9)
   final String receiptPath;
+  @HiveField(10, defaultValue: null)
+  final String? recurringId;
 
   PaymentModel({
     required this.paymentType,
@@ -36,6 +38,7 @@ class PaymentModel extends HiveObject {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.receiptPath = "",
+    this.recurringId,
   }) : id = (id == null || id.isEmpty) ? const Uuid().v7() : id,
        categoryId = categoryId ?? OptionsConstant.otherCategory.id,
        paymentMethodId = paymentMethodId ?? OptionsConstant.otherCategory.id,
@@ -53,6 +56,7 @@ class PaymentModel extends HiveObject {
     String? notes,
     DateTime? updatedAt,
     String? receiptPath,
+    String? recurringId,
   }) => PaymentModel(
     id: id ?? this.id,
     paymentType: paymentType ?? this.paymentType,
@@ -64,5 +68,6 @@ class PaymentModel extends HiveObject {
     updatedAt: updatedAt ?? this.updatedAt,
     createdAt: createdAt,
     receiptPath: receiptPath ?? this.receiptPath,
+    recurringId: recurringId ?? this.recurringId,
   );
 }
